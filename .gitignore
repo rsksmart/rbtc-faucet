@@ -12,6 +12,7 @@ backend/.idea
 backend/dump.rdb
 backend/target
 backend/Cargo.lock
+backend/.
 
 
 # dependencies
