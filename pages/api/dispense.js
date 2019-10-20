@@ -5,8 +5,7 @@ import config from '../../config.json'
 const handleDispense = (req, res) => {
     res.setHeader('Content-Type', 'application/json')
 
-    const address = req.data.address;
-
+    const address = req.body.address;
 
     if(!store.faucetHistory[address]) {
         dispense(address)

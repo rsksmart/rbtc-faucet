@@ -2,17 +2,16 @@
 
 #Custom
 .idea/
-frontend/node_modules
-frontend/.next
-frontend/package-lock.json
-frontend/yarn.lock
-"frontend/assets/images/React App_files"
+node_modules
+.next
+package-lock.json
+yarn.lock
+"assets/images/React App_files"
   
-backend/.idea
-backend/dump.rdb
-backend/target
-backend/Cargo.lock
-backend/.
+captcha/.idea
+captcha/dump.rdb
+captcha/target
+captcha/Cargo.lock
 
 
 # dependencies
