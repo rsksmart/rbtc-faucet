@@ -1,0 +1,58 @@
+#__next {
+  width: 100vw;
+  height: 100vh;
+}
+
+.background{
+  background: url('./../images/leaves.jpg') !important;
+  background-size: cover !important;
+}
+
+.App-logo {
+  height: 40vmin;
+}
+
+.app-body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  font-size: calc(7px + 2vmin);
+  color: white;
+  text-align: center;
+  background: transparent;
+}
+
+.logo {
+  content: url('./../images/rsk_logo.svg');
+  height: fit-content;
+  padding:30px;
+}
+
+.rskAddress{
+  width: 300px;
+  text-align: center;
+}
+
+.navbar-rsk {
+  height: 5%;
+}
+
+.small {
+  max-width: 40%;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+

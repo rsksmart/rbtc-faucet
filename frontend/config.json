@@ -1,0 +1,6 @@
+{
+    "rskNode": "localhost:7545",
+    "faucetPrivateKey": "",
+    "gasPrice": 10000,
+    "valueToDispense": 0.1
+}
