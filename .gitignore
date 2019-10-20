@@ -7,6 +7,11 @@ frontend/.next
 frontend/package-lock.json
 frontend/yarn.lock
 "frontend/assets/images/React App_files"
+  
+backend/.idea
+backend/dump.rdb
+backend/target
+backend/Cargo.lock
 
 
 # dependencies
