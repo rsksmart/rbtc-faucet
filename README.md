@@ -39,9 +39,9 @@ yarn dev
 
 ## Debugging with VS Code
 
-Next.js can be started in debug mode by using the --inspect flag like regular Node processes. Remember to start your next process with this flag, as VS Code otherwise won't be able to connect to your Node process and debug your server-side code. The following `launch.json` sets this flag for you, but if you start your Next process in different way, remember to add this flag.
+Next.js can be started in debug mode by using the `--inspect` flag like regular Node processes. Remember to start your `next` process with this flag, as VS Code otherwise won't be able to connect to your Node process and debug your server-side code. The following `launch.json` sets this flag for you, but if you start your Next process in different way, remember to add this flag.
 
-In order to debug with VS Code debugger, setup you *`.vscode/launch.json`* like this
+In order to debug with VS Code debugger, setup you `.vscode/launch.json` like this
 
 ```json
 {
