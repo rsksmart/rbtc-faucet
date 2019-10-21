@@ -43,7 +43,13 @@
   max-width: 40%;
 }
 
+.faucet-button {
+  border-radius: 70px;
+}
 
+.captcha {
+  border-radius: 100px;
+}
 
 
 
