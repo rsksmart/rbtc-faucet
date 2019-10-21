@@ -16,7 +16,6 @@ const handleDispense = async (req: NextApiRequest, res: NextApiResponse): Promis
 
     try{
         faucetNonce = await web3Util.nonceForAddress(config.FAUCET_ADDRESS);
-        console.log('este nonce' + faucetNonce);
     } catch(e) {
         console.error(e);
         res.status(500).end({});
@@ -30,7 +29,8 @@ const handleDispense = async (req: NextApiRequest, res: NextApiResponse): Promis
                 res.status(200).json({ transactionHash: txHash });
             }).on('error', (e: Error) => res.status(400).json({ error: e }));     
     } else {
-        res.status(204).end({}) //if its already dispensed
+        console.log('ya ta')
+        res.status(204).end() //if its already dispensed
     }
 }
 
