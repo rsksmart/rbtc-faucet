@@ -1,21 +1,20 @@
 const assert = require('chai').assert;
 const axios = require('axios');
+const keccak256 = require('keccak256');
 
 const API_URL = require('./../config.json').API_URL;
-const TEST_ADDRESS = "0xC74114b9E84F4c6c7f9c58cA087D38c5212D39bC";
 
 describe('Faucet API', () => {
     describe('/dispense', () => {
-        beforeEach(() => {
-            //reset store
-        })
+        const randomAddress = _ => '0x' + keccak256(Math.random() * Math.random()).toString('hex').substring(0, 40)
+
         describe('# dispensing to a new address', () =>
             it('> should respond 200 and a txHash', async () => {
-                const res = await axios.post(API_URL + '/dispense', { address: TEST_ADDRESS })
+                const res = await axios.post(API_URL + '/dispense', { address: randomAddress() })
 
-                assert.equal(res.status, 200); 
+                assert.equal(200, res.status); 
                 assert.ok(res.data.transactionHash); 
             })
         );
-    })    
+    });
 })
