@@ -3,17 +3,14 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Navbar from "react-bootstrap/Navbar";
 import axios from 'axios';
-import RskUtil from "../utils/rsk-util";
 import '../assets/styles/App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-
-const rskUtil = new RskUtil();
+import { ButtonProps } from 'react-bootstrap';
 
 function App() {
     //Methods
     const handleClick = async () => {
         try {
-            await rskUtil.sendRbtc()
         } catch (e) {
             setFaucetVariant('danger')
         }
@@ -21,13 +18,14 @@ function App() {
    
 
     //Components
-    const FaucetButton = props => {
+    interface FaucetButton {className: string, variant: ButtonProps['variant']}
+    const FaucetButton = (props: FaucetButton) => {
         return <Button variant={props.variant} onClick={() => handleClick()}>Get test RBTC</Button>
     }
 
     //Hooks
-    const [faucetVariant, setFaucetVariant] = useState('success');
-    const [captcha, setCaptcha] = useState({});
+    const [faucetVariant, setFaucetVariant] = useState<any>('success');
+    const [captcha, setCaptcha] = useState({"id": "", "png": ""});
     
     useEffect(() => {
         const fetchCaptcha = async () => {
@@ -35,8 +33,6 @@ function App() {
                 'http://localhost:8080/new/easy/10/100',
             );
         
-            console.log(result.data);
-
             setCaptcha(result.data);
         };
         fetchCaptcha();
@@ -56,14 +52,12 @@ function App() {
                     </Form.Label>
                     <Form.Control type='input' placeholder='Address'/>
                     <br/>
-                    {
-                        captcha == '' ? <></> : <img src={`data:image/png;base64,${captcha.png}`} style={{borderRadius: '100px'}} />
-                    }
+                    <img className="captcha" src={`data:image/png;base64,${captcha.png}`} />
                     <br/>
                     <br/>
                     <Form.Control type='input' placeholder='Captcha'/>  
                     <br/>   
-                    <FaucetButton variant={faucetVariant} style={{borderRadius: '70px'}} />
+                    <FaucetButton className="faucet-button" variant={faucetVariant} />
                 </Form>
             </body>
         </div>
