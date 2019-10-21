@@ -2,15 +2,15 @@
 
 ## Description
 
-RBTC faucet to dispense test RBTC for RSK Testnet.
+Faucet to dispense test RBTC for RSK Testnet.
 
 ## Stack
 
-ARCHITECTURE-DIAGRAM
+*ARCHITECTURE-DIAGRAM*
 
 ## Running development environment
 
-In order to run this environment you'll need to 
+In order to run it you'll need to 
 
 - Setup `config.json` variables
 - Run rust-captcha service
@@ -18,6 +18,8 @@ In order to run this environment you'll need to
 
 
 ### Setup config.json variables
+
+*TODO*
 
 ### Running rust captcha service
 
@@ -72,3 +74,5 @@ Create a debug script at package.json and setup `NODE_OPTIONS` with `--inspect` 
     }
 }
 ```
+
+To get detailed info, please go to [this](https://github.com/microsoft/vscode-recipes/tree/master/Next-js) site.
