@@ -23,7 +23,7 @@ In order to run it you'll need to
 
 ### Running rust captcha service
 
-Please check README.md at captcha/
+Please check [`README.md`](https://github.com/rootstock/rbtc-faucet/tree/master/captcha) at `captcha/`
 
 ### Running Next JS App
 
