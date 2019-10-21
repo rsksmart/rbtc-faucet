@@ -3,6 +3,7 @@ import config from '../../config.json';
 import Tx from 'ethereumjs-tx';
 import Web3 from 'web3';
 import logger from './../../utils/logger';
+import rskjsUtil from 'rskjs-util';
 
 type txParameters = {
     from: string,
@@ -21,10 +22,13 @@ const handleDispense = async (req: NextApiRequest, res: NextApiResponse): Promis
 
     const web3 = new Web3(new Web3.providers.HttpProvider(config.RSK_NODE));
     web3.transactionConfirmationBlocks = 1;
-//    web3.eth.transactionConfirmationBlocks = 1;
+
     const dispenseAddress: string = req.body.address;
-    
-    if(!faucetHistory.hasOwnProperty(dispenseAddress)) {
+
+    if(!rskjsUtil.isValidAddress(dispenseAddress)){
+        logger.warning('provided an invalid address');
+        res.status(409).end()
+    } else if(!faucetHistory.hasOwnProperty(dispenseAddress)) {
         logger.event('dispensing to ' + dispenseAddress);
         
         const txParameters: txParameters = {
