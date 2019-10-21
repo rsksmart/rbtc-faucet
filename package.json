@@ -19,6 +19,7 @@
     "react": "16.10.2",
     "react-bootstrap": "^1.0.0-beta.14",
     "react-dom": "16.10.2",
+    "rskjs-util": "^1.0.3",
     "web3": "1.0.0-beta.55",
     "webpack": "^4.41.2"
   },
@@ -29,6 +30,8 @@
     "@types/react": "^16.9.9",
     "@types/react-bootstrap": "^0.32.20",
     "chai": "^4.2.0",
+    "chalk": "^2.4.2",
+    "keccak256": "^1.0.0",
     "mocha": "^6.2.2",
     "typescript": "^3.6.4"
   }

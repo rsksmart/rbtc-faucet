@@ -1,0 +1,14 @@
+Implementar 
+[] Quitar el store singleton (implementar)
+[] Quitar el web3-util (implementar)
+[] Una vez dispensado se quita el boton de dispensar (implementar)
+[] Job que limpia todos los dias el faucet history (implementar)
+[] Estilos (implementar)
+[] Mas dispenses para cuentas seleccionadas (implementar)
+
+Testing
+[] Que no se puedan mandar mas de un dispense por dia (testear)
+[] Que se envien exacamente la cantidad indicada (testear)
+
+Fix 
+[] Ver por que manda tantos requests el web3
