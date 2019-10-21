@@ -13,7 +13,7 @@ describe('Faucet API', () => {
                 const address = randomAddress(1);
                 const res = await axios.post(API_URL + '/dispense', { address })
 
-                assert.equal(200, res.status); 
+                assert.equal(res.status, 200); 
                 assert.ok(res.data.transactionHash); 
             })
         );
@@ -28,8 +28,18 @@ describe('Faucet API', () => {
                 assert.equal(200, firstResponse.status); 
                 assert.ok(firstResponse.data.transactionHash); 
                 
-                assert.equal(204, secondResponse.status);
-                assert.equal(204, thirdResponse.status);
+                assert.equal(secondResponse.status, 204);
+                assert.equal(thirdResponse.status, 204);
+            })
+        );
+
+        describe('# dispensing to an invalid address', () => 
+            it('shouldn\'t dispense anything', async () => {                
+                try {
+                    await axios.post(API_URL + '/dispense', { address: '0x0' });
+                } catch(e) {
+                    return assert.equal(e.response.status, 409); 
+                }
             })
         );
     });
