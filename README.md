@@ -30,15 +30,15 @@ Please check [README.md](https://github.com/rootstock/rbtc-faucet/tree/master/ca
 First install depenecies
 
 ```bash
-//At root folder
+# At root folder
 
 yarn
 ```
 
 Then run app 
 
-```
-//At root folder
+```bash
+# At root folder
 
 yarn dev
 ```
@@ -49,8 +49,8 @@ Next.js can be started in debug mode by using the `--inspect` flag like regular 
 
 In order to debug with VS Code debugger, setup you *.vscode/launch.json* like this
 
-```json
-//At .vscode/launch.json
+```js
+// At .vscode/launch.json
 
 {
     "version": "0.2.0",
@@ -73,8 +73,8 @@ In order to debug with VS Code debugger, setup you *.vscode/launch.json* like th
 
 Create a debug script at *package.json* and setup `NODE_OPTIONS` with `--inspect` flag.
 
-```json
-//At package.json
+```js
+// At package.json
 
 {
     "scripts": {
