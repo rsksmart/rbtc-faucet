@@ -12,7 +12,7 @@ Faucet to dispense test RBTC for RSK Testnet.
 
 In order to run it you'll need to 
 
-- Setup `config.json` variables
+- Setup *config.json* variables
 - Run rust-captcha service
 - Run Next JS App
 
@@ -23,29 +23,35 @@ In order to run it you'll need to
 
 ### Running rust captcha service
 
-Please check README.md at captcha/
+Please check [README.md](https://github.com/rootstock/rbtc-faucet/tree/master/captcha) at *captcha/*
 
 ### Running Next JS App
 
 First install depenecies
 
 ```bash
+# At root folder
+
 yarn
 ```
 
 Then run app 
 
-```
+```bash
+# At root folder
+
 yarn dev
 ```
 
 ## Debugging with VS Code
 
-Next.js can be started in debug mode by using the `--inspect` flag like regular Node processes. Remember to start your `next` process with this flag, as VS Code otherwise won't be able to connect to your Node process and debug your server-side code. The following `launch.json` sets this flag for you, but if you start your Next process in different way, remember to add this flag.
+Next.js can be started in debug mode by using the `--inspect` flag like regular Node processes. Remember to start your `next` process with this flag, as VS Code otherwise won't be able to connect to your Node process and debug your server-side code. The following *launch.json* sets this flag for you, but if you start your Next process in different way, remember to add this flag.
 
-In order to debug with VS Code debugger, setup you `.vscode/launch.json` like this
+In order to debug with VS Code debugger, setup you *.vscode/launch.json* like this
 
-```json
+```js
+// At .vscode/launch.json
+
 {
     "version": "0.2.0",
     "configurations": [
@@ -65,9 +71,11 @@ In order to debug with VS Code debugger, setup you `.vscode/launch.json` like th
 }
 ```
 
-Create a debug script at package.json and setup `NODE_OPTIONS` with `--inspect` flag.
+Create a debug script at *package.json* and setup `NODE_OPTIONS` with `--inspect` flag.
 
-```json
+```js
+// At package.json
+
 {
     "scripts": {
         "debug": "NODE_OPTIONS=--inspect next"

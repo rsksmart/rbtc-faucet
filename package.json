@@ -23,6 +23,7 @@
     "webpack": "^4.41.2"
   },
   "devDependencies": {
+    "@types/axios": "^0.14.0",
     "@types/ethereumjs-tx": "^1.0.1",
     "@types/node": "^12.11.1",
     "@types/react": "^16.9.9",
