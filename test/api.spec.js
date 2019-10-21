@@ -6,14 +6,30 @@ const API_URL = require('./../config.json').API_URL;
 
 describe('Faucet API', () => {
     describe('/dispense', () => {
-        const randomAddress = _ => '0x' + keccak256(Math.random() * Math.random()).toString('hex').substring(0, 40)
+        const randomAddress = num => '0x' + keccak256(num).toString('hex').substring(0, 40)
 
         describe('# dispensing to a new address', () =>
             it('> should respond 200 and a txHash', async () => {
-                const res = await axios.post(API_URL + '/dispense', { address: randomAddress() })
+                const address = randomAddress(1);
+                const res = await axios.post(API_URL + '/dispense', { address })
 
                 assert.equal(200, res.status); 
                 assert.ok(res.data.transactionHash); 
+            })
+        );
+
+        describe('# dispensing more than one time to an address', () => 
+            it('should only dispense the first time and then respond 204', async () => {
+                const address = randomAddress(2);
+                const firstResponse = await axios.post(API_URL + '/dispense', { address });
+                const secondResponse = await axios.post(API_URL + '/dispense', { address });
+                const thirdResponse = await axios.post(API_URL + '/dispense', { address });
+
+                assert.equal(200, firstResponse.status); 
+                assert.ok(firstResponse.data.transactionHash); 
+                
+                assert.equal(204, secondResponse.status);
+                assert.equal(204, thirdResponse.status);
             })
         );
     });
