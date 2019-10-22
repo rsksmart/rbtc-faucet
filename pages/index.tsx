@@ -26,6 +26,7 @@ function App() {
     //Hooks
     const [faucetVariant, setFaucetVariant] = useState<any>('success');
     const [captcha, setCaptcha] = useState({"id": "", "png": ""});
+    const [token, setToken] = useState('');
     
     useEffect(() => {
         const fetchCaptcha = async () => {
@@ -55,7 +56,7 @@ function App() {
                     <img className="captcha" src={`data:image/png;base64,${captcha.png}`} />
                     <br/>
                     <br/>
-                    <Form.Control type='input' placeholder='Captcha'/>  
+                    <Form.Control className="captcha-input" type='input' placeholder='Captcha'/>  
                     <br/>   
                     <FaucetButton className="faucet-button" variant={faucetVariant} />
                 </Form>
