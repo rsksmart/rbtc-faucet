@@ -4,7 +4,7 @@ import Tx from 'ethereumjs-tx';
 import Web3 from 'web3';
 import logger from './../../utils/logger';
 import rskjsUtil from 'rskjs-util';
-import { FaucetHistory, TxParameters } from '../../types.js';
+import { TxParameters, FaucetHistory } from '../../types.js';
 
 let faucetHistory: FaucetHistory  = {}
 
@@ -19,6 +19,11 @@ const handleDispense = async (req: NextApiRequest, res: NextApiResponse): Promis
         mainnet: <boolean> rskjsUtil.isValidChecksumAddress(dispenseAddress, 30),
         testnet: <boolean> rskjsUtil.isValidChecksumAddress(dispenseAddress, 31)
     }
+    const resetFaucetHistory: boolean = req.body.resetFaucetHistory;
+
+    if(resetFaucetHistory) { //don't know if this could be productive but i'm using it for testing
+        faucetHistory = {};
+    } 
 
     if(!rskjsUtil.isValidAddress(dispenseAddress)){
         logger.warning('provided an invalid address');
