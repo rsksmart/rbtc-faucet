@@ -1,0 +1,38 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+#Custom
+.idea/
+node_modules
+.next
+package-lock.json
+yarn.lock
+"assets/images/React App_files"
+.vscode/
+  
+captcha/.idea
+captcha/dump.rdb
+captcha/target
+captcha/Cargo.lock
+
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
+
+# testing
+/coverage
+
+# production
+/build
+
+# misc
+.DS_Store
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*

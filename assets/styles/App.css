@@ -3,11 +3,10 @@
   height: 100vh;
 }
 
-.background{
+.background {
   background: url('./../images/leaves.jpg') !important;
   background-size: cover !important;
 }
-
 
 .app-body {
   min-height: 100vh;
@@ -24,7 +23,7 @@
 .logo {
   content: url('./../images/rsk_logo.svg');
   height: fit-content;
-  padding:30px;
+  padding: 30px;
 }
 
 .navbar-rsk {
@@ -43,16 +42,11 @@
   width: 60% !important;
 }
 
-.col-centered{
+.col-centered {
   float: none;
   margin: 0 auto;
 }
 
-
-
-
-
-
-
-
-
+.background-modal {
+  background: #79554857;
+}
