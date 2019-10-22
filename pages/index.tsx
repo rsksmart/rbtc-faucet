@@ -5,7 +5,7 @@ import Navbar from "react-bootstrap/Navbar";
 import axios from 'axios';
 import '../assets/styles/App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { ButtonProps } from 'react-bootstrap';
+import { ButtonProps, Row, Container, Col } from 'react-bootstrap';
 
 function App() {
     //Methods
@@ -18,7 +18,7 @@ function App() {
    
 
     //Components
-    interface FaucetButton {className: string, variant: ButtonProps['variant']}
+    interface FaucetButton {variant: ButtonProps['variant']}
     const FaucetButton = (props: FaucetButton) => {
         return <Button variant={props.variant} onClick={() => handleClick()}>Get test RBTC</Button>
     }
@@ -47,19 +47,39 @@ function App() {
                 </Navbar.Brand>
             </Navbar>
             <body className="app-body">
-                <Form >
-                    <Form.Label >
-                        Enter your testnet address or RNS name
-                    </Form.Label>
-                    <Form.Control type='input' placeholder='Address'/>
+                <Container className="faucet-container">
+                    <Row>
+                        <Col className="col-centerer">
+                            <Form.Label >
+                                Enter your testnet address or RNS name
+                            </Form.Label>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col className="col-centered">
+                            <Form.Control type='input' placeholder='Address'/>
+                        </Col>
+                    </Row>
                     <br/>
-                    <img className="captcha" src={`data:image/png;base64,${captcha.png}`} />
+                    <Row>
+                        <Col className="col-centered">
+                            <img className="captcha-image" src={`data:image/png;base64,${captcha.png}`} />
+                        </Col>
+                    </Row>
                     <br/>
                     <br/>
-                    <Form.Control className="captcha-input" type='input' placeholder='Captcha'/>  
-                    <br/>   
-                    <FaucetButton className="faucet-button" variant={faucetVariant} />
-                </Form>
+                    <Row>
+                        <Col className="col-centered">
+                            <Form.Control className="faucet-input" type='input' placeholder='Captcha'/>  
+                        </Col>
+                    </Row>
+                    <br/>
+                    <Row>
+                        <Col className="col-centered">
+                            <FaucetButton variant={faucetVariant} />    
+                        </Col>
+                    </Row>   
+                </Container>
             </body>
         </div>
     );

@@ -8,9 +8,6 @@
   background-size: cover !important;
 }
 
-.App-logo {
-  height: 40vmin;
-}
 
 .app-body {
   min-height: 100vh;
@@ -30,34 +27,26 @@
   padding:30px;
 }
 
-.rskAddress{
-  width: 300px;
-  text-align: center;
-}
-
 .navbar-rsk {
   height: 5%;
-}
-
-.small {
-  max-width: 40%;
 }
 
 .faucet-button {
   border-radius: 70px;
 }
 
-.captcha {
+.captcha-image {
   border-radius: 100px;
 }
 
-.captcha-input {
-  width: 50% !important;
-  margin-left: 24%;
+.faucet-container {
+  width: 60% !important;
 }
 
-
-
+.col-centered{
+  float: none;
+  margin: 0 auto;
+}
 
 
 
