@@ -1,0 +1,1626 @@
+
+{
+  "Report": {
+    "Vulnerabilities": [
+      {
+        "Name": "CVE-2019-12904",
+        "NamespaceName": "ubuntu:18.04",
+        "Description": "In Libgcrypt 1.8.4, the C implementation of AES is vulnerable to a flush-and-reload side-channel attack because physical addresses are available to other processes. (The C implementation is used on platforms where an assembly-language implementation is unavailable.)",
+        "Link": "http://people.ubuntu.com/~ubuntu-security/cve/CVE-2019-12904",
+        "Severity": "Medium",
+        "Metadata": {
+          "NVD": {
+            "CVSSv2": {
+              "Score": 4.3,
+              "Vectors": "AV:N/AC:M/Au:N/C:P/I:N"
+            }
+          }
+        },
+        "Packages": [
+          {
+            "Name": "libgcrypt20",
+            "Version": "1.8.1-4ubuntu1.1"
+          }
+        ]
+      },
+      {
+        "Name": "CVE-2019-13627",
+        "NamespaceName": "ubuntu:18.04",
+        "Description": "It was discovered that there was a ECDSA timing attack in the libgcrypt20 cryptographic library. Version affected: 1.8.4-5, 1.7.6-2+deb9u3, and 1.6.3-2+deb8u4. Versions fixed: 1.8.5-2 and 1.6.3-2+deb8u7.",
+        "Link": "http://people.ubuntu.com/~ubuntu-security/cve/CVE-2019-13627",
+        "Severity": "Medium",
+        "Packages": [
+          {
+            "Name": "libgcrypt20",
+            "Version": "1.8.1-4ubuntu1.1"
+          }
+        ]
+      },
+      {
+        "Name": "CVE-2018-20839",
+        "NamespaceName": "ubuntu:18.04",
+        "Description": "systemd 242 changes the VT1 mode upon a logout, which allows attackers to read cleartext passwords in certain circumstances, such as watching a shutdown, or using Ctrl-Alt-F1 and Ctrl-Alt-F2. This occurs because the KDGKBMODE (aka current keyboard mode) check is mishandled.",
+        "Link": "http://people.ubuntu.com/~ubuntu-security/cve/CVE-2018-20839",
+        "Severity": "Medium",
+        "Metadata": {
+          "NVD": {
+            "CVSSv2": {
+              "Score": 5,
+              "Vectors": "AV:N/AC:L/Au:N/C:P/I:N"
+            }
+          }
+        },
+        "Packages": [
+          {
+            "Name": "systemd",
+            "Version": "237-3ubuntu10.31"
+          }
+        ]
+      },
+      {
+        "Name": "CVE-2019-14444",
+        "NamespaceName": "ubuntu:18.04",
+        "Description": "apply_relocations in readelf.c in GNU Binutils 2.32 contains an integer overflow that allows attackers to trigger a write access violation (in byte_put_little_endian function in elfcomm.c) via an ELF file, as demonstrated by readelf.",
+        "Link": "http://people.ubuntu.com/~ubuntu-security/cve/CVE-2019-14444",
+        "Severity": "Medium",
+        "Metadata": {
+          "NVD": {
+            "CVSSv2": {
+              "Score": 4.3,
+              "Vectors": "AV:N/AC:M/Au:N/C:N/I:N"
+            }
+          }
+        },
+        "Packages": [
+          {
+            "Name": "binutils",
+            "Version": "2.30-21ubuntu1~18.04.2"
+          }
+        ]
+      },
+      {
+        "Name": "CVE-2019-13050",
+        "NamespaceName": "ubuntu:18.04",
+        "Description": "Interaction between the sks-keyserver code through 1.2.0 of the SKS keyserver network, and GnuPG through 2.2.16, makes it risky to have a GnuPG keyserver configuration line referring to a host on the SKS keyserver network. Retrieving data from this network may cause a persistent denial of service, because of a Certificate Spamming Attack.",
+        "Link": "http://people.ubuntu.com/~ubuntu-security/cve/CVE-2019-13050",
+        "Severity": "Medium",
+        "Metadata": {
+          "NVD": {
+            "CVSSv2": {
+              "Score": 5,
+              "Vectors": "AV:N/AC:L/Au:N/C:N/I:N"
+            }
+          }
+        },
+        "Packages": [
+          {
+            "Name": "gnupg2",
+            "Version": "2.2.4-1ubuntu1.2"
+          }
+        ]
+      },
+      {
+        "Name": "CVE-2019-9511",
+        "NamespaceName": "ubuntu:18.04",
+        "Description": "Some HTTP/2 implementations are vulnerable to window size manipulation and stream prioritization manipulation, potentially leading to a denial of service. The attacker requests a large amount of data from a specified resource over multiple streams. They manipulate window size and stream priority to force the server to queue the data in 1-byte chunks. Depending on how efficiently this data is queued, this can consume excess CPU, memory, or both.",
+        "Link": "http://people.ubuntu.com/~ubuntu-security/cve/CVE-2019-9511",
+        "Severity": "Medium",
+        "Packages": [
+          {
+            "Name": "nghttp2",
+            "Version": "1.30.0-1ubuntu1"
+          }
+        ]
+      },
+      {
+        "Name": "CVE-2019-9513",
+        "NamespaceName": "ubuntu:18.04",
+        "Description": "Some HTTP/2 implementations are vulnerable to resource loops, potentially leading to a denial of service. The attacker creates multiple request streams and continually shuffles the priority of the streams in a way that causes substantial churn to the priority tree. This can consume excess CPU.",
+        "Link": "http://people.ubuntu.com/~ubuntu-security/cve/CVE-2019-9513",
+        "Severity": "Medium",
+        "Packages": [
+          {
+            "Name": "nghttp2",
+            "Version": "1.30.0-1ubuntu1"
+          }
+        ]
+      },
+      {
+        "Name": "CVE-2018-11237",
+        "NamespaceName": "ubuntu:18.04",
+        "Description": "An AVX-512-optimized implementation of the mempcpy function in the GNU C Library (aka glibc or libc6) 2.27 and earlier may write data beyond the target buffer, leading to a buffer overflow in __mempcpy_avx512_no_vzeroupper.",
+        "Link": "http://people.ubuntu.com/~ubuntu-security/cve/CVE-2018-11237",
+        "Severity": "Medium",
+        "Metadata": {
+          "NVD": {
+            "CVSSv2": {
+              "Score": 4.6,
+              "Vectors": "AV:L/AC:L/Au:N/C:P/I:P"
+            }
+          }
+        },
+        "Packages": [
+          {
+            "Name": "glibc",
+            "Version": "2.27-3ubuntu1"
+          }
+        ]
+      },
+      {
+        "Name": "CVE-2019-13224",
+        "NamespaceName": "ubuntu:18.04",
+        "Description": "A use-after-free in onig_new_deluxe() in regext.c in Oniguruma 6.9.2 allows attackers to potentially cause information disclosure, denial of service, or possibly code execution by providing a crafted regular expression. The attacker provides a pair of a regex pattern and a string, with a multi-byte encoding that gets handled by onig_new_deluxe(). Oniguruma issues often affect Ruby, as well as common optional libraries for PHP and Rust.",
+        "Link": "http://people.ubuntu.com/~ubuntu-security/cve/CVE-2019-13224",
+        "Severity": "Medium",
+        "Metadata": {
+          "NVD": {
+            "CVSSv2": {
+              "Score": 7.5,
+              "Vectors": "AV:N/AC:L/Au:N/C:P/I:P"
+            }
+          }
+        },
+        "Packages": [
+          {
+            "Name": "libonig",
+            "Version": "6.7.0-1"
+          }
+        ]
+      },
+      {
+        "Name": "CVE-2019-16163",
+        "NamespaceName": "ubuntu:18.04",
+        "Description": "Oniguruma before 6.9.3 allows Stack Exhaustion in regcomp.c because of recursion in regparse.c.",
+        "Link": "http://people.ubuntu.com/~ubuntu-security/cve/CVE-2019-16163",
+        "Severity": "Medium",
+        "Packages": [
+          {
+            "Name": "libonig",
+            "Version": "6.7.0-1"
+          }
+        ]
+      },
+      {
+        "Name": "CVE-2018-11236",
+        "NamespaceName": "ubuntu:18.04",
+        "Description": "stdlib/canonicalize.c in the GNU C Library (aka glibc or libc6) 2.27 and earlier, when processing very long pathname arguments to the realpath function, could encounter an integer overflow on 32-bit architectures, leading to a stack-based buffer overflow and, potentially, arbitrary code execution.",
+        "Link": "http://people.ubuntu.com/~ubuntu-security/cve/CVE-2018-11236",
+        "Severity": "Medium",
+        "Metadata": {
+          "NVD": {
+            "CVSSv2": {
+              "Score": 7.5,
+              "Vectors": "AV:N/AC:L/Au:N/C:P/I:P"
+            }
+          }
+        },
+        "Packages": [
+          {
+            "Name": "glibc",
+            "Version": "2.27-3ubuntu1"
+          }
+        ]
+      },
+      {
+        "Name": "CVE-2018-20217",
+        "NamespaceName": "ubuntu:18.04",
+        "Description": "A Reachable Assertion issue was discovered in the KDC in MIT Kerberos 5 (aka krb5) before 1.17. If an attacker can obtain a krbtgt ticket using an older encryption type (single-DES, triple-DES, or RC4), the attacker can crash the KDC by making an S4U2Self request.",
+        "Link": "http://people.ubuntu.com/~ubuntu-security/cve/CVE-2018-20217",
+        "Severity": "Medium",
+        "Metadata": {
+          "NVD": {
+            "CVSSv2": {
+              "Score": 3.5,
+              "Vectors": "AV:N/AC:M/Au:S/C:N/I:N"
+            }
+          }
+        },
+        "Packages": [
+          {
+            "Name": "krb5",
+            "Version": "1.16-2ubuntu0.1"
+          }
+        ]
+      },
+      {
+        "Name": "CVE-2018-19591",
+        "NamespaceName": "ubuntu:18.04",
+        "Description": "In the GNU C Library (aka glibc or libc6) through 2.28, attempting to resolve a crafted hostname via getaddrinfo() leads to the allocation of a socket descriptor that is not closed. This is related to the if_nametoindex() function.",
+        "Link": "http://people.ubuntu.com/~ubuntu-security/cve/CVE-2018-19591",
+        "Severity": "Medium",
+        "Metadata": {
+          "NVD": {
+            "CVSSv2": {
+              "Score": 5,
+              "Vectors": "AV:N/AC:L/Au:N/C:N/I:N"
+            }
+          }
+        },
+        "Packages": [
+          {
+            "Name": "glibc",
+            "Version": "2.27-3ubuntu1"
+          }
+        ]
+      },
+      {
+        "Name": "CVE-2017-13716",
+        "NamespaceName": "ubuntu:18.04",
+        "Description": "The C++ symbol demangler routine in cplus-dem.c in libiberty, as distributed in GNU Binutils 2.29, allows remote attackers to cause a denial of service (excessive memory allocation and application crash) via a crafted file, as demonstrated by a call from the Binary File Descriptor (BFD) library (aka libbfd).",
+        "Link": "http://people.ubuntu.com/~ubuntu-security/cve/CVE-2017-13716",
+        "Severity": "Low",
+        "Metadata": {
+          "NVD": {
+            "CVSSv2": {
+              "Score": 7.1,
+              "Vectors": "AV:N/AC:M/Au:N/C:N/I:N"
+            }
+          }
+        },
+        "Packages": [
+          {
+            "Name": "binutils",
+            "Version": "2.30-21ubuntu1~18.04.2"
+          }
+        ]
+      },
+      {
+        "Name": "CVE-2013-4235",
+        "NamespaceName": "ubuntu:18.04",
+        "Description": "TOCTOU race conditions by copying and removing directory trees",
+        "Link": "http://people.ubuntu.com/~ubuntu-security/cve/CVE-2013-4235",
+        "Severity": "Low",
+        "Packages": [
+          {
+            "Name": "shadow",
+            "Version": "1:4.5-1ubuntu2"
+          }
+        ]
+      },
+      {
+        "Name": "CVE-2018-1000021",
+        "NamespaceName": "ubuntu:18.04",
+        "Description": "GIT version 2.15.1 and earlier contains a Input Validation Error vulnerability in Client that can result in problems including messing up terminal configuration to RCE. This attack appear to be exploitable via The user must interact with a malicious git server, (or have their traffic modified in a MITM attack).",
+        "Link": "http://people.ubuntu.com/~ubuntu-security/cve/CVE-2018-1000021",
+        "Severity": "Low",
+        "Metadata": {
+          "NVD": {
+            "CVSSv2": {
+              "Score": 6.8,
+              "Vectors": "AV:N/AC:M/Au:N/C:P/I:P"
+            }
+          }
+        },
+        "Packages": [
+          {
+            "Name": "git",
+            "Version": "1:2.17.1-1ubuntu0.4"
+          }
+        ]
+      },
+      {
+        "Name": "CVE-2018-19931",
+        "NamespaceName": "ubuntu:18.04",
+        "Description": "An issue was discovered in the Binary File Descriptor (BFD) library (aka libbfd), as distributed in GNU Binutils through 2.31. There is a heap-based buffer overflow in bfd_elf32_swap_phdr_in in elfcode.h because the number of program headers is not restricted.",
+        "Link": "http://people.ubuntu.com/~ubuntu-security/cve/CVE-2018-19931",
+        "Severity": "Low",
+        "Metadata": {
+          "NVD": {
+            "CVSSv2": {
+              "Score": 6.8,
+              "Vectors": "AV:N/AC:M/Au:N/C:P/I:P"
+            }
+          }
+        },
+        "Packages": [
+          {
+            "Name": "binutils",
+            "Version": "2.30-21ubuntu1~18.04.2"
+          }
+        ]
+      },
+      {
+        "Name": "CVE-2018-18484",
+        "NamespaceName": "ubuntu:18.04",
+        "Description": "An issue was discovered in cp-demangle.c in GNU libiberty, as distributed in GNU Binutils 2.31. Stack Exhaustion occurs in the C++ demangling functions provided by libiberty, and there is a stack consumption problem caused by recursive stack frames: cplus_demangle_type, d_bare_function_type, d_function_type.",
+        "Link": "http://people.ubuntu.com/~ubuntu-security/cve/CVE-2018-18484",
+        "Severity": "Low",
+        "Metadata": {
+          "NVD": {
+            "CVSSv2": {
+              "Score": 4.3,
+              "Vectors": "AV:N/AC:M/Au:N/C:N/I:N"
+            }
+          }
+        },
+        "Packages": [
+          {
+            "Name": "binutils",
+            "Version": "2.30-21ubuntu1~18.04.2"
+          }
+        ]
+      },
+      {
+        "Name": "CVE-2018-19932",
+        "NamespaceName": "ubuntu:18.04",
+        "Description": "An issue was discovered in the Binary File Descriptor (BFD) library (aka libbfd), as distributed in GNU Binutils through 2.31. There is an integer overflow and infinite loop caused by the IS_CONTAINED_BY_LMA macro in elf.c.",
+        "Link": "http://people.ubuntu.com/~ubuntu-security/cve/CVE-2018-19932",
+        "Severity": "Low",
+        "Metadata": {
+          "NVD": {
+            "CVSSv2": {
+              "Score": 4.3,
+              "Vectors": "AV:N/AC:M/Au:N/C:N/I:N"
+            }
+          }
+        },
+        "Packages": [
+          {
+            "Name": "binutils",
+            "Version": "2.30-21ubuntu1~18.04.2"
+          }
+        ]
+      },
+      {
+        "Name": "CVE-2018-18309",
+        "NamespaceName": "ubuntu:18.04",
+        "Description": "An issue was discovered in the Binary File Descriptor (BFD) library (aka libbfd), as distributed in GNU Binutils 2.31. An invalid memory address dereference was discovered in read_reloc in reloc.c. The vulnerability causes a segmentation fault and application crash, which leads to denial of service, as demonstrated by objdump, because of missing _bfd_clear_contents bounds checking.",
+        "Link": "http://people.ubuntu.com/~ubuntu-security/cve/CVE-2018-18309",
+        "Severity": "Low",
+        "Metadata": {
+          "NVD": {
+            "CVSSv2": {
+              "Score": 4.3,
+              "Vectors": "AV:N/AC:M/Au:N/C:N/I:N"
+            }
+          }
+        },
+        "Packages": [
+          {
+            "Name": "binutils",
+            "Version": "2.30-21ubuntu1~18.04.2"
+          }
+        ]
+      },
+      {
+        "Name": "CVE-2018-17794",
+        "NamespaceName": "ubuntu:18.04",
+        "Description": "An issue was discovered in cplus-dem.c in GNU libiberty, as distributed in GNU Binutils 2.31. There is a NULL pointer dereference in work_stuff_copy_to_from when called from iterate_demangle_function.",
+        "Link": "http://people.ubuntu.com/~ubuntu-security/cve/CVE-2018-17794",
+        "Severity": "Low",
+        "Metadata": {
+          "NVD": {
+            "CVSSv2": {
+              "Score": 4.3,
+              "Vectors": "AV:N/AC:M/Au:N/C:N/I:N"
+            }
+          }
+        },
+        "Packages": [
+          {
+            "Name": "binutils",
+            "Version": "2.30-21ubuntu1~18.04.2"
+          }
+        ]
+      },
+      {
+        "Name": "CVE-2015-8985",
+        "NamespaceName": "ubuntu:18.04",
+        "Description": "The pop_fail_stack function in the GNU C Library (aka glibc or libc6) allows context-dependent attackers to cause a denial of service (assertion failure and application crash) via vectors related to extended regular expression processing.",
+        "Link": "http://people.ubuntu.com/~ubuntu-security/cve/CVE-2015-8985",
+        "Severity": "Low",
+        "Metadata": {
+          "NVD": {
+            "CVSSv2": {
+              "Score": 4.3,
+              "Vectors": "AV:N/AC:M/Au:N/C:N/I:N"
+            }
+          }
+        },
+        "Packages": [
+          {
+            "Name": "glibc",
+            "Version": "2.27-3ubuntu1"
+          }
+        ]
+      },
+      {
+        "Name": "CVE-2019-1549",
+        "NamespaceName": "ubuntu:18.04",
+        "Description": "OpenSSL 1.1.1 introduced a rewritten random number generator (RNG). This was intended to include protection in the event of a fork() system call in order to ensure that the parent and child processes did not share the same RNG state. However this protection was not being used in the default case. A partial mitigation for this issue is that the output from a high precision timer is mixed into the RNG state so the likelihood of a parent and child process sharing state is significantly reduced. If an application already calls OPENSSL_init_crypto() explicitly using OPENSSL_INIT_ATFORK then this problem does not occur at all. Fixed in OpenSSL 1.1.1d (Affected 1.1.1-1.1.1c).",
+        "Link": "http://people.ubuntu.com/~ubuntu-security/cve/CVE-2019-1549",
+        "Severity": "Low",
+        "Packages": [
+          {
+            "Name": "openssl",
+            "Version": "1.1.1-1ubuntu2.1~18.04.4"
+          }
+        ]
+      },
+      {
+        "Name": "CVE-2018-17985",
+        "NamespaceName": "ubuntu:18.04",
+        "Description": "An issue was discovered in cp-demangle.c in GNU libiberty, as distributed in GNU Binutils 2.31. There is a stack consumption problem caused by the cplus_demangle_type function making recursive calls to itself in certain scenarios involving many 'P' characters.",
+        "Link": "http://people.ubuntu.com/~ubuntu-security/cve/CVE-2018-17985",
+        "Severity": "Low",
+        "Metadata": {
+          "NVD": {
+            "CVSSv2": {
+              "Score": 4.3,
+              "Vectors": "AV:N/AC:M/Au:N/C:N/I:N"
+            }
+          }
+        },
+        "Packages": [
+          {
+            "Name": "binutils",
+            "Version": "2.30-21ubuntu1~18.04.2"
+          }
+        ]
+      },
+      {
+        "Name": "CVE-2017-14159",
+        "NamespaceName": "ubuntu:18.04",
+        "Description": "slapd in OpenLDAP 2.4.45 and earlier creates a PID file after dropping privileges to a non-root account, which might allow local users to kill arbitrary processes by leveraging access to this non-root account for PID file modification before a root script executes a \"kill `cat /pathname`\" command, as demonstrated by openldap-initscript.",
+        "Link": "http://people.ubuntu.com/~ubuntu-security/cve/CVE-2017-14159",
+        "Severity": "Low",
+        "Metadata": {
+          "NVD": {
+            "CVSSv2": {
+              "Score": 1.9,
+              "Vectors": "AV:L/AC:M/Au:N/C:N/I:N"
+            }
+          }
+        },
+        "Packages": [
+          {
+            "Name": "openldap",
+            "Version": "2.4.45+dfsg-1ubuntu1.4"
+          }
+        ]
+      },
+      {
+        "Name": "CVE-2019-12098",
+        "NamespaceName": "ubuntu:18.04",
+        "Description": "In the client side of Heimdal before 7.6.0, failure to verify anonymous PKINIT PA-PKINIT-KX key exchange permits a man-in-the-middle attack. This issue is in krb5_init_creds_step in lib/krb5/init_creds_pw.c.",
+        "Link": "http://people.ubuntu.com/~ubuntu-security/cve/CVE-2019-12098",
+        "Severity": "Low",
+        "Metadata": {
+          "NVD": {
+            "CVSSv2": {
+              "Score": 5.8,
+              "Vectors": "AV:N/AC:M/Au:N/C:P/I:P"
+            }
+          }
+        },
+        "Packages": [
+          {
+            "Name": "heimdal",
+            "Version": "7.5.0+dfsg-1"
+          }
+        ]
+      },
+      {
+        "Name": "CVE-2018-10534",
+        "NamespaceName": "ubuntu:18.04",
+        "Description": "The _bfd_XX_bfd_copy_private_bfd_data_common function in peXXigen.c in the Binary File Descriptor (BFD) library (aka libbfd), as distributed in GNU Binutils 2.30, processes a negative Data Directory size with an unbounded loop that increases the value of (external_IMAGE_DEBUG_DIRECTORY) *edd so that the address exceeds its own memory region, resulting in an out-of-bounds memory write, as demonstrated by objcopy copying private info with _bfd_pex64_bfd_copy_private_bfd_data_common in pex64igen.c.",
+        "Link": "http://people.ubuntu.com/~ubuntu-security/cve/CVE-2018-10534",
+        "Severity": "Low",
+        "Metadata": {
+          "NVD": {
+            "CVSSv2": {
+              "Score": 4.3,
+              "Vectors": "AV:N/AC:M/Au:N/C:N/I:N"
+            }
+          }
+        },
+        "Packages": [
+          {
+            "Name": "binutils",
+            "Version": "2.30-21ubuntu1~18.04.2"
+          }
+        ]
+      },
+      {
+        "Name": "CVE-2017-11164",
+        "NamespaceName": "ubuntu:18.04",
+        "Description": "In PCRE 8.41, the OP_KETRMAX feature in the match function in pcre_exec.c allows stack exhaustion (uncontrolled recursion) when processing a crafted regular expression.",
+        "Link": "http://people.ubuntu.com/~ubuntu-security/cve/CVE-2017-11164",
+        "Severity": "Low",
+        "Metadata": {
+          "NVD": {
+            "CVSSv2": {
+              "Score": 7.8,
+              "Vectors": "AV:N/AC:L/Au:N/C:N/I:N"
+            }
+          }
+        },
+        "Packages": [
+          {
+            "Name": "pcre3",
+            "Version": "2:8.39-9"
+          }
+        ]
+      },
+      {
+        "Name": "CVE-2009-5155",
+        "NamespaceName": "ubuntu:18.04",
+        "Description": "In the GNU C Library (aka glibc or libc6) before 2.28, parse_reg_exp in posix/regcomp.c misparses alternatives, which allows attackers to cause a denial of service (assertion failure and application exit) or trigger an incorrect result by attempting a regular-expression match.",
+        "Link": "http://people.ubuntu.com/~ubuntu-security/cve/CVE-2009-5155",
+        "Severity": "Low",
+        "Metadata": {
+          "NVD": {
+            "CVSSv2": {
+              "Score": 5,
+              "Vectors": "AV:N/AC:L/Au:N/C:N/I:N"
+            }
+          }
+        },
+        "Packages": [
+          {
+            "Name": "glibc",
+            "Version": "2.27-3ubuntu1"
+          }
+        ]
+      },
+      {
+        "Name": "CVE-2019-3844",
+        "NamespaceName": "ubuntu:18.04",
+        "Description": "It was discovered that a systemd service that uses DynamicUser property can get new privileges through the execution of SUID binaries, which would allow to create binaries owned by the service transient group with the setgid bit set. A local attacker may use this flaw to access resources that will be owned by a potentially different service in the future, when the GID will be recycled.",
+        "Link": "http://people.ubuntu.com/~ubuntu-security/cve/CVE-2019-3844",
+        "Severity": "Low",
+        "Metadata": {
+          "NVD": {
+            "CVSSv2": {
+              "Score": 4.6,
+              "Vectors": "AV:L/AC:L/Au:N/C:P/I:P"
+            }
+          }
+        },
+        "Packages": [
+          {
+            "Name": "systemd",
+            "Version": "237-3ubuntu10.31"
+          }
+        ]
+      },
+      {
+        "Name": "CVE-2019-3843",
+        "NamespaceName": "ubuntu:18.04",
+        "Description": "It was discovered that a systemd service that uses DynamicUser property can create a SUID/SGID binary that would be allowed to run as the transient service UID/GID even after the service is terminated. A local attacker may use this flaw to access resources that will be owned by a potentially different service in the future, when the UID/GID will be recycled.",
+        "Link": "http://people.ubuntu.com/~ubuntu-security/cve/CVE-2019-3843",
+        "Severity": "Low",
+        "Metadata": {
+          "NVD": {
+            "CVSSv2": {
+              "Score": 4.6,
+              "Vectors": "AV:L/AC:L/Au:N/C:P/I:P"
+            }
+          }
+        },
+        "Packages": [
+          {
+            "Name": "systemd",
+            "Version": "237-3ubuntu10.31"
+          }
+        ]
+      },
+      {
+        "Name": "CVE-2019-1543",
+        "NamespaceName": "ubuntu:18.04",
+        "Description": "ChaCha20-Poly1305 is an AEAD cipher, and requires a unique nonce input for every encryption operation. RFC 7539 specifies that the nonce value (IV) should be 96 bits (12 bytes). OpenSSL allows a variable nonce length and front pads the nonce with 0 bytes if it is less than 12 bytes. However it also incorrectly allows a nonce to be set of up to 16 bytes. In this case only the last 12 bytes are significant and any additional leading bytes are ignored. It is a requirement of using this cipher that nonce values are unique. Messages encrypted using a reused nonce value are susceptible to serious confidentiality and integrity attacks. If an application changes the default nonce length to be longer than 12 bytes and then makes a change to the leading bytes of the nonce expecting the new value to be a new unique nonce then such an application could inadvertently encrypt messages with a reused nonce. Additionally the ignored bytes in a long nonce are not covered by the integrity guarantee of this cipher. Any application that relies on the integrity of these ignored leading bytes of a long nonce may be further affected. Any OpenSSL internal use of this cipher, including in SSL/TLS, is safe because no such use sets such a long nonce value. However user applications that use this cipher directly and set a non-default nonce length to be longer than 12 bytes may be vulnerable. OpenSSL versions 1.1.1 and 1.1.0 are affected by this issue. Due to the limited scope of affected deployments this has been assessed as low severity and therefore we are not creating new releases at this time. Fixed in OpenSSL 1.1.1c (Affected 1.1.1-1.1.1b). Fixed in OpenSSL 1.1.0k (Affected 1.1.0-1.1.0j).",
+        "Link": "http://people.ubuntu.com/~ubuntu-security/cve/CVE-2019-1543",
+        "Severity": "Low",
+        "Metadata": {
+          "NVD": {
+            "CVSSv2": {
+              "Score": 5.8,
+              "Vectors": "AV:N/AC:M/Au:N/C:P/I:P"
+            }
+          }
+        },
+        "Packages": [
+          {
+            "Name": "openssl",
+            "Version": "1.1.1-1ubuntu2.1~18.04.4"
+          }
+        ]
+      },
+      {
+        "Name": "CVE-2019-16168",
+        "NamespaceName": "ubuntu:18.04",
+        "Description": "In SQLite through 3.29.0, whereLoopAddBtreeIndex in sqlite3.c can crash a browser or other application because of missing validation of a sqlite_stat1 sz field, aka a \"severe division by zero in the query planner.\"",
+        "Link": "http://people.ubuntu.com/~ubuntu-security/cve/CVE-2019-16168",
+        "Severity": "Low",
+        "Packages": [
+          {
+            "Name": "sqlite3",
+            "Version": "3.22.0-1ubuntu0.1"
+          }
+        ]
+      },
+      {
+        "Name": "CVE-2018-20651",
+        "NamespaceName": "ubuntu:18.04",
+        "Description": "A NULL pointer dereference was discovered in elf_link_add_object_symbols in elflink.c in the Binary File Descriptor (BFD) library (aka libbfd), as distributed in GNU Binutils 2.31.1. This occurs for a crafted ET_DYN with no program headers. A specially crafted ELF file allows remote attackers to cause a denial of service, as demonstrated by ld.",
+        "Link": "http://people.ubuntu.com/~ubuntu-security/cve/CVE-2018-20651",
+        "Severity": "Low",
+        "Metadata": {
+          "NVD": {
+            "CVSSv2": {
+              "Score": 4.3,
+              "Vectors": "AV:N/AC:M/Au:N/C:N/I:N"
+            }
+          }
+        },
+        "Packages": [
+          {
+            "Name": "binutils",
+            "Version": "2.30-21ubuntu1~18.04.2"
+          }
+        ]
+      },
+      {
+        "Name": "CVE-2018-10372",
+        "NamespaceName": "ubuntu:18.04",
+        "Description": "process_cu_tu_index in dwarf.c in GNU Binutils 2.30 allows remote attackers to cause a denial of service (heap-based buffer over-read and application crash) via a crafted binary file, as demonstrated by readelf.",
+        "Link": "http://people.ubuntu.com/~ubuntu-security/cve/CVE-2018-10372",
+        "Severity": "Low",
+        "Metadata": {
+          "NVD": {
+            "CVSSv2": {
+              "Score": 4.3,
+              "Vectors": "AV:N/AC:M/Au:N/C:N/I:N"
+            }
+          }
+        },
+        "Packages": [
+          {
+            "Name": "binutils",
+            "Version": "2.30-21ubuntu1~18.04.2"
+          }
+        ]
+      },
+      {
+        "Name": "CVE-2018-18701",
+        "NamespaceName": "ubuntu:18.04",
+        "Description": "An issue was discovered in cp-demangle.c in GNU libiberty, as distributed in GNU Binutils 2.31. There is a stack consumption vulnerability resulting from infinite recursion in the functions next_is_type_qual() and cplus_demangle_type() in cp-demangle.c. Remote attackers could leverage this vulnerability to cause a denial-of-service via an ELF file, as demonstrated by nm.",
+        "Link": "http://people.ubuntu.com/~ubuntu-security/cve/CVE-2018-18701",
+        "Severity": "Low",
+        "Metadata": {
+          "NVD": {
+            "CVSSv2": {
+              "Score": 4.3,
+              "Vectors": "AV:N/AC:M/Au:N/C:N/I:N"
+            }
+          }
+        },
+        "Packages": [
+          {
+            "Name": "binutils",
+            "Version": "2.30-21ubuntu1~18.04.2"
+          }
+        ]
+      },
+      {
+        "Name": "CVE-2018-12700",
+        "NamespaceName": "ubuntu:18.04",
+        "Description": "A Stack Exhaustion issue was discovered in debug_write_type in debug.c in GNU Binutils 2.30 because of DEBUG_KIND_INDIRECT infinite recursion.",
+        "Link": "http://people.ubuntu.com/~ubuntu-security/cve/CVE-2018-12700",
+        "Severity": "Low",
+        "Metadata": {
+          "NVD": {
+            "CVSSv2": {
+              "Score": 5,
+              "Vectors": "AV:N/AC:L/Au:N/C:N/I:N"
+            }
+          }
+        },
+        "Packages": [
+          {
+            "Name": "binutils",
+            "Version": "2.30-21ubuntu1~18.04.2"
+          }
+        ]
+      },
+      {
+        "Name": "CVE-2019-5827",
+        "NamespaceName": "ubuntu:18.04",
+        "Description": "Integer overflow in SQLite via WebSQL in Google Chrome prior to 74.0.3729.131 allowed a remote attacker to potentially exploit heap corruption via a crafted HTML page.",
+        "Link": "http://people.ubuntu.com/~ubuntu-security/cve/CVE-2019-5827",
+        "Severity": "Low",
+        "Metadata": {
+          "NVD": {
+            "CVSSv2": {
+              "Score": 6.8,
+              "Vectors": "AV:N/AC:M/Au:N/C:P/I:P"
+            }
+          }
+        },
+        "Packages": [
+          {
+            "Name": "sqlite3",
+            "Version": "3.22.0-1ubuntu0.1"
+          }
+        ]
+      },
+      {
+        "Name": "CVE-2018-12698",
+        "NamespaceName": "ubuntu:18.04",
+        "Description": "demangle_template in cplus-dem.c in GNU libiberty, as distributed in GNU Binutils 2.30, allows attackers to trigger excessive memory consumption (aka OOM) during the \"Create an array for saving the template argument values\" XNEWVEC call. This can occur during execution of objdump.",
+        "Link": "http://people.ubuntu.com/~ubuntu-security/cve/CVE-2018-12698",
+        "Severity": "Low",
+        "Metadata": {
+          "NVD": {
+            "CVSSv2": {
+              "Score": 5,
+              "Vectors": "AV:N/AC:L/Au:N/C:N/I:N"
+            }
+          }
+        },
+        "Packages": [
+          {
+            "Name": "binutils",
+            "Version": "2.30-21ubuntu1~18.04.2"
+          }
+        ]
+      },
+      {
+        "Name": "CVE-2018-20002",
+        "NamespaceName": "ubuntu:18.04",
+        "Description": "The _bfd_generic_read_minisymbols function in syms.c in the Binary File Descriptor (BFD) library (aka libbfd), as distributed in GNU Binutils 2.31, has a memory leak via a crafted ELF file, leading to a denial of service (memory consumption), as demonstrated by nm.",
+        "Link": "http://people.ubuntu.com/~ubuntu-security/cve/CVE-2018-20002",
+        "Severity": "Low",
+        "Metadata": {
+          "NVD": {
+            "CVSSv2": {
+              "Score": 4.3,
+              "Vectors": "AV:N/AC:M/Au:N/C:N/I:N"
+            }
+          }
+        },
+        "Packages": [
+          {
+            "Name": "binutils",
+            "Version": "2.30-21ubuntu1~18.04.2"
+          }
+        ]
+      },
+      {
+        "Name": "CVE-2019-1563",
+        "NamespaceName": "ubuntu:18.04",
+        "Description": "In situations where an attacker receives automated notification of the success or failure of a decryption attempt an attacker, after sending a very large number of messages to be decrypted, can recover a CMS/PKCS7 transported encryption key or decrypt any RSA encrypted message that was encrypted with the public RSA key, using a Bleichenbacher padding oracle attack. Applications are not affected if they use a certificate together with the private RSA key to the CMS_decrypt or PKCS7_decrypt functions to select the correct recipient info to decrypt. Fixed in OpenSSL 1.1.1d (Affected 1.1.1-1.1.1c). Fixed in OpenSSL 1.1.0l (Affected 1.1.0-1.1.0k). Fixed in OpenSSL 1.0.2t (Affected 1.0.2-1.0.2s).",
+        "Link": "http://people.ubuntu.com/~ubuntu-security/cve/CVE-2019-1563",
+        "Severity": "Low",
+        "Packages": [
+          {
+            "Name": "openssl",
+            "Version": "1.1.1-1ubuntu2.1~18.04.4"
+          },
+          {
+            "Name": "openssl1.0",
+            "Version": "1.0.2n-1ubuntu5.3"
+          }
+        ]
+      },
+      {
+        "Name": "CVE-2018-17359",
+        "NamespaceName": "ubuntu:18.04",
+        "Description": "An issue was discovered in the Binary File Descriptor (BFD) library (aka libbfd), as distributed in GNU Binutils 2.31. An invalid memory access exists in bfd_zalloc in opncls.c. Attackers could leverage this vulnerability to cause a denial of service (application crash) via a crafted ELF file.",
+        "Link": "http://people.ubuntu.com/~ubuntu-security/cve/CVE-2018-17359",
+        "Severity": "Low",
+        "Metadata": {
+          "NVD": {
+            "CVSSv2": {
+              "Score": 4.3,
+              "Vectors": "AV:N/AC:M/Au:N/C:N/I:N"
+            }
+          }
+        },
+        "Packages": [
+          {
+            "Name": "binutils",
+            "Version": "2.30-21ubuntu1~18.04.2"
+          }
+        ]
+      },
+      {
+        "Name": "CVE-2018-10535",
+        "NamespaceName": "ubuntu:18.04",
+        "Description": "The ignore_section_sym function in elf.c in the Binary File Descriptor (BFD) library (aka libbfd), as distributed in GNU Binutils 2.30, does not validate the output_section pointer in the case of a symtab entry with a \"SECTION\" type that has a \"0\" value, which allows remote attackers to cause a denial of service (NULL pointer dereference and application crash) via a crafted file, as demonstrated by objcopy.",
+        "Link": "http://people.ubuntu.com/~ubuntu-security/cve/CVE-2018-10535",
+        "Severity": "Low",
+        "Metadata": {
+          "NVD": {
+            "CVSSv2": {
+              "Score": 4.3,
+              "Vectors": "AV:N/AC:M/Au:N/C:N/I:N"
+            }
+          }
+        },
+        "Packages": [
+          {
+            "Name": "binutils",
+            "Version": "2.30-21ubuntu1~18.04.2"
+          }
+        ]
+      },
+      {
+        "Name": "CVE-2018-8945",
+        "NamespaceName": "ubuntu:18.04",
+        "Description": "The bfd_section_from_shdr function in elf.c in the Binary File Descriptor (BFD) library (aka libbfd), as distributed in GNU Binutils 2.30, allows remote attackers to cause a denial of service (segmentation fault) via a large attribute section.",
+        "Link": "http://people.ubuntu.com/~ubuntu-security/cve/CVE-2018-8945",
+        "Severity": "Low",
+        "Metadata": {
+          "NVD": {
+            "CVSSv2": {
+              "Score": 4.3,
+              "Vectors": "AV:N/AC:M/Au:N/C:N/I:N"
+            }
+          }
+        },
+        "Packages": [
+          {
+            "Name": "binutils",
+            "Version": "2.30-21ubuntu1~18.04.2"
+          }
+        ]
+      },
+      {
+        "Name": "CVE-2018-20671",
+        "NamespaceName": "ubuntu:18.04",
+        "Description": "load_specific_debug_section in objdump.c in GNU Binutils through 2.31.1 contains an integer overflow vulnerability that can trigger a heap-based buffer overflow via a crafted section size.",
+        "Link": "http://people.ubuntu.com/~ubuntu-security/cve/CVE-2018-20671",
+        "Severity": "Low",
+        "Metadata": {
+          "NVD": {
+            "CVSSv2": {
+              "Score": 4.3,
+              "Vectors": "AV:N/AC:M/Au:N/C:N/I:N"
+            }
+          }
+        },
+        "Packages": [
+          {
+            "Name": "binutils",
+            "Version": "2.30-21ubuntu1~18.04.2"
+          }
+        ]
+      },
+      {
+        "Name": "CVE-2018-16868",
+        "NamespaceName": "ubuntu:18.04",
+        "Description": "A Bleichenbacher type side-channel based padding oracle attack was found in the way gnutls handles verification of RSA decrypted PKCS#1 v1.5 data. An attacker who is able to run process on the same physical core as the victim process, could use this to extract plaintext or in some cases downgrade any TLS connections to a vulnerable server.",
+        "Link": "http://people.ubuntu.com/~ubuntu-security/cve/CVE-2018-16868",
+        "Severity": "Low",
+        "Metadata": {
+          "NVD": {
+            "CVSSv2": {
+              "Score": 3.3,
+              "Vectors": "AV:L/AC:M/Au:N/C:P/I:P"
+            }
+          }
+        },
+        "Packages": [
+          {
+            "Name": "gnutls28",
+            "Version": "3.5.18-1ubuntu1.1"
+          }
+        ]
+      },
+      {
+        "Name": "CVE-2019-6110",
+        "NamespaceName": "ubuntu:18.04",
+        "Description": "In OpenSSH 7.9, due to accepting and displaying arbitrary stderr output from the server, a malicious server (or Man-in-The-Middle attacker) can manipulate the client output, for example to use ANSI control codes to hide additional files being transferred.",
+        "Link": "http://people.ubuntu.com/~ubuntu-security/cve/CVE-2019-6110",
+        "Severity": "Low",
+        "Metadata": {
+          "NVD": {
+            "CVSSv2": {
+              "Score": 4,
+              "Vectors": "AV:N/AC:H/Au:N/C:P/I:P"
+            }
+          }
+        },
+        "Packages": [
+          {
+            "Name": "openssh",
+            "Version": "1:7.6p1-4ubuntu0.3"
+          }
+        ]
+      },
+      {
+        "Name": "CVE-2018-12641",
+        "NamespaceName": "ubuntu:18.04",
+        "Description": "An issue was discovered in arm_pt in cplus-dem.c in GNU libiberty, as distributed in GNU Binutils 2.30. Stack Exhaustion occurs in the C++ demangling functions provided by libiberty, and there are recursive stack frames: demangle_arm_hp_template, demangle_class_name, demangle_fund_type, do_type, do_arg, demangle_args, and demangle_nested_args. This can occur during execution of nm-new.",
+        "Link": "http://people.ubuntu.com/~ubuntu-security/cve/CVE-2018-12641",
+        "Severity": "Low",
+        "Metadata": {
+          "NVD": {
+            "CVSSv2": {
+              "Score": 4.3,
+              "Vectors": "AV:N/AC:M/Au:N/C:N/I:N"
+            }
+          }
+        },
+        "Packages": [
+          {
+            "Name": "binutils",
+            "Version": "2.30-21ubuntu1~18.04.2"
+          }
+        ]
+      },
+      {
+        "Name": "CVE-2016-10739",
+        "NamespaceName": "ubuntu:18.04",
+        "Description": "In the GNU C Library (aka glibc or libc6) through 2.28, the getaddrinfo function would successfully parse a string that contained an IPv4 address followed by whitespace and arbitrary characters, which could lead applications to incorrectly assume that it had parsed a valid string, without the possibility of embedded HTTP headers or other potentially dangerous substrings.",
+        "Link": "http://people.ubuntu.com/~ubuntu-security/cve/CVE-2016-10739",
+        "Severity": "Low",
+        "Metadata": {
+          "NVD": {
+            "CVSSv2": {
+              "Score": 4.6,
+              "Vectors": "AV:L/AC:L/Au:N/C:P/I:P"
+            }
+          }
+        },
+        "Packages": [
+          {
+            "Name": "glibc",
+            "Version": "2.27-3ubuntu1"
+          }
+        ]
+      },
+      {
+        "Name": "CVE-2018-7169",
+        "NamespaceName": "ubuntu:18.04",
+        "Description": "An issue was discovered in shadow 4.5. newgidmap (in shadow-utils) is setuid and allows an unprivileged user to be placed in a user namespace where setgroups(2) is permitted. This allows an attacker to remove themselves from a supplementary group, which may allow access to certain filesystem paths if the administrator has used \"group blacklisting\" (e.g., chmod g-rwx) to restrict access to paths. This flaw effectively reverts a security feature in the kernel (in particular, the /proc/self/setgroups knob) to prevent this sort of privilege escalation.",
+        "Link": "http://people.ubuntu.com/~ubuntu-security/cve/CVE-2018-7169",
+        "Severity": "Low",
+        "Metadata": {
+          "NVD": {
+            "CVSSv2": {
+              "Score": 5,
+              "Vectors": "AV:N/AC:L/Au:N/C:P/I:N"
+            }
+          }
+        },
+        "Packages": [
+          {
+            "Name": "shadow",
+            "Version": "1:4.5-1ubuntu2"
+          }
+        ]
+      },
+      {
+        "Name": "CVE-2018-16869",
+        "NamespaceName": "ubuntu:18.04",
+        "Description": "A Bleichenbacher type side-channel based padding oracle attack was found in the way nettle handles endian conversion of RSA decrypted PKCS#1 v1.5 data. An attacker who is able to run a process on the same physical core as the victim process, could use this flaw extract plaintext or in some cases downgrade any TLS connections to a vulnerable server.",
+        "Link": "http://people.ubuntu.com/~ubuntu-security/cve/CVE-2018-16869",
+        "Severity": "Low",
+        "Metadata": {
+          "NVD": {
+            "CVSSv2": {
+              "Score": 3.3,
+              "Vectors": "AV:L/AC:M/Au:N/C:P/I:P"
+            }
+          }
+        },
+        "Packages": [
+          {
+            "Name": "nettle",
+            "Version": "3.4-1"
+          }
+        ]
+      },
+      {
+        "Name": "CVE-2016-2781",
+        "NamespaceName": "ubuntu:18.04",
+        "Description": "chroot in GNU coreutils, when used with --userspec, allows local users to escape to the parent session via a crafted TIOCSTI ioctl call, which pushes characters to the terminal's input buffer.",
+        "Link": "http://people.ubuntu.com/~ubuntu-security/cve/CVE-2016-2781",
+        "Severity": "Low",
+        "Metadata": {
+          "NVD": {
+            "CVSSv2": {
+              "Score": 2.1,
+              "Vectors": "AV:L/AC:L/Au:N/C:N/I:P"
+            }
+          }
+        },
+        "Packages": [
+          {
+            "Name": "coreutils",
+            "Version": "8.28-1ubuntu1"
+          }
+        ]
+      },
+      {
+        "Name": "CVE-2018-20786",
+        "NamespaceName": "ubuntu:18.04",
+        "Description": "libvterm through 0+bzr726, as used in Vim and other products, mishandles certain out-of-memory conditions, leading to a denial of service (application crash), related to screen.c, state.c, and vterm.c.",
+        "Link": "http://people.ubuntu.com/~ubuntu-security/cve/CVE-2018-20786",
+        "Severity": "Low",
+        "Metadata": {
+          "NVD": {
+            "CVSSv2": {
+              "Score": 5,
+              "Vectors": "AV:N/AC:L/Au:N/C:N/I:N"
+            }
+          }
+        },
+        "Packages": [
+          {
+            "Name": "vim",
+            "Version": "2:8.0.1453-1ubuntu1.1"
+          }
+        ]
+      },
+      {
+        "Name": "CVE-2018-12699",
+        "NamespaceName": "ubuntu:18.04",
+        "Description": "finish_stab in stabs.c in GNU Binutils 2.30 allows attackers to cause a denial of service (heap-based buffer overflow) or possibly have unspecified other impact, as demonstrated by an out-of-bounds write of 8 bytes. This can occur during execution of objdump.",
+        "Link": "http://people.ubuntu.com/~ubuntu-security/cve/CVE-2018-12699",
+        "Severity": "Low",
+        "Metadata": {
+          "NVD": {
+            "CVSSv2": {
+              "Score": 7.5,
+              "Vectors": "AV:N/AC:L/Au:N/C:P/I:P"
+            }
+          }
+        },
+        "Packages": [
+          {
+            "Name": "binutils",
+            "Version": "2.30-21ubuntu1~18.04.2"
+          }
+        ]
+      },
+      {
+        "Name": "CVE-2018-17358",
+        "NamespaceName": "ubuntu:18.04",
+        "Description": "An issue was discovered in the Binary File Descriptor (BFD) library (aka libbfd), as distributed in GNU Binutils 2.31. An invalid memory access exists in _bfd_stab_section_find_nearest_line in syms.c. Attackers could leverage this vulnerability to cause a denial of service (application crash) via a crafted ELF file.",
+        "Link": "http://people.ubuntu.com/~ubuntu-security/cve/CVE-2018-17358",
+        "Severity": "Low",
+        "Metadata": {
+          "NVD": {
+            "CVSSv2": {
+              "Score": 4.3,
+              "Vectors": "AV:N/AC:M/Au:N/C:N/I:N"
+            }
+          }
+        },
+        "Packages": [
+          {
+            "Name": "binutils",
+            "Version": "2.30-21ubuntu1~18.04.2"
+          }
+        ]
+      },
+      {
+        "Name": "CVE-2018-9138",
+        "NamespaceName": "ubuntu:18.04",
+        "Description": "An issue was discovered in cplus-dem.c in GNU libiberty, as distributed in GNU Binutils 2.29 and 2.30. Stack Exhaustion occurs in the C++ demangling functions provided by libiberty, and there are recursive stack frames: demangle_nested_args, demangle_args, do_arg, and do_type.",
+        "Link": "http://people.ubuntu.com/~ubuntu-security/cve/CVE-2018-9138",
+        "Severity": "Low",
+        "Metadata": {
+          "NVD": {
+            "CVSSv2": {
+              "Score": 4.3,
+              "Vectors": "AV:N/AC:M/Au:N/C:N/I:N"
+            }
+          }
+        },
+        "Packages": [
+          {
+            "Name": "binutils",
+            "Version": "2.30-21ubuntu1~18.04.2"
+          }
+        ]
+      },
+      {
+        "Name": "CVE-2018-17360",
+        "NamespaceName": "ubuntu:18.04",
+        "Description": "An issue was discovered in the Binary File Descriptor (BFD) library (aka libbfd), as distributed in GNU Binutils 2.31. a heap-based buffer over-read in bfd_getl32 in libbfd.c allows an attacker to cause a denial of service through a crafted PE file. This vulnerability can be triggered by the executable objdump.",
+        "Link": "http://people.ubuntu.com/~ubuntu-security/cve/CVE-2018-17360",
+        "Severity": "Low",
+        "Metadata": {
+          "NVD": {
+            "CVSSv2": {
+              "Score": 4.3,
+              "Vectors": "AV:N/AC:M/Au:N/C:N/I:N"
+            }
+          }
+        },
+        "Packages": [
+          {
+            "Name": "binutils",
+            "Version": "2.30-21ubuntu1~18.04.2"
+          }
+        ]
+      },
+      {
+        "Name": "CVE-2018-20482",
+        "NamespaceName": "ubuntu:18.04",
+        "Description": "GNU Tar through 1.30, when --sparse is used, mishandles file shrinkage during read access, which allows local users to cause a denial of service (infinite read loop in sparse_dump_region in sparse.c) by modifying a file that is supposed to be archived by a different user's process (e.g., a system backup running as root).",
+        "Link": "http://people.ubuntu.com/~ubuntu-security/cve/CVE-2018-20482",
+        "Severity": "Low",
+        "Metadata": {
+          "NVD": {
+            "CVSSv2": {
+              "Score": 1.9,
+              "Vectors": "AV:L/AC:M/Au:N/C:N/I:N"
+            }
+          }
+        },
+        "Packages": [
+          {
+            "Name": "tar",
+            "Version": "1.29b-2ubuntu0.1"
+          }
+        ]
+      },
+      {
+        "Name": "CVE-2018-18607",
+        "NamespaceName": "ubuntu:18.04",
+        "Description": "An issue was discovered in elf_link_input_bfd in elflink.c in the Binary File Descriptor (BFD) library (aka libbfd), as distributed in GNU Binutils 2.31. There is a NULL pointer dereference in elf_link_input_bfd when used for finding STT_TLS symbols without any TLS section. A specially crafted ELF allows remote attackers to cause a denial of service, as demonstrated by ld.",
+        "Link": "http://people.ubuntu.com/~ubuntu-security/cve/CVE-2018-18607",
+        "Severity": "Low",
+        "Metadata": {
+          "NVD": {
+            "CVSSv2": {
+              "Score": 4.3,
+              "Vectors": "AV:N/AC:M/Au:N/C:N/I:N"
+            }
+          }
+        },
+        "Packages": [
+          {
+            "Name": "binutils",
+            "Version": "2.30-21ubuntu1~18.04.2"
+          }
+        ]
+      },
+      {
+        "Name": "CVE-2018-18700",
+        "NamespaceName": "ubuntu:18.04",
+        "Description": "An issue was discovered in cp-demangle.c in GNU libiberty, as distributed in GNU Binutils 2.31. There is a stack consumption vulnerability resulting from infinite recursion in the functions d_name(), d_encoding(), and d_local_name() in cp-demangle.c. Remote attackers could leverage this vulnerability to cause a denial-of-service via an ELF file, as demonstrated by nm.",
+        "Link": "http://people.ubuntu.com/~ubuntu-security/cve/CVE-2018-18700",
+        "Severity": "Low",
+        "Metadata": {
+          "NVD": {
+            "CVSSv2": {
+              "Score": 4.3,
+              "Vectors": "AV:N/AC:M/Au:N/C:N/I:N"
+            }
+          }
+        },
+        "Packages": [
+          {
+            "Name": "binutils",
+            "Version": "2.30-21ubuntu1~18.04.2"
+          }
+        ]
+      },
+      {
+        "Name": "CVE-2018-12697",
+        "NamespaceName": "ubuntu:18.04",
+        "Description": "A NULL pointer dereference (aka SEGV on unknown address 0x000000000000) was discovered in work_stuff_copy_to_from in cplus-dem.c in GNU libiberty, as distributed in GNU Binutils 2.30. This can occur during execution of objdump.",
+        "Link": "http://people.ubuntu.com/~ubuntu-security/cve/CVE-2018-12697",
+        "Severity": "Low",
+        "Metadata": {
+          "NVD": {
+            "CVSSv2": {
+              "Score": 5,
+              "Vectors": "AV:N/AC:L/Au:N/C:N/I:N"
+            }
+          }
+        },
+        "Packages": [
+          {
+            "Name": "binutils",
+            "Version": "2.30-21ubuntu1~18.04.2"
+          }
+        ]
+      },
+      {
+        "Name": "CVE-2018-18606",
+        "NamespaceName": "ubuntu:18.04",
+        "Description": "An issue was discovered in the merge_strings function in merge.c in the Binary File Descriptor (BFD) library (aka libbfd), as distributed in GNU Binutils 2.31. There is a NULL pointer dereference in _bfd_add_merge_section when attempting to merge sections with large alignments. A specially crafted ELF allows remote attackers to cause a denial of service, as demonstrated by ld.",
+        "Link": "http://people.ubuntu.com/~ubuntu-security/cve/CVE-2018-18606",
+        "Severity": "Low",
+        "Metadata": {
+          "NVD": {
+            "CVSSv2": {
+              "Score": 4.3,
+              "Vectors": "AV:N/AC:M/Au:N/C:N/I:N"
+            }
+          }
+        },
+        "Packages": [
+          {
+            "Name": "binutils",
+            "Version": "2.30-21ubuntu1~18.04.2"
+          }
+        ]
+      },
+      {
+        "Name": "CVE-2019-9169",
+        "NamespaceName": "ubuntu:18.04",
+        "Description": "In the GNU C Library (aka glibc or libc6) through 2.29, proceed_next_node in posix/regexec.c has a heap-based buffer over-read via an attempted case-insensitive regular-expression match.",
+        "Link": "http://people.ubuntu.com/~ubuntu-security/cve/CVE-2019-9169",
+        "Severity": "Low",
+        "Metadata": {
+          "NVD": {
+            "CVSSv2": {
+              "Score": 7.5,
+              "Vectors": "AV:N/AC:L/Au:N/C:P/I:P"
+            }
+          }
+        },
+        "Packages": [
+          {
+            "Name": "glibc",
+            "Version": "2.27-3ubuntu1"
+          }
+        ]
+      },
+      {
+        "Name": "CVE-2018-1000876",
+        "NamespaceName": "ubuntu:18.04",
+        "Description": "binutils version 2.32 and earlier contains a Integer Overflow vulnerability in objdump, bfd_get_dynamic_reloc_upper_bound,bfd_canonicalize_dynamic_reloc that can result in Integer overflow trigger heap overflow. Successful exploitation allows execution of arbitrary code.. This attack appear to be exploitable via Local. This vulnerability appears to have been fixed in after commit 3a551c7a1b80fca579461774860574eabfd7f18f.",
+        "Link": "http://people.ubuntu.com/~ubuntu-security/cve/CVE-2018-1000876",
+        "Severity": "Low",
+        "Metadata": {
+          "NVD": {
+            "CVSSv2": {
+              "Score": 4.6,
+              "Vectors": "AV:L/AC:L/Au:N/C:P/I:P"
+            }
+          }
+        },
+        "Packages": [
+          {
+            "Name": "binutils",
+            "Version": "2.30-21ubuntu1~18.04.2"
+          }
+        ]
+      },
+      {
+        "Name": "CVE-2018-15919",
+        "NamespaceName": "ubuntu:18.04",
+        "Description": "Remotely observable behaviour in auth-gss2.c in OpenSSH through 7.8 could be used by remote attackers to detect existence of users on a target system when GSS2 is in use. NOTE: the discoverer states 'We understand that the OpenSSH developers do not want to treat such a username enumeration (or \"oracle\") as a vulnerability.'",
+        "Link": "http://people.ubuntu.com/~ubuntu-security/cve/CVE-2018-15919",
+        "Severity": "Low",
+        "Metadata": {
+          "NVD": {
+            "CVSSv2": {
+              "Score": 5,
+              "Vectors": "AV:N/AC:L/Au:N/C:P/I:N"
+            }
+          }
+        },
+        "Packages": [
+          {
+            "Name": "openssh",
+            "Version": "1:7.6p1-4ubuntu0.3"
+          }
+        ]
+      },
+      {
+        "Name": "CVE-2018-9996",
+        "NamespaceName": "ubuntu:18.04",
+        "Description": "An issue was discovered in cplus-dem.c in GNU libiberty, as distributed in GNU Binutils 2.30. Stack Exhaustion occurs in the C++ demangling functions provided by libiberty, and there are recursive stack frames: demangle_template_value_parm, demangle_integral_value, and demangle_expression.",
+        "Link": "http://people.ubuntu.com/~ubuntu-security/cve/CVE-2018-9996",
+        "Severity": "Low",
+        "Metadata": {
+          "NVD": {
+            "CVSSv2": {
+              "Score": 4.3,
+              "Vectors": "AV:N/AC:M/Au:N/C:N/I:N"
+            }
+          }
+        },
+        "Packages": [
+          {
+            "Name": "binutils",
+            "Version": "2.30-21ubuntu1~18.04.2"
+          }
+        ]
+      },
+      {
+        "Name": "CVE-2018-10373",
+        "NamespaceName": "ubuntu:18.04",
+        "Description": "concat_filename in dwarf2.c in the Binary File Descriptor (BFD) library (aka libbfd), as distributed in GNU Binutils 2.30, allows remote attackers to cause a denial of service (NULL pointer dereference and application crash) via a crafted binary file, as demonstrated by nm-new.",
+        "Link": "http://people.ubuntu.com/~ubuntu-security/cve/CVE-2018-10373",
+        "Severity": "Low",
+        "Metadata": {
+          "NVD": {
+            "CVSSv2": {
+              "Score": 4.3,
+              "Vectors": "AV:N/AC:M/Au:N/C:N/I:N"
+            }
+          }
+        },
+        "Packages": [
+          {
+            "Name": "binutils",
+            "Version": "2.30-21ubuntu1~18.04.2"
+          }
+        ]
+      },
+      {
+        "Name": "CVE-2019-1547",
+        "NamespaceName": "ubuntu:18.04",
+        "Description": "Normally in OpenSSL EC groups always have a co-factor present and this is used in side channel resistant code paths. However, in some cases, it is possible to construct a group using explicit parameters (instead of using a named curve). In those cases it is possible that such a group does not have the cofactor present. This can occur even where all the parameters match a known named curve. If such a curve is used then OpenSSL falls back to non-side channel resistant code paths which may result in full key recovery during an ECDSA signature operation. In order to be vulnerable an attacker would have to have the ability to time the creation of a large number of signatures where explicit parameters with no co-factor present are in use by an application using libcrypto. For the avoidance of doubt libssl is not vulnerable because explicit parameters are never used. Fixed in OpenSSL 1.1.1d (Affected 1.1.1-1.1.1c). Fixed in OpenSSL 1.1.0l (Affected 1.1.0-1.1.0k). Fixed in OpenSSL 1.0.2t (Affected 1.0.2-1.0.2s).",
+        "Link": "http://people.ubuntu.com/~ubuntu-security/cve/CVE-2019-1547",
+        "Severity": "Low",
+        "Packages": [
+          {
+            "Name": "openssl",
+            "Version": "1.1.1-1ubuntu2.1~18.04.4"
+          }
+        ]
+      },
+      {
+        "Name": "CVE-2018-18605",
+        "NamespaceName": "ubuntu:18.04",
+        "Description": "A heap-based buffer over-read issue was discovered in the function sec_merge_hash_lookup in merge.c in the Binary File Descriptor (BFD) library (aka libbfd), as distributed in GNU Binutils 2.31, because _bfd_add_merge_section mishandles section merges when size is not a multiple of entsize. A specially crafted ELF allows remote attackers to cause a denial of service, as demonstrated by ld.",
+        "Link": "http://people.ubuntu.com/~ubuntu-security/cve/CVE-2018-18605",
+        "Severity": "Low",
+        "Metadata": {
+          "NVD": {
+            "CVSSv2": {
+              "Score": 4.3,
+              "Vectors": "AV:N/AC:M/Au:N/C:N/I:N"
+            }
+          }
+        },
+        "Packages": [
+          {
+            "Name": "binutils",
+            "Version": "2.30-21ubuntu1~18.04.2"
+          }
+        ]
+      },
+      {
+        "Name": "CVE-2018-1000654",
+        "NamespaceName": "ubuntu:18.04",
+        "Description": "GNU Libtasn1-4.13 libtasn1-4.13 version libtasn1-4.13, libtasn1-4.12 contains a DoS, specifically CPU usage will reach 100% when running asn1Paser against the POC due to an issue in _asn1_expand_object_id(p_tree), after a long time, the program will be killed. This attack appears to be exploitable via parsing a crafted file.",
+        "Link": "http://people.ubuntu.com/~ubuntu-security/cve/CVE-2018-1000654",
+        "Severity": "Negligible",
+        "Metadata": {
+          "NVD": {
+            "CVSSv2": {
+              "Score": 7.1,
+              "Vectors": "AV:N/AC:M/Au:N/C:N/I:N"
+            }
+          }
+        },
+        "Packages": [
+          {
+            "Name": "libtasn1-6",
+            "Version": "4.13-2"
+          }
+        ]
+      },
+      {
+        "Name": "CVE-2018-6952",
+        "NamespaceName": "ubuntu:18.04",
+        "Description": "A double free exists in the another_hunk function in pch.c in GNU patch through 2.7.6.",
+        "Link": "http://people.ubuntu.com/~ubuntu-security/cve/CVE-2018-6952",
+        "Severity": "Negligible",
+        "Metadata": {
+          "NVD": {
+            "CVSSv2": {
+              "Score": 5,
+              "Vectors": "AV:N/AC:L/Au:N/C:N/I:N"
+            }
+          }
+        },
+        "Packages": [
+          {
+            "Name": "patch",
+            "Version": "2.7.6-2ubuntu1.1"
+          }
+        ]
+      },
+      {
+        "Name": "CVE-2017-7245",
+        "NamespaceName": "ubuntu:18.04",
+        "Description": "Stack-based buffer overflow in the pcre32_copy_substring function in pcre_get.c in libpcre1 in PCRE 8.40 allows remote attackers to cause a denial of service (WRITE of size 4) or possibly have unspecified other impact via a crafted file.",
+        "Link": "http://people.ubuntu.com/~ubuntu-security/cve/CVE-2017-7245",
+        "Severity": "Negligible",
+        "Metadata": {
+          "NVD": {
+            "CVSSv2": {
+              "Score": 6.8,
+              "Vectors": "AV:N/AC:M/Au:N/C:P/I:P"
+            }
+          }
+        },
+        "Packages": [
+          {
+            "Name": "pcre3",
+            "Version": "2:8.39-9"
+          }
+        ]
+      },
+      {
+        "Name": "CVE-2016-10228",
+        "NamespaceName": "ubuntu:18.04",
+        "Description": "The iconv program in the GNU C Library (aka glibc or libc6) 2.25 and earlier, when invoked with the -c option, enters an infinite loop when processing invalid multi-byte input sequences, leading to a denial of service.",
+        "Link": "http://people.ubuntu.com/~ubuntu-security/cve/CVE-2016-10228",
+        "Severity": "Negligible",
+        "Metadata": {
+          "NVD": {
+            "CVSSv2": {
+              "Score": 4.3,
+              "Vectors": "AV:N/AC:M/Au:N/C:N/I:N"
+            }
+          }
+        },
+        "Packages": [
+          {
+            "Name": "glibc",
+            "Version": "2.27-3ubuntu1"
+          }
+        ]
+      },
+      {
+        "Name": "CVE-2017-7246",
+        "NamespaceName": "ubuntu:18.04",
+        "Description": "Stack-based buffer overflow in the pcre32_copy_substring function in pcre_get.c in libpcre1 in PCRE 8.40 allows remote attackers to cause a denial of service (WRITE of size 268) or possibly have unspecified other impact via a crafted file.",
+        "Link": "http://people.ubuntu.com/~ubuntu-security/cve/CVE-2017-7246",
+        "Severity": "Negligible",
+        "Metadata": {
+          "NVD": {
+            "CVSSv2": {
+              "Score": 6.8,
+              "Vectors": "AV:N/AC:M/Au:N/C:P/I:P"
+            }
+          }
+        },
+        "Packages": [
+          {
+            "Name": "pcre3",
+            "Version": "2:8.39-9"
+          }
+        ]
+      },
+      {
+        "Name": "CVE-2017-8283",
+        "NamespaceName": "ubuntu:18.04",
+        "Description": "dpkg-source in dpkg 1.3.0 through 1.18.23 is able to use a non-GNU patch program and does not offer a protection mechanism for blank-indented diff hunks, which allows remote attackers to conduct directory traversal attacks via a crafted Debian source package, as demonstrated by use of dpkg-source on NetBSD.",
+        "Link": "http://people.ubuntu.com/~ubuntu-security/cve/CVE-2017-8283",
+        "Severity": "Negligible",
+        "Metadata": {
+          "NVD": {
+            "CVSSv2": {
+              "Score": 7.5,
+              "Vectors": "AV:N/AC:L/Au:N/C:P/I:P"
+            }
+          }
+        },
+        "Packages": [
+          {
+            "Name": "dpkg",
+            "Version": "1.19.0.5ubuntu2.3"
+          }
+        ]
+      },
+      {
+        "Name": "CVE-2018-20796",
+        "NamespaceName": "ubuntu:18.04",
+        "Description": "In the GNU C Library (aka glibc or libc6) through 2.29, check_dst_limits_calc_pos_1 in posix/regexec.c has Uncontrolled Recursion, as demonstrated by '(\227|)(\\1\\1|t1|\\\2537)+' in grep.",
+        "Link": "http://people.ubuntu.com/~ubuntu-security/cve/CVE-2018-20796",
+        "Severity": "Negligible",
+        "Metadata": {
+          "NVD": {
+            "CVSSv2": {
+              "Score": 5,
+              "Vectors": "AV:N/AC:L/Au:N/C:N/I:N"
+            }
+          }
+        },
+        "Packages": [
+          {
+            "Name": "glibc",
+            "Version": "2.27-3ubuntu1"
+          }
+        ]
+      },
+      {
+        "Name": "CVE-2019-7309",
+        "NamespaceName": "ubuntu:18.04",
+        "Description": "In the GNU C Library (aka glibc or libc6) through 2.29, the memcmp function for the x32 architecture can incorrectly return zero (indicating that the inputs are equal) because the RDX most significant bit is mishandled.",
+        "Link": "http://people.ubuntu.com/~ubuntu-security/cve/CVE-2019-7309",
+        "Severity": "Negligible",
+        "Metadata": {
+          "NVD": {
+            "CVSSv2": {
+              "Score": 2.1,
+              "Vectors": "AV:L/AC:L/Au:N/C:N/I:N"
+            }
+          }
+        },
+        "Packages": [
+          {
+            "Name": "glibc",
+            "Version": "2.27-3ubuntu1"
+          }
+        ]
+      },
+      {
+        "Name": "CVE-2018-7738",
+        "NamespaceName": "ubuntu:18.04",
+        "Description": "In util-linux before 2.32-rc1, bash-completion/umount allows local users to gain privileges by embedding shell commands in a mountpoint name, which is mishandled during a umount command (within Bash) by a different user, as demonstrated by logging in as root and entering umount followed by a tab character for autocompletion.",
+        "Link": "http://people.ubuntu.com/~ubuntu-security/cve/CVE-2018-7738",
+        "Severity": "Negligible",
+        "Metadata": {
+          "NVD": {
+            "CVSSv2": {
+              "Score": 7.2,
+              "Vectors": "AV:L/AC:L/Au:N/C:C/I:C"
+            }
+          }
+        },
+        "Packages": [
+          {
+            "Name": "util-linux",
+            "Version": "2.31.1-0.4ubuntu3.4"
+          }
+        ]
+      },
+      {
+        "Name": "CVE-2019-9192",
+        "NamespaceName": "ubuntu:18.04",
+        "Description": "** DISPUTED ** In the GNU C Library (aka glibc or libc6) through 2.29, check_dst_limits_calc_pos_1 in posix/regexec.c has Uncontrolled Recursion, as demonstrated by '(|)(\\1\\1)*' in grep, a different issue than CVE-2018-20796. NOTE: the software maintainer disputes that this is a vulnerability because the behavior occurs only with a crafted pattern.",
+        "Link": "http://people.ubuntu.com/~ubuntu-security/cve/CVE-2019-9192",
+        "Severity": "Negligible",
+        "Metadata": {
+          "NVD": {
+            "CVSSv2": {
+              "Score": 5,
+              "Vectors": "AV:N/AC:L/Au:N/C:N/I:N"
+            }
+          }
+        },
+        "Packages": [
+          {
+            "Name": "glibc",
+            "Version": "2.27-3ubuntu1"
+          }
+        ]
+      },
+      {
+        "Name": "CVE-2018-5709",
+        "NamespaceName": "ubuntu:18.04",
+        "Description": "An issue was discovered in MIT Kerberos 5 (aka krb5) through 1.16. There is a variable \"dbentry-\u003en_key_data\" in kadmin/dbutil/dump.c that can store 16-bit data but unknowingly the developer has assigned a \"u4\" variable to it, which is for 32-bit data. An attacker can use this vulnerability to affect other artifacts of the database as we know that a Kerberos database dump file contains trusted data.",
+        "Link": "http://people.ubuntu.com/~ubuntu-security/cve/CVE-2018-5709",
+        "Severity": "Negligible",
+        "Metadata": {
+          "NVD": {
+            "CVSSv2": {
+              "Score": 5,
+              "Vectors": "AV:N/AC:L/Au:N/C:N/I:P"
+            }
+          }
+        },
+        "Packages": [
+          {
+            "Name": "krb5",
+            "Version": "1.16-2ubuntu0.1"
+          }
+        ]
+      }
+    ],
+    "Summary": {
+      "medium_cve_count": 24,
+      "low_cve_count": 56,
+      "total_cve_count": 80,
+      "total_packages_count": 146,
+      "failure_reason": "threshold_exceeded"
+    }
+  }
+}

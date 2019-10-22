@@ -4,17 +4,8 @@ import Tx from 'ethereumjs-tx';
 import Web3 from 'web3';
 import logger from './../../utils/logger';
 import rskjsUtil from 'rskjs-util';
+import { FaucetHistory, TxParameters } from '../../types.js';
 
-type txParameters = {
-    from: string,
-    to: string
-    nonce: string,
-    gasPrice: string,
-    gas: string,
-    value: string,
-}
-
-interface FaucetHistory { [address: string]: string; }
 let faucetHistory: FaucetHistory  = {}
 
 const handleDispense = async (req: NextApiRequest, res: NextApiResponse): Promise<void> => {
@@ -24,28 +15,28 @@ const handleDispense = async (req: NextApiRequest, res: NextApiResponse): Promis
     web3.transactionConfirmationBlocks = 1;
 
     const dispenseAddress: string = req.body.address;
+    const checksumed = {
+        mainnet: <boolean> rskjsUtil.isValidChecksumAddress(dispenseAddress, 30),
+        testnet: <boolean> rskjsUtil.isValidChecksumAddress(dispenseAddress, 31)
+    }
 
     if(!rskjsUtil.isValidAddress(dispenseAddress)){
         logger.warning('provided an invalid address');
+        
         res.status(409).end()
     } else if(!faucetHistory.hasOwnProperty(dispenseAddress)) {
         logger.event('dispensing to ' + dispenseAddress);
         
-        const txParameters: txParameters = {
+        const txParameters: TxParameters = {
             from: config.FAUCET_ADDRESS,
             to: dispenseAddress,
             nonce: web3.utils.toHex(await web3.eth.getTransactionCount(config.FAUCET_ADDRESS)),
             gasPrice: web3.utils.toHex(config.GAS_PRICE),
             gas: web3.utils.toHex(config.GAS_LIMIT),
-            value: web3.utils.toHex(Number(web3.utils.toWei(config.VALUE_TO_DISPENSE.toString()))),            
+            value: web3.utils.toHex(web3.utils.toWei(config.VALUE_TO_DISPENSE.toString())),
         }
 
-        logger.info('from ' + txParameters.from);
-        logger.info('to ' + txParameters.to);
-        logger.info('nonce ' + txParameters.nonce);
-        logger.info('gasPrice ' + txParameters.gasPrice);
-        logger.info('gas ' + txParameters.gas);
-        logger.info('value ' + txParameters.value);
+        logger.txParameters(txParameters);
 
         let tx = new Tx(txParameters);
         tx.sign(Buffer.from(config.FAUCET_PRIVATE_KEY, 'hex'));
@@ -55,20 +46,20 @@ const handleDispense = async (req: NextApiRequest, res: NextApiResponse): Promis
         
         web3.eth.sendSignedTransaction(encodedTx)
             .on('transactionHash', (txHash: string) => {
-                logger.success('dispensed to ' + dispenseAddress);
-                logger.success('tx hash ' + txHash);
+                logger.dispensed(dispenseAddress, txHash);
 
                 faucetHistory[dispenseAddress] = 'dispensed';
                 res.setHeader('Content-Type', 'application/json');
-                res.status(200).json({ transactionHash: txHash });
+                res.status(200).json({ txHash, checksumed });
             })
-            .on('error', (e: Error) => { 
-                logger.error('something went wrong');
-                logger.error(e);
-                res.status(400).json({ error: e }) 
+            .on('error', (error: Error) => { 
+                logger.sendSignedTransactionError(error);
+
+                res.status(400).json({ error }) 
             });     
     } else {
         logger.warning('this address has reached dispensing limit');
+
         res.status(204).end()
     }
 }
