@@ -6,6 +6,7 @@ import axios from 'axios';
 import '../assets/styles/App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { ButtonProps, Row, Container, Col } from 'react-bootstrap';
+import config from '../config.json';
 
 function App() {
     //Methods
@@ -30,10 +31,7 @@ function App() {
     
     useEffect(() => {
         const fetchCaptcha = async () => {
-            const result = await axios.post(
-                'http://localhost:8080/new/easy/10/100',
-            );
-        
+            const result = await axios.post(config.NEW_CAPTCHA_URL);
             setCaptcha(result.data);
         };
         fetchCaptcha();
