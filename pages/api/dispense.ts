@@ -15,15 +15,15 @@ const handleDispense = async (req: NextApiRequest, res: NextApiResponse): Promis
     web3.transactionConfirmationBlocks = 1;
 
     const dispenseAddress: string = req.body.address;
+    const resetFaucetHistory: boolean = req.body.resetFaucetHistory;
     const checksumed = {
         mainnet: <boolean> rskjsUtil.isValidChecksumAddress(dispenseAddress, 30),
         testnet: <boolean> rskjsUtil.isValidChecksumAddress(dispenseAddress, 31)
     }
-    const resetFaucetHistory: boolean = req.body.resetFaucetHistory;
 
     if(resetFaucetHistory) { //don't know if this could be productive but i'm using it for testing
         faucetHistory = {};
-    } 
+    }
 
     if(!rskjsUtil.isValidAddress(dispenseAddress)){
         logger.warning('provided an invalid address');

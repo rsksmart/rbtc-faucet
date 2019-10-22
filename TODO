@@ -1,6 +1,7 @@
 Implementar 
 [x] Quitar el store singleton (implementar)
 [x] Quitar el web3-util (implementar)
+[] Dispensar desde UI
 [] Una vez dispensado se quita el boton de dispensar (implementar)
 [] Job que limpia todos los dias el faucet history (implementar)
 [] Estilos (implementar)
@@ -8,8 +9,8 @@ Implementar
 
 Testing
 [x] Que no se puedan mandar mas de un dispense si esta en el historial (testear)
-[] Que se envien exacamente la cantidad indicada (testear)
+[x] Que se envien exacamente la cantidad indicada (testear)
 
 Fix 
-[] Ver por que manda tantos requests el web3
+[x] Ver por que manda tantos requests el web3
 [] type rskjutil
