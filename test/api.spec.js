@@ -15,7 +15,7 @@ describe('Faucet API', () => {
         describe('# dispense to a new address', () =>
             it('should respond 200 and a txHash', async () => {
                 const address = randomAddress(1);
-                const res = await axios.post(API_URL + '/dispense', { address })
+                const res = await axios.post(API_URL + '/dispense', { address, resetFaucetHistory: true })
 
                 assert.equal(res.status, 200); 
                 assert.ok(res.data.txHash); 
@@ -61,18 +61,14 @@ describe('Faucet API', () => {
         );
         describe('# dispense right value', () => 
             it('should be ' + VALUE_TO_DISPENSE, async () => {
-                const address = randomAddress(1);
+                const address = randomAddress(3);
                 const balance = await web3.eth.getBalance(address);
-                await axios.post(API_URL + '/dispense', { address })
+                await axios.post(API_URL + '/dispense', { address, resetFaucetHistory: true })
                 const currentBalance = await web3.eth.getBalance(address);
+                const expectedBalance = Number(balance) + Number(web3.utils.toWei(0.1.toString(), 'ether'));
 
-                assert.equal(currentBalance, balance + 0.1)
+                assert.equal(currentBalance, expectedBalance);
             })
         );
-        describe('# dispense after faucet history reset', () => 
-            it('should dispense', () => {
-
-            })
-        )
     });
 })
