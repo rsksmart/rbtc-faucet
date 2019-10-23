@@ -26,10 +26,10 @@ const handleDispense = async (req: NextApiRequest, res: NextApiResponse): Promis
     faucetHistory = {};
   }
 
-  if (!rskjsUtil.isValidAddress(dispenseAddress)) {
+  if (!rskjsUtil.isValidAddress(dispenseAddress) || dispenseAddress == undefined || dispenseAddress == '') {
     logger.warning('provided an invalid address');
-
-    res.status(409).end();
+    res.setHeader('Content-Type', 'application/json');
+    res.status(409).end(JSON.stringify({ message: 'Please provide a valid address' }));
   } else if (!faucetHistory.hasOwnProperty(dispenseAddress)) {
     logger.event('dispensing to ' + dispenseAddress);
 
@@ -65,12 +65,14 @@ const handleDispense = async (req: NextApiRequest, res: NextApiResponse): Promis
       .on('error', (error: Error) => {
         logger.sendSignedTransactionError(error);
 
-        res.status(400).json({
-          error
-        });
+        res.status(500).json(
+          JSON.stringify({
+            message: 'Something went wrong, please try again in a while'
+          })
+        );
       });
   } else {
-    logger.warning('this address has reached dispensing limit');
+    logger.warning(dispenseAddress + ' is trying to dispense more than once in a day, dispense denied');
 
     res.status(204).end();
   }
