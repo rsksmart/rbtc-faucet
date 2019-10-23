@@ -1,5 +1,5 @@
 import chalk from 'chalk';
-import { TxParameters } from '../types';
+import { TxParameters } from '../types/types';
 
 const logger = {
   info: (info: any): void =>
@@ -27,7 +27,7 @@ const logger = {
   sendSignedTransactionError: (e: Error): void => {
     logger.error('something went wrong sending signed transaction');
     logger.error(e);
-  },
+  }
 };
 
 export default logger;

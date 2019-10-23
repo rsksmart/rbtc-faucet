@@ -10,3 +10,10 @@ export interface TxParameters {
 export interface FaucetHistory {
   [address: string]: string;
 }
+
+export interface FaucetButton {
+  variant: ButtonProps['variant'];
+  onClick:
+    | ((event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void)
+    | undefined;
+}

@@ -4,13 +4,13 @@ import Tx from 'ethereumjs-tx';
 import Web3 from 'web3';
 import logger from './../../utils/logger';
 import rskjsUtil from 'rskjs-util';
-import { TxParameters, FaucetHistory } from '../../types.js';
+import { TxParameters, FaucetHistory } from '../../types/types.js';
 
 let faucetHistory: FaucetHistory = {};
 
 const handleDispense = async (
   req: NextApiRequest,
-  res: NextApiResponse,
+  res: NextApiResponse
 ): Promise<void> => {
   res.setHeader('Content-Type', 'application/json');
 
@@ -21,7 +21,7 @@ const handleDispense = async (
   const resetFaucetHistory: boolean = req.body.resetFaucetHistory;
   const checksumed = {
     mainnet: <boolean>rskjsUtil.isValidChecksumAddress(dispenseAddress, 30),
-    testnet: <boolean>rskjsUtil.isValidChecksumAddress(dispenseAddress, 31),
+    testnet: <boolean>rskjsUtil.isValidChecksumAddress(dispenseAddress, 31)
   };
 
   if (resetFaucetHistory) {
@@ -40,13 +40,13 @@ const handleDispense = async (
       from: config.FAUCET_ADDRESS,
       to: dispenseAddress,
       nonce: web3.utils.toHex(
-        await web3.eth.getTransactionCount(config.FAUCET_ADDRESS),
+        await web3.eth.getTransactionCount(config.FAUCET_ADDRESS)
       ),
       gasPrice: web3.utils.toHex(config.GAS_PRICE),
       gas: web3.utils.toHex(config.GAS_LIMIT),
       value: web3.utils.toHex(
-        web3.utils.toWei(config.VALUE_TO_DISPENSE.toString()),
-      ),
+        web3.utils.toWei(config.VALUE_TO_DISPENSE.toString())
+      )
     };
 
     logger.txParameters(txParameters);
@@ -64,12 +64,17 @@ const handleDispense = async (
 
         faucetHistory[dispenseAddress] = 'dispensed';
         res.setHeader('Content-Type', 'application/json');
-        res.status(200).json({ txHash, checksumed });
+        res.status(200).json({
+          txHash,
+          checksumed
+        });
       })
       .on('error', (error: Error) => {
         logger.sendSignedTransactionError(error);
 
-        res.status(400).json({ error });
+        res.status(400).json({
+          error
+        });
       });
   } else {
     logger.warning('this address has reached dispensing limit');

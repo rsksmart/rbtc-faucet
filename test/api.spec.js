@@ -4,7 +4,7 @@ const keccak256 = require('keccak256');
 const Web3 = require('web3');
 
 const web3 = new Web3(
-  new Web3.providers.HttpProvider(require('./../config').RSK_NODE),
+  new Web3.providers.HttpProvider(require('./../config').RSK_NODE)
 );
 web3.transactionConfirmationBlocks = 1;
 
@@ -23,7 +23,7 @@ describe('Faucet API', () => {
         const address = randomAddress(1);
         const res = await axios.post(API_URL + '/dispense', {
           address,
-          resetFaucetHistory: true,
+          resetFaucetHistory: true
         });
 
         assert.equal(res.status, 200);
@@ -33,13 +33,13 @@ describe('Faucet API', () => {
       it('should only dispense the first time, respond 200 and then respond 204', async () => {
         const address = randomAddress(2);
         const firstResponse = await axios.post(API_URL + '/dispense', {
-          address,
+          address
         });
         const secondResponse = await axios.post(API_URL + '/dispense', {
-          address,
+          address
         });
         const thirdResponse = await axios.post(API_URL + '/dispense', {
-          address,
+          address
         });
 
         assert.equal(200, firstResponse.status);
@@ -51,7 +51,9 @@ describe('Faucet API', () => {
     describe('# dispense to an invalid address', () =>
       it("shouldn't dispense and respond 409", async () => {
         try {
-          await axios.post(API_URL + '/dispense', { address: '0x0' });
+          await axios.post(API_URL + '/dispense', {
+            address: '0x0'
+          });
         } catch (e) {
           return assert.equal(e.response.status, 409);
         }
@@ -74,7 +76,7 @@ describe('Faucet API', () => {
         const balance = await web3.eth.getBalance(address);
         await axios.post(API_URL + '/dispense', {
           address,
-          resetFaucetHistory: true,
+          resetFaucetHistory: true
         });
         const currentBalance = await web3.eth.getBalance(address);
         const expectedBalance =

@@ -17,7 +17,7 @@ class JobUtil {
         }
       },
       start: false,
-      timeZone: 'America/Los_Angeles',
+      timeZone: 'America/Los_Angeles'
     });
     job.start();
 
