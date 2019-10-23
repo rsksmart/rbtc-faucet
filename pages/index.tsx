@@ -8,11 +8,7 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Modal from 'react-bootstrap/Modal';
 import config from '../config.json';
-import {
-  isValidAddress,
-  isValidChecksumAddress,
-  toChecksumAddress
-} from 'rskjs-util';
+import { isValidAddress, isValidChecksumAddress, toChecksumAddress } from 'rskjs-util';
 import { FaucetButton } from '../types/types';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../assets/styles/App.css';
@@ -35,9 +31,7 @@ function App() {
   const [dispenseAddress, setDispenseAddress] = useState('');
   const [captchaValue, setCaptchaValue] = useState('');
   const [showModal, setShowModal] = useState(false);
-  const [errorTooltipAddressVisible, setErrorTooltipAddressVisible] = useState(
-    false
-  );
+  const [errorTooltipAddressVisible, setErrorTooltipAddressVisible] = useState(false);
 
   useEffect(() => {
     const fetchCaptcha = async () => {
@@ -98,10 +92,7 @@ function App() {
           <br />
           <Row>
             <Col className="col-centered">
-              <img
-                className="captcha-image"
-                src={`data:image/png;base64,${captcha.png}`}
-              />
+              <img className="captcha-image" src={`data:image/png;base64,${captcha.png}`} />
             </Col>
           </Row>
           <br />
@@ -120,17 +111,12 @@ function App() {
           <br />
           <Row>
             <Col className="col-centered">
-              <FaucetButton
-                variant={faucetVariant}
-                onClick={handleFaucetButtonClick}
-              />
+              <FaucetButton variant={faucetVariant} onClick={handleFaucetButtonClick} />
             </Col>
           </Row>
           <Modal centered show={showModal} onHide={handleClose}>
             <Modal.Header className="background-modal" closeButton>
-              <Modal.Title>
-                Successfully sent some RBTCs to {dispenseAddress}
-              </Modal.Title>
+              <Modal.Title>Successfully sent some RBTCs to {dispenseAddress}</Modal.Title>
             </Modal.Header>
             <Modal.Body className="background-modal">
               {!isValidChecksumAddress(dispenseAddress, RSK_TESTNET_CHAIN) ? (

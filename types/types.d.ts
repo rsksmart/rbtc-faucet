@@ -13,7 +13,5 @@ export interface FaucetHistory {
 
 export interface FaucetButton {
   variant: ButtonProps['variant'];
-  onClick:
-    | ((event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void)
-    | undefined;
+  onClick: ((event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void) | undefined;
 }

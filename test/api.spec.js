@@ -3,9 +3,7 @@ const axios = require('axios');
 const keccak256 = require('keccak256');
 const Web3 = require('web3');
 
-const web3 = new Web3(
-  new Web3.providers.HttpProvider(require('./../config').RSK_NODE)
-);
+const web3 = new Web3(new Web3.providers.HttpProvider(require('./../config').RSK_NODE));
 web3.transactionConfirmationBlocks = 1;
 
 const VALUE_TO_DISPENSE = require('./../config').VALUE_TO_DISPENSE;
@@ -79,8 +77,7 @@ describe('Faucet API', () => {
           resetFaucetHistory: true
         });
         const currentBalance = await web3.eth.getBalance(address);
-        const expectedBalance =
-          Number(balance) + Number(web3.utils.toWei((0.1).toString(), 'ether'));
+        const expectedBalance = Number(balance) + Number(web3.utils.toWei((0.1).toString(), 'ether'));
 
         assert.equal(currentBalance, expectedBalance);
       }));

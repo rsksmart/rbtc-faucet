@@ -8,10 +8,7 @@ import { TxParameters, FaucetHistory } from '../../types/types.js';
 
 let faucetHistory: FaucetHistory = {};
 
-const handleDispense = async (
-  req: NextApiRequest,
-  res: NextApiResponse
-): Promise<void> => {
+const handleDispense = async (req: NextApiRequest, res: NextApiResponse): Promise<void> => {
   res.setHeader('Content-Type', 'application/json');
 
   const web3 = new Web3(new Web3.providers.HttpProvider(config.RSK_NODE));
@@ -39,14 +36,10 @@ const handleDispense = async (
     const txParameters: TxParameters = {
       from: config.FAUCET_ADDRESS,
       to: dispenseAddress,
-      nonce: web3.utils.toHex(
-        await web3.eth.getTransactionCount(config.FAUCET_ADDRESS)
-      ),
+      nonce: web3.utils.toHex(await web3.eth.getTransactionCount(config.FAUCET_ADDRESS)),
       gasPrice: web3.utils.toHex(config.GAS_PRICE),
       gas: web3.utils.toHex(config.GAS_LIMIT),
-      value: web3.utils.toHex(
-        web3.utils.toWei(config.VALUE_TO_DISPENSE.toString())
-      )
+      value: web3.utils.toHex(web3.utils.toWei(config.VALUE_TO_DISPENSE.toString()))
     };
 
     logger.txParameters(txParameters);
