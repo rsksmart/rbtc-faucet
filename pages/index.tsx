@@ -6,32 +6,20 @@ import axios from 'axios';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import Modal from 'react-bootstrap/Modal';
 import config from '../config.json';
+import swal from 'sweetalert';
 import { isValidAddress, isValidChecksumAddress, toChecksumAddress } from 'rskjs-util';
-import { FaucetButton } from '../types/types';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../assets/styles/App.css';
 
 const RSK_TESTNET_CHAIN = 31;
 
 function App() {
-  //Components
-  const FaucetButton = (props: FaucetButton) => {
-    return (
-      <Button variant={props.variant} onClick={props.onClick}>
-        Get test RBTC
-      </Button>
-    );
-  };
-
   //Hooks
-  const [faucetVariant, setFaucetVariant] = useState<any>('success');
   const [captcha, setCaptcha] = useState({ id: '', png: '' });
   const [dispenseAddress, setDispenseAddress] = useState('');
   const [captchaValue, setCaptchaValue] = useState('');
-  const [showModal, setShowModal] = useState(false);
-  const [errorTooltipAddressVisible, setErrorTooltipAddressVisible] = useState(false);
+  const [clickable, setClickable] = useState(true);
 
   useEffect(() => {
     const fetchCaptcha = async () => {
@@ -43,18 +31,21 @@ function App() {
 
   //Methods
   const handleFaucetButtonClick = async () => {
-    try {
-      if (!isValidAddress(dispenseAddress)) {
-        setErrorTooltipAddressVisible(true);
-      }
-
-      const res = await axios.post(config.SOLVE_CAPTCHA_URL, {
-        dispenseAddress
-      });
-    } catch (e) {
-      setFaucetVariant('danger');
+    if (clickable) {
+      axios
+        .post(config.API_URL + '/dispense', {
+          dispenseAddress
+        })
+        .then(res => {
+          //check why 204 doesn't have any data
+          swal(res.data.modalTitle, res.data.message, res.data.modalStatus);
+        })
+        .catch(e => {
+          //codes 409 or 500
+          console.error(JSON.stringify(e.response));
+          swal(e.response.data.modalTitle, e.response.data.message, e.response.data.modalStatus);
+        });
     }
-    setShowModal(true);
   };
   const handleCaptchaValueChange = (event: any) => {
     setCaptchaValue(event.target.value);
@@ -62,8 +53,6 @@ function App() {
   const handleDispenseAddressChange = (event: any) => {
     setDispenseAddress(event.target.value);
   };
-  const handleClose = () => setShowModal(false);
-  const handleShow = () => setShowModal(true);
 
   return (
     <div className="background">
@@ -111,32 +100,11 @@ function App() {
           <br />
           <Row>
             <Col className="col-centered">
-              <FaucetButton variant={faucetVariant} onClick={handleFaucetButtonClick} />
+              <Button variant={'success'} onClick={handleFaucetButtonClick}>
+                Get test RBTC
+              </Button>
             </Col>
           </Row>
-          <Modal centered show={showModal} onHide={handleClose}>
-            <Modal.Header className="background-modal" closeButton>
-              <Modal.Title>Successfully sent some RBTCs to {dispenseAddress}</Modal.Title>
-            </Modal.Header>
-            <Modal.Body className="background-modal">
-              {!isValidChecksumAddress(dispenseAddress, RSK_TESTNET_CHAIN) ? (
-                <>
-                  Please consider using this address with RSK Testnet checksum:{' '}
-                  {toChecksumAddress(dispenseAddress, RSK_TESTNET_CHAIN)}
-                </>
-              ) : (
-                <></>
-              )}
-            </Modal.Body>
-            <Modal.Footer className="background-modal">
-              <Button variant="secondary" onClick={handleClose}>
-                Close
-              </Button>
-              <Button variant="success" onClick={handleClose}>
-                Save Changes
-              </Button>
-            </Modal.Footer>
-          </Modal>
         </Container>
       </body>
     </div>
