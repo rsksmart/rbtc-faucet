@@ -18,9 +18,8 @@ describe('Faucet API', () => {
   describe('/dispense', () => {
     describe('# dispense to a new address', () =>
       it('should respond 200 and a txHash', async () => {
-        const address = randomAddress(1);
         const res = await axios.post(API_URL + '/dispense', {
-          address,
+          dispenseAddress: randomAddress(1),
           resetFaucetHistory: true
         });
 
@@ -29,15 +28,15 @@ describe('Faucet API', () => {
       }));
     describe('# dispense more than one time to an address', () =>
       it('should only dispense the first time, respond 200 and then respond 204', async () => {
-        const address = randomAddress(2);
+        const dispenseAddress = randomAddress(2);
         const firstResponse = await axios.post(API_URL + '/dispense', {
-          address
+          dispenseAddress
         });
         const secondResponse = await axios.post(API_URL + '/dispense', {
-          address
+          dispenseAddress
         });
         const thirdResponse = await axios.post(API_URL + '/dispense', {
-          address
+          dispenseAddress
         });
 
         assert.equal(200, firstResponse.status);
@@ -50,10 +49,10 @@ describe('Faucet API', () => {
       it("shouldn't dispense and respond 409", async () => {
         try {
           await axios.post(API_URL + '/dispense', {
-            address: '0x0'
+            dispenseAddress: '0x0'
           });
         } catch (e) {
-          return assert.equal(e.response.status, 409);
+          assert.equal(e.response.status, 409);
         }
       }));
     describe('# dispense to an invalid checksum address (TODO)', () =>
@@ -70,13 +69,13 @@ describe('Faucet API', () => {
       }));
     describe('# dispense right value', () =>
       it('should be ' + VALUE_TO_DISPENSE, async () => {
-        const address = randomAddress(3);
-        const balance = await web3.eth.getBalance(address);
+        const dispenseAddress = randomAddress(3);
+        const balance = await web3.eth.getBalance(dispenseAddress);
         await axios.post(API_URL + '/dispense', {
-          address,
+          dispenseAddress,
           resetFaucetHistory: true
         });
-        const currentBalance = await web3.eth.getBalance(address);
+        const currentBalance = await web3.eth.getBalance(dispenseAddress);
         const expectedBalance = Number(balance) + Number(web3.utils.toWei((0.1).toString(), 'ether'));
 
         assert.equal(currentBalance, expectedBalance);
