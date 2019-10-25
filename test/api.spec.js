@@ -27,8 +27,9 @@ describe('Faucet API', () => {
         assert.ok(res.data.txHash);
       }));
     describe('# dispense more than one time to an address', () =>
-      it('should only dispense the first time, respond 200 and then respond 204', async () => {
+      it('should only dispense the first time and then deny', async () => {
         const dispenseAddress = randomAddress(2);
+        const oldBalance = await web3.eth.getBalance(dispenseAddress);
         const firstResponse = await axios.post(API_URL + '/dispense', {
           dispenseAddress
         });
@@ -42,8 +43,13 @@ describe('Faucet API', () => {
         assert.equal(200, firstResponse.status);
         assert.ok(firstResponse.data.txHash);
 
-        assert.equal(secondResponse.status, 204);
-        assert.equal(thirdResponse.status, 204);
+        assert.equal(secondResponse.status, 200);
+        assert.equal(thirdResponse.status, 200);
+
+        const currentBalance = await web3.eth.getBalance(dispenseAddress);
+        const expectedBalance = incrementByValueToDispense(oldBalance);
+
+        assert.equal(currentBalance, expectedBalance);
       }));
     describe('# dispense to an invalid address', () =>
       it("shouldn't dispense and respond 409", async () => {
@@ -76,9 +82,12 @@ describe('Faucet API', () => {
           resetFaucetHistory: true
         });
         const currentBalance = await web3.eth.getBalance(dispenseAddress);
-        const expectedBalance = Number(balance) + Number(web3.utils.toWei((0.1).toString(), 'ether'));
+        const expectedBalance = incrementByValueToDispense(balance);
 
         assert.equal(currentBalance, expectedBalance);
       }));
   });
 });
+
+const incrementByValueToDispense = balance =>
+  Number(balance) + Number(web3.utils.toWei(VALUE_TO_DISPENSE.toString(), 'ether'));
