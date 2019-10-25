@@ -36,6 +36,7 @@
     "keccak256": "^1.0.0",
     "mocha": "^6.2.2",
     "prettier": "^1.18.2",
+    "sweetalert2": "^8.18.6",
     "typescript": "^3.6.4"
   }
 }
