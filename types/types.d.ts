@@ -10,3 +10,14 @@ export interface TxParameters {
 export interface FaucetHistory {
   [address: string]: string;
 }
+
+export interface CaptchaSolution {
+  id: string;
+  solution: string;
+}
+
+export interface CaptchaSolutionResponse {
+  result: 'accepted' | 'rejected';
+  reject_reason: 'too many trials' | 'incorrect solution' | '';
+  trials_left: number;
+}
