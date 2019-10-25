@@ -35,7 +35,6 @@ function App() {
         }
       })
       .then(res => {
-        //check why 204 doesn't have any data
         const data: DispenseResponse = res.data;
         Swal.fire(swalSetup(data));
       })
@@ -59,12 +58,20 @@ function App() {
     setCaptcha(result.data);
   };
   const swalSetup = (data: DispenseResponse): SweetAlertOptions => {
-    return { ...data, onClose: () => resetView() };
-  };
-  const resetView = (): void => {
-    fetchCaptcha();
-    setDispenseAddress('');
-    setCaptchaValue('');
+    return {
+      titleText: data.titleText,
+      text: data.text,
+      type: data.type,
+      onClose: () => {
+        if (data.dispenseComplete) {
+          fetchCaptcha();
+          setDispenseAddress('');
+          setCaptchaValue('');
+        } else if (data.resetCaptcha) {
+          fetchCaptcha();
+        }
+      }
+    };
   };
 
   return (

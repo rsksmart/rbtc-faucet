@@ -2,10 +2,13 @@ const assert = require('chai').assert;
 const axios = require('axios');
 const keccak256 = require('keccak256');
 const Web3 = require('web3');
+const nock = require('nock');
+const MockAdapter = require('axios-mock-adapter');
 
 const web3 = new Web3(new Web3.providers.HttpProvider(require('./../config').RSK_NODE));
 web3.transactionConfirmationBlocks = 1;
 
+const CAPTCHA_API_URL = require('./../config').CAPTCHA_API_URL;
 const VALUE_TO_DISPENSE = require('./../config').VALUE_TO_DISPENSE;
 const API_URL = require('./../config.json').API_URL;
 const randomAddress = num =>
@@ -13,6 +16,9 @@ const randomAddress = num =>
   keccak256(num)
     .toString('hex')
     .substring(0, 40);
+
+//right now nock isn't mocking anything, therefore every test fails
+nock(CAPTCHA_API_URL).post('\/solution(.*)').reply(200, {result: 'accepted', reject_reason: '', trials_left: 5});
 
 describe('Faucet API', () => {
   describe('/dispense', () => {
@@ -33,18 +39,25 @@ describe('Faucet API', () => {
         const firstResponse = await axios.post(API_URL + '/dispense', {
           dispenseAddress
         });
-        const secondResponse = await axios.post(API_URL + '/dispense', {
-          dispenseAddress
-        });
-        const thirdResponse = await axios.post(API_URL + '/dispense', {
-          dispenseAddress
-        });
+
+        try {
+          await axios.post(API_URL + '/dispense', {
+            dispenseAddress
+          });
+        } catch (e) {
+          assert.equal(e.response.status, 409);
+        }
+
+        try {
+          await axios.post(API_URL + '/dispense', {
+            dispenseAddress
+          });
+        } catch (e) {
+          assert.equal(e.response.status, 409);
+        }
 
         assert.equal(200, firstResponse.status);
         assert.ok(firstResponse.data.txHash);
-
-        assert.equal(secondResponse.status, 200);
-        assert.equal(thirdResponse.status, 200);
 
         const currentBalance = await web3.eth.getBalance(dispenseAddress);
         const expectedBalance = incrementByValueToDispense(oldBalance);

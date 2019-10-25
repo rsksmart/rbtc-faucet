@@ -1,7 +1,8 @@
 Implementar 
 [x] Quitar el store singleton (implementar)
 [x] Quitar el web3-util (implementar)
-[] Llevar a Sweetalert2 para capturar el onClose y refrescar el captcha 
+[] Llevar a Sweetalert2 para capturar el onClose
+[] restear ui solo cuando se hace todo con exito
 [] Dispensar desde UI
 [] Una vez dispensado se quita el boton de dispensar (implementar)
 [] Job que limpia todos los dias el faucet history (implementar)

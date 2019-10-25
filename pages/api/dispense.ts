@@ -3,12 +3,35 @@ import config from '../../config.json';
 import Tx from 'ethereumjs-tx';
 import Web3 from 'web3';
 import logger from './../../utils/logger';
-import rskjsUtil, { isValidChecksumAddress, toChecksumAddress } from 'rskjs-util';
-import { TxParameters, FaucetHistory, CaptchaSolution, CaptchaSolutionResponse } from '../../types/types.js';
+import { isValidChecksumAddress, toChecksumAddress } from 'rskjs-util';
+import {
+  TxParameters,
+  FaucetHistory,
+  CaptchaSolutionRequest,
+  CaptchaSolutionResponse,
+  DispenseResponse
+} from '../../types/types';
 import axios from 'axios';
 
 let faucetHistory: FaucetHistory = {};
 
+//Conditions
+const needsCaptchaReset = (captchaSolutionResponse: CaptchaSolutionResponse): boolean =>
+  captchaSolutionResponse.trials_left == 0;
+
+const captchaRejected = (result: string): string =>
+  result == 'rejected' ? 'Invalid captcha. Notice that this captcha is case sensitive.' : '';
+const alreadyDispensed = (dispenseAddress: string): string =>
+  faucetHistory.hasOwnProperty(dispenseAddress) ? 'Address already used today, try again tomorrow.' : '';
+const invalidAddress = (dispenseAddress: string): string =>
+  dispenseAddress == undefined ||
+  dispenseAddress == '' ||
+  dispenseAddress.substring(0, 2) != '0x' ||
+  dispenseAddress.length != 42
+    ? 'Invalid address.'
+    : '';
+
+//Request Handler
 const handleDispense = async (req: NextApiRequest, res: NextApiResponse): Promise<void> => {
   try {
     res.setHeader('Content-Type', 'application/json');
@@ -17,33 +40,40 @@ const handleDispense = async (req: NextApiRequest, res: NextApiResponse): Promis
     web3.transactionConfirmationBlocks = 1;
 
     const dispenseAddress: string = req.body.dispenseAddress;
+    const captchaSolutionRequest: CaptchaSolutionRequest = req.body.captcha;
     const resetFaucetHistory: boolean = req.body.resetFaucetHistory;
-    const checksumed = {
-      mainnet: <boolean>rskjsUtil.isValidChecksumAddress(dispenseAddress, 30),
-      testnet: <boolean>rskjsUtil.isValidChecksumAddress(dispenseAddress, 31)
-    };
 
     logger.event('dispensing to ' + dispenseAddress);
+    logger.event('captcha ' + JSON.stringify(captchaSolutionRequest));
 
     if (resetFaucetHistory) {
       //don't know if this could be productive but i'm using it for testing
       faucetHistory = {};
     }
 
-    console.log(dispenseAddress);
+    const captchaSolutionResponse: CaptchaSolutionResponse = await solveCaptcha(captchaSolutionRequest);
+    //const captchaSolutionResponse: CaptchaSolutionResponse = {result: 'accepted', reject_reason: '', trials_left: 5};
 
-    if (
-      dispenseAddress == undefined ||
-      dispenseAddress == '' ||
-      dispenseAddress.substring(0, 2) != '0x' ||
-      dispenseAddress.length != 42
-    ) {
-      logger.warning('provided an invalid address');
+    //Validations
+    const validations = [
+      () => captchaRejected(captchaSolutionResponse.result),
+      () => alreadyDispensed(dispenseAddress),
+      () => invalidAddress(dispenseAddress)
+    ];
+    const errorMessages = validations.map(validate => validate()).filter(e => e != '');
+    if (errorMessages.length > 0) {
+      errorMessages.forEach(e => logger.error(e));
 
-      res
-        .status(409)
-        .end(JSON.stringify({ modalTitle: 'Error', message: 'Please provide a valid address', modalStatus: 'error' }));
-    } else if (!faucetHistory.hasOwnProperty(dispenseAddress)) {
+      const parsedMessages = errorMessages.reduce((a, b) => '- ' + a + '\n-' + b);
+      const data: DispenseResponse = {
+        titleText: 'Error',
+        text: parsedMessages,
+        type: 'error',
+        resetCaptcha: needsCaptchaReset(captchaSolutionResponse)
+      };
+      res.status(409).end(JSON.stringify(data)); //409 Conflict
+    } else {
+      //Dispensing
       const txParameters: TxParameters = {
         from: config.FAUCET_ADDRESS,
         to: dispenseAddress,
@@ -67,47 +97,60 @@ const handleDispense = async (req: NextApiRequest, res: NextApiResponse): Promis
           logger.dispensed(dispenseAddress, txHash);
 
           faucetHistory[dispenseAddress] = 'dispensed';
-          res.setHeader('Content-Type', 'application/json');
-          res.status(200).json(
-            JSON.stringify({
-              txHash,
-              modalTitle: 'Sent',
-              modalStatus: 'success',
-              message: !isValidChecksumAddress(dispenseAddress, 31)
-                ? 'Successfully sent some RBTCs to ' +
-                  dispenseAddress +
-                  '.\n Please consider using this address with RSK Testnet checksum: ' +
-                  toChecksumAddress(dispenseAddress, 31)
-                : 'Successfully sent some RBTCs to ' + dispenseAddress
-            })
-          );
+          const data: DispenseResponse = {
+            txHash,
+            titleText: 'Sent',
+            type: 'success',
+            text: !isValidChecksumAddress(dispenseAddress, 31)
+              ? 'Successfully sent some RBTCs to ' +
+                dispenseAddress +
+                '.\n Please consider using this address with RSK Testnet checksum: ' +
+                toChecksumAddress(dispenseAddress, 31)
+              : 'Successfully sent some RBTCs to ' + dispenseAddress,
+            dispenseComplete: true
+          };
+          res.status(200).json(JSON.stringify(data)); //200 OK
         })
         .on('error', (error: Error) => {
           logger.sendSignedTransactionError(error);
 
-          res.status(500).json(
-            JSON.stringify({
-              modalTitle: 'Error',
-              modalStatus: 'error',
-              message: 'Something went wrong, please try again in a while'
-            })
-          );
+          const data: DispenseResponse = {
+            titleText: 'Error',
+            type: 'error',
+            text: 'Something went wrong, please try again in a while',
+            resetCaptcha: needsCaptchaReset(captchaSolutionResponse)
+          };
+          res.status(500).json(JSON.stringify(data)); //500 Internal Server Error
         });
-    } else {
-      logger.warning(dispenseAddress + ' is trying to dispense more than once in a day, dispense denied');
-
-      const data = JSON.stringify({
-        modalTitle: 'Unsent',
-        message: 'Address already used today, try again tomorrow',
-        modalStatus: 'error'
-      });
-
-      res.status(200).end(data);
     }
   } catch (e) {
     logger.error(e);
 
-    res.status(500).end(JSON.stringify({ message: 'This is unexpected' }));
+    const data: DispenseResponse = {
+      titleText: 'Error',
+      text: 'This is unexpected, please try again later.',
+      type: 'error'
+    };
+    res.status(500).end(JSON.stringify(data)); //500 Internal Server Error
+  }
+};
+
+//Captcha solver
+const solveCaptcha = async (captcha: CaptchaSolutionRequest) => {
+  try {
+    if (captcha.solution == '') captcha.solution = 'aaaaa';
+
+    console.log('estop' + JSON.stringify(captcha));
+
+    const url = config.SOLVE_CAPTCHA_URL + captcha.id + '/' + captcha.solution;
+    const res = await axios.post(url, captcha);
+    const result: CaptchaSolutionResponse = res.data;
+    logger.event('captcha solution response ' + JSON.stringify(result));
+
+    return result;
+  } catch (e) {
+    console.log('este ' + JSON.stringify(e));
+    return { result: <'accepted' | 'rejected'>'rejected', reject_reason: e, trials_left: 0 };
   }
 };
 

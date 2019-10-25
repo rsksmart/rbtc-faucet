@@ -13,7 +13,7 @@ export interface FaucetHistory {
   [address: string]: string;
 }
 
-export interface CaptchaSolution {
+export interface CaptchaSolutionRequest {
   id: string;
   solution: string;
 }
@@ -29,4 +29,6 @@ export interface DispenseResponse {
   type: 'warning' | 'info' | 'error' | 'success' | 'question';
   text: string;
   txHash?: string;
+  resetCaptcha?: boolean;
+  dispenseComplete?: boolean;
 }
