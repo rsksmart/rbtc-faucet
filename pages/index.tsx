@@ -8,7 +8,6 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import config from '../config.json';
 import swal from 'sweetalert';
-import { isValidAddress, isValidChecksumAddress, toChecksumAddress } from 'rskjs-util';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../assets/styles/App.css';
 
