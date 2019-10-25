@@ -7,7 +7,8 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import config from '../config.json';
-import swal from 'sweetalert';
+import Swal, { SweetAlertOptions } from 'sweetalert2';
+import { DispenseResponse } from '../types/types.d';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../assets/styles/App.css';
 
@@ -18,44 +19,52 @@ function App() {
   const [captcha, setCaptcha] = useState({ id: '', png: '' });
   const [dispenseAddress, setDispenseAddress] = useState('');
   const [captchaValue, setCaptchaValue] = useState('');
-  const [clickable, setClickable] = useState(true);
-
-  const fetchCaptcha = async () => {
-    const result = await axios.post(config.NEW_CAPTCHA_URL);
-    setCaptcha(result.data);
-  };
 
   useEffect(() => {
     fetchCaptcha();
   }, []);
 
-  //Methods
+  //Handles
   const handleFaucetButtonClick = async () => {
-    if (clickable) {
-      axios
-        .post(config.API_URL + '/dispense', {
-          dispenseAddress,
-          captcha: {
-            solution: captchaValue,
-            id: captcha.id
-          }
-        })
-        .then(res => {
-          //check why 204 doesn't have any data
-          swal(res.data.modalTitle, res.data.message, res.data.modalStatus);
-        })
-        .catch(e => {
-          //codes 409 or 500
-          console.error(JSON.stringify(e.response));
-          swal(e.response.data.modalTitle, e.response.data.message, e.response.data.modalStatus);
-        });
-    }
+    axios
+      .post(config.API_URL + '/dispense', {
+        dispenseAddress,
+        captcha: {
+          solution: captchaValue,
+          id: captcha.id
+        }
+      })
+      .then(res => {
+        //check why 204 doesn't have any data
+        const data: DispenseResponse = res.data;
+        Swal.fire(swalSetup(data));
+      })
+      .catch(e => {
+        //codes 409 or 500
+        console.error(JSON.stringify(e.response));
+        const data: DispenseResponse = e.response.data;
+        Swal.fire(swalSetup(data));
+      });
   };
   const handleCaptchaValueChange = (event: any) => {
     setCaptchaValue(event.target.value);
   };
   const handleDispenseAddressChange = (event: any) => {
     setDispenseAddress(event.target.value);
+  };
+
+  //Methods
+  const fetchCaptcha = async () => {
+    const result = await axios.post(config.NEW_CAPTCHA_URL);
+    setCaptcha(result.data);
+  };
+  const swalSetup = (data: DispenseResponse): SweetAlertOptions => {
+    return { ...data, onClose: () => resetView() };
+  };
+  const resetView = (): void => {
+    fetchCaptcha();
+    setDispenseAddress('');
+    setCaptchaValue('');
   };
 
   return (
