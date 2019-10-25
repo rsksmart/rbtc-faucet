@@ -3,8 +3,9 @@ import config from '../../config.json';
 import Tx from 'ethereumjs-tx';
 import Web3 from 'web3';
 import logger from './../../utils/logger';
-import rskjsUtil, { isValidChecksumAddress, toChecksumAddress, isValidAddress } from 'rskjs-util';
-import { TxParameters, FaucetHistory } from '../../types/types.js';
+import rskjsUtil, { isValidChecksumAddress, toChecksumAddress } from 'rskjs-util';
+import { TxParameters, FaucetHistory, CaptchaSolution, CaptchaSolutionResponse } from '../../types/types.js';
+import axios from 'axios';
 
 let faucetHistory: FaucetHistory = {};
 
@@ -95,13 +96,13 @@ const handleDispense = async (req: NextApiRequest, res: NextApiResponse): Promis
     } else {
       logger.warning(dispenseAddress + ' is trying to dispense more than once in a day, dispense denied');
 
-      res.status(204).end(
-        JSON.stringify({
-          modalTitle: 'Unsent',
-          message: 'Address already used today, try again tomorrow',
-          modalStatus: 'error'
-        })
-      );
+      const data = JSON.stringify({
+        modalTitle: 'Unsent',
+        message: 'Address already used today, try again tomorrow',
+        modalStatus: 'error'
+      });
+
+      res.status(200).end(data);
     }
   } catch (e) {
     logger.error(e);
