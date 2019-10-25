@@ -21,11 +21,12 @@ function App() {
   const [captchaValue, setCaptchaValue] = useState('');
   const [clickable, setClickable] = useState(true);
 
+  const fetchCaptcha = async () => {
+    const result = await axios.post(config.NEW_CAPTCHA_URL);
+    setCaptcha(result.data);
+  };
+
   useEffect(() => {
-    const fetchCaptcha = async () => {
-      const result = await axios.post(config.NEW_CAPTCHA_URL);
-      setCaptcha(result.data);
-    };
     fetchCaptcha();
   }, []);
 
@@ -34,7 +35,11 @@ function App() {
     if (clickable) {
       axios
         .post(config.API_URL + '/dispense', {
-          dispenseAddress
+          dispenseAddress,
+          captcha: {
+            solution: captchaValue,
+            id: captcha.id
+          }
         })
         .then(res => {
           //check why 204 doesn't have any data
