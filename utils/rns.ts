@@ -94,4 +94,10 @@ class RNS {
         
         return resolver.methods.addr(hash).call();   
     }
+
+    isRNS(address: string): boolean {
+        const labels = address.split('.');
+        
+        return labels[labels.length - 1] === 'rsk';
+    }
 }
