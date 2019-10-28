@@ -12,8 +12,31 @@ import {
   DispenseResponse
 } from '../../types/types';
 import axios from 'axios';
+import schedule from 'node-schedule';
+import { CronJob } from 'cron';
 
 let faucetHistory: FaucetHistory = {};
+
+//Job
+new CronJob('00 00 12 * * 0-6', function() { //This job will begin when the first user calls dispense api => migrate to a custom express server to begin when deployed
+    /*
+    * Runs every day
+    * at 12:00:00 AM. == 00:00:00 HS
+    */
+    try {
+      logger.event('restarting faucet history...');
+      faucetHistory = {};
+      logger.success('faucet history has been restarted succesfuly!');
+    } catch(e) {
+      logger.error('there was a problem with faucet history restart');
+    }
+  }, () => {
+    /* This function is executed when the job stops */
+    logger.event('faucet history restart job has been stopped');
+  },
+  true, /* Start the job right now */
+  'America/Los_Angeles' /* Time zone of this job. */
+);
 
 //Conditions
 const needsCaptchaReset = (captchaSolutionResponse: CaptchaSolutionResponse): boolean =>
@@ -136,11 +159,9 @@ const handleDispense = async (req: NextApiRequest, res: NextApiResponse): Promis
 };
 
 //Captcha solver
-const solveCaptcha = async (captcha: CaptchaSolutionRequest) => {
+const solveCaptcha = async (captcha: CaptchaSolutionRequest): Promise<CaptchaSolutionResponse> => {
   try {
-    if (captcha.solution == '') captcha.solution = 'aaaaa';
-
-    console.log('estop' + JSON.stringify(captcha));
+    if (captcha.solution == '') captcha.solution = 'doesn\'t matter';
 
     const url = config.SOLVE_CAPTCHA_URL + captcha.id + '/' + captcha.solution;
     const res = await axios.post(url, captcha);
