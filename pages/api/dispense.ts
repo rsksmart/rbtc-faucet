@@ -12,29 +12,29 @@ import {
   DispenseResponse
 } from '../../types/types';
 import axios from 'axios';
-import schedule from 'node-schedule';
 import { CronJob } from 'cron';
 
 let faucetHistory: FaucetHistory = {};
 
 //Job
-new CronJob('00 00 12 * * 0-6', function() { //This job will begin when the first user calls dispense api => migrate to a custom express server to begin when deployed
-    /*
-    * Runs every day
-    * at 12:00:00 AM. == 00:00:00 HS
-    */
+new CronJob(
+  '00 00 12 * * 0-6',
+  () => {
+    //This job will begin when the first user calls dispense api
+    //Runs every day at 12:00:00 AM. == 00:00:00 HS
     try {
       logger.event('restarting faucet history...');
       faucetHistory = {};
       logger.success('faucet history has been restarted succesfuly!');
-    } catch(e) {
+    } catch (e) {
       logger.error('there was a problem with faucet history restart');
     }
-  }, () => {
-    /* This function is executed when the job stops */
+  },
+  () => {
+    //This function is executed when the job stops
     logger.event('faucet history restart job has been stopped');
   },
-  true, /* Start the job right now */
+  true /* Start the job right now */,
   'America/Los_Angeles' /* Time zone of this job. */
 );
 
@@ -78,7 +78,8 @@ const handleDispense = async (req: NextApiRequest, res: NextApiResponse): Promis
     //const captchaSolutionResponse: CaptchaSolutionResponse = {result: 'accepted', reject_reason: '', trials_left: 5};
 
     //Validations
-    const validations = [
+    //each validation will return an error message, if it success it'll return an empty string (empty error message)
+    const validations = [ 
       () => captchaRejected(captchaSolutionResponse.result),
       () => alreadyDispensed(dispenseAddress),
       () => invalidAddress(dispenseAddress)
@@ -161,7 +162,7 @@ const handleDispense = async (req: NextApiRequest, res: NextApiResponse): Promis
 //Captcha solver
 const solveCaptcha = async (captcha: CaptchaSolutionRequest): Promise<CaptchaSolutionResponse> => {
   try {
-    if (captcha.solution == '') captcha.solution = 'doesn\'t matter';
+    if (captcha.solution == '') captcha.solution = "doesn't matter";
 
     const url = config.SOLVE_CAPTCHA_URL + captcha.id + '/' + captcha.solution;
     const res = await axios.post(url, captcha);

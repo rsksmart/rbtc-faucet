@@ -18,7 +18,9 @@ const randomAddress = num =>
     .substring(0, 40);
 
 //right now nock isn't mocking anything, therefore every test fails
-nock(CAPTCHA_API_URL).post('\/solution(.*)').reply(200, {result: 'accepted', reject_reason: '', trials_left: 5});
+nock(CAPTCHA_API_URL)
+  .post('/solution(.*)')
+  .reply(200, { result: 'accepted', reject_reason: '', trials_left: 5 });
 
 describe('Faucet API', () => {
   describe('/dispense', () => {
