@@ -13,6 +13,7 @@ import {
 } from '../../types/types';
 import axios from 'axios';
 import { CronJob } from 'cron';
+import RNS from '../../utils/rns-util';
 
 let faucetHistory: FaucetHistory = {};
 
@@ -38,10 +39,14 @@ new CronJob(
   'America/Los_Angeles' /* Time zone of this job. */
 );
 
-//Conditions
+//Utils
+const web3: Web3 = new Web3(new Web3.providers.HttpProvider(config.RSK_NODE));
+web3.transactionConfirmationBlocks = 1; 
+const rnsUtil: RNS = new RNS(web3);
+
+//Validations
 const needsCaptchaReset = (captchaSolutionResponse: CaptchaSolutionResponse): boolean =>
   captchaSolutionResponse.trials_left == 0;
-
 const captchaRejected = (result: string): string =>
   result == 'rejected' ? 'Invalid captcha. Notice that this captcha is case sensitive.' : '';
 const alreadyDispensed = (dispenseAddress: string): string =>
@@ -49,8 +54,8 @@ const alreadyDispensed = (dispenseAddress: string): string =>
 const invalidAddress = (dispenseAddress: string): string =>
   dispenseAddress == undefined ||
   dispenseAddress == '' ||
-  dispenseAddress.substring(0, 2) != '0x' ||
-  dispenseAddress.length != 42
+  (dispenseAddress.substring(0, 2) != '0x' && !rnsUtil.isRNS(dispenseAddress)) ||
+  (dispenseAddress.length != 42 && !rnsUtil.isRNS(dispenseAddress))
     ? 'Invalid address.'
     : '';
 
@@ -58,10 +63,7 @@ const invalidAddress = (dispenseAddress: string): string =>
 const handleDispense = async (req: NextApiRequest, res: NextApiResponse): Promise<void> => {
   try {
     res.setHeader('Content-Type', 'application/json');
-
-    const web3 = new Web3(new Web3.providers.HttpProvider(config.RSK_NODE));
-    web3.transactionConfirmationBlocks = 1;
-
+  
     const dispenseAddress: string = req.body.dispenseAddress;
     const captchaSolutionRequest: CaptchaSolutionRequest = req.body.captcha;
     const resetFaucetHistory: boolean = req.body.resetFaucetHistory;
@@ -79,16 +81,16 @@ const handleDispense = async (req: NextApiRequest, res: NextApiResponse): Promis
 
     //Validations
     //each validation will return an error message, if it success it'll return an empty string (empty error message)
-    const validations = [ 
+    const validations: (() => string)[] = [ 
       () => captchaRejected(captchaSolutionResponse.result),
       () => alreadyDispensed(dispenseAddress),
       () => invalidAddress(dispenseAddress)
     ];
-    const errorMessages = validations.map(validate => validate()).filter(e => e != '');
+    const errorMessages: string[] = validations.map(validate => validate()).filter(e => e != '');
     if (errorMessages.length > 0) {
       errorMessages.forEach(e => logger.error(e));
 
-      const parsedMessages = errorMessages.reduce((a, b) => '- ' + a + '\n-' + b);
+      const parsedMessages: string = errorMessages.reduce((a, b) => '- ' + a + '\n-' + b);
       const data: DispenseResponse = {
         titleText: 'Error',
         text: parsedMessages,
@@ -98,9 +100,16 @@ const handleDispense = async (req: NextApiRequest, res: NextApiResponse): Promis
       res.status(409).end(JSON.stringify(data)); //409 Conflict
     } else {
       //Dispensing
+      let rskAddress: string = '';
+
+      if(rnsUtil.isRNS(dispenseAddress)) {
+        const rnsAddress = dispenseAddress;
+        rskAddress = await rnsUtil.resolveAddr(rnsAddress);
+      }
+      
       const txParameters: TxParameters = {
         from: config.FAUCET_ADDRESS,
-        to: dispenseAddress,
+        to: rskAddress ? rskAddress : dispenseAddress,
         nonce: web3.utils.toHex(await web3.eth.getTransactionCount(config.FAUCET_ADDRESS)),
         gasPrice: web3.utils.toHex(config.GAS_PRICE),
         gas: web3.utils.toHex(config.GAS_LIMIT),
@@ -146,6 +155,7 @@ const handleDispense = async (req: NextApiRequest, res: NextApiResponse): Promis
           };
           res.status(500).json(JSON.stringify(data)); //500 Internal Server Error
         });
+        console.log('asd');
     }
   } catch (e) {
     logger.error(e);
@@ -171,7 +181,7 @@ const solveCaptcha = async (captcha: CaptchaSolutionRequest): Promise<CaptchaSol
 
     return result;
   } catch (e) {
-    console.log('este ' + JSON.stringify(e));
+    logger.error(e);
     return { result: <'accepted' | 'rejected'>'rejected', reject_reason: e, trials_left: 0 };
   }
 };
