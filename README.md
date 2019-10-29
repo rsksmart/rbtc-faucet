@@ -33,7 +33,7 @@ Notice that this server is missing Access-Control-Allow-Origin headers, you can 
 
 ### Running Next JS App
 
-First install depenecies
+1. First install depenecies
 
 ```bash
 # At root folder
@@ -41,13 +41,9 @@ First install depenecies
 yarn
 ```
 
-```bash
-# At captcha/docker
+2. Run captcha service
 
-make run
-```
-
-Then run app 
+3. Then run app 
 
 ```bash
 # At root folder
