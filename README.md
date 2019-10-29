@@ -23,7 +23,13 @@ In order to run it you'll need to
 
 ### Running rust captcha service
 
+This app consumes from a captcha service, in order develop you'll need to run it locally.
+
+It can be run in a docker container (recomended) or from sources. 
+
 Please check [README.md](https://github.com/rootstock/rbtc-faucet/tree/master/captcha) at *captcha/*
+
+Notice that this server is missing Access-Control-Allow-Origin headers, you can install [this](https://chrome.google.com/webstore/detail/allow-cors-access-control/lhobafahddgcelffkeicbaginigeejlf?hl=es) chrome extension to disable this check. 
 
 ### Running Next JS App
 
@@ -33,6 +39,12 @@ First install depenecies
 # At root folder
 
 yarn
+```
+
+```bash
+# At captcha/docker
+
+make run
 ```
 
 Then run app 
