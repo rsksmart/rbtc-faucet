@@ -99,7 +99,7 @@ function App() {
               <Form.Label>Enter your testnet address or RNS name</Form.Label>
             </Col>
           </Row>
-          <Row>
+          <Row className="faucet-input">
             <Col className="col-centered">
               <Form.Control
                 type="input"
@@ -117,14 +117,14 @@ function App() {
           </Row>
           <br />
           <br />
-          <Row>
+          <Row className="faucet-input-captcha">
             <Col className="col-centered">
               <Form.Control
-                className="faucet-input"
                 type="input"
                 placeholder="Captcha"
                 value={captchaValue}
                 onChange={handleCaptchaValueChange}
+                className="rsk-captcha"
               />
             </Col>
           </Row>

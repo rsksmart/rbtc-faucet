@@ -50,3 +50,13 @@
 .background-modal {
   background: #79554857;
 }
+
+.faucet-input {
+  margin-left: 20% !important;
+  margin-right: 20% !important;
+}
+
+.faucet-input-captcha {
+  margin-left: 25% !important;
+  margin-right: 25% !important;
+}
