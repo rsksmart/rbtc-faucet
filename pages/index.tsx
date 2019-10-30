@@ -103,7 +103,7 @@ function App() {
             <Col className="col-centered">
               <Form.Control
                 type="input"
-                placeholder="Address"
+                placeholder="0xcd7872.../ alice.rsk"
                 value={dispenseAddress}
                 onChange={handleDispenseAddressChange}
               />
