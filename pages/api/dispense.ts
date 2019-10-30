@@ -3,7 +3,7 @@ import config from '../../config.json';
 import Tx from 'ethereumjs-tx';
 import Web3 from 'web3';
 import logger from './../../utils/logger';
-import { isValidChecksumAddress, toChecksumAddress } from 'rskjs-util';
+import { isValidChecksumAddress, toChecksumAddres } from 'rskjs-util';
 import {
   TxParameters,
   FaucetHistory,
@@ -41,16 +41,16 @@ new CronJob(
 
 //Utils
 const web3: Web3 = new Web3(new Web3.providers.HttpProvider(config.RSK_NODE));
-web3.transactionConfirmationBlocks = 1; 
+web3.transactionConfirmationBlocks = 1;
 const rnsUtil: RNSUtil = new RNSUtil(web3);
 
 //Request Handler
 const handleDispense = async (req: NextApiRequest, res: NextApiResponse): Promise<void> => {
   const faucetBalance: number = Number(await web3.eth.getBalance(config.FAUCET_ADDRESS));
-  
+
   try {
     res.setHeader('Content-Type', 'application/json');
-  
+
     const dispenseAddress: string = req.body.dispenseAddress;
     const captchaSolutionRequest: CaptchaSolutionRequest = req.body.captcha;
     const resetFaucetHistory: boolean = req.body.resetFaucetHistory;
@@ -68,34 +68,32 @@ const handleDispense = async (req: NextApiRequest, res: NextApiResponse): Promis
 
     //Validations
     //each validation will return an error message, if it success it'll return an empty string (empty error message)
-    const existingAlias: boolean = await rnsUtil.existingAlias(dispenseAddress)
+    const existingAlias: boolean = await rnsUtil.existingAlias(dispenseAddress);
 
+    const unexistingRNSAlias = (dispenseAddress: string): string =>
+      !existingAlias ? dispenseAddress + ' is an unexisting alias, please provide an existing one' : '';
+    const insuficientFunds = () => (faucetBalance < 100000000000000000 ? 'Faucet has enough funds' : '');
     const needsCaptchaReset = (captchaSolutionResponse: CaptchaSolutionResponse): boolean =>
-    captchaSolutionResponse.trials_left == 0;
+      captchaSolutionResponse.trials_left == 0;
     const captchaRejected = (result: string): string =>
-    result == 'rejected' ? 'Invalid captcha. Notice that this captcha is case sensitive.' : '';
+      result == 'rejected' ? 'Invalid captcha. Notice that this captcha is case sensitive.' : '';
     const alreadyDispensed = (dispenseAddress: string): string =>
-    faucetHistory.hasOwnProperty(dispenseAddress) ? 'Address already used today, try again tomorrow.' : '';
+      faucetHistory.hasOwnProperty(dispenseAddress) ? 'Address already used today, try again tomorrow.' : '';
     const invalidAddress = (dispenseAddress: string): string =>
-    dispenseAddress == undefined ||
-    dispenseAddress == '' ||
-    (dispenseAddress.substring(0, 2) != '0x' && !rnsUtil.isRNS(dispenseAddress)) ||
-    (dispenseAddress.length != 42 && !rnsUtil.isRNS(dispenseAddress))
-      ? 'Invalid address.'
-      : '';
-    const unexistingRNSAlias = (dispenseAddress: string): string => !existingAlias ? dispenseAddress + ' is an unexisting alias, please provide an existing one' : ''
-    const insuficientFunds = () => faucetBalance < 100000000000000000 ? 'Faucet has enough funds' : ''; 
+      dispenseAddress == undefined ||
+      dispenseAddress == '' ||
+      (dispenseAddress.substring(0, 2) != '0x' && !rnsUtil.isRNS(dispenseAddress)) ||
+      (dispenseAddress.length != 42 && !rnsUtil.isRNS(dispenseAddress))
+        ? 'Invalid address.'
+        : '';
 
-    console.log('existingAlias ' + rnsUtil.existingAlias(dispenseAddress));
-
-    const validations: (() => string)[] = [ 
+    const validations: (() => string)[] = [
       () => captchaRejected(captchaSolutionResponse.result),
       () => alreadyDispensed(dispenseAddress),
-      () => invalidAddress(dispenseAddress),
-      () => unexistingRNSAlias(dispenseAddress),
+      () => (dispenseAddress.includes('rsk') ? unexistingRNSAlias(dispenseAddress) : invalidAddress(dispenseAddress)),
       () => insuficientFunds()
     ];
-    const errorMessages: string[] = validations.map(validate => validate()).filter(e => e != '');
+    const errorMessages: string[] = validations.map(validate => validate()).filter(e => e != '' && e != '-');
     if (errorMessages.length > 0) {
       errorMessages.forEach(e => logger.error(e));
 
@@ -111,21 +109,11 @@ const handleDispense = async (req: NextApiRequest, res: NextApiResponse): Promis
       //Dispensing
       let rskAddress: string = '';
 
-      if(rnsUtil.isRNS(dispenseAddress)) {
-        try {
-          const rnsAddress = dispenseAddress;
-          rskAddress = await rnsUtil.resolveAddr(rnsAddress);
-        } catch(e) {
-          const data: DispenseResponse = {
-            titleText: 'Error',
-            text: e,
-            type: 'error',
-            resetCaptcha: needsCaptchaReset(captchaSolutionResponse)
-          };
-          res.status(409).end(JSON.stringify(data)); //409 Conflict
-        }
+      if (existingAlias) {
+        const rnsAddress = dispenseAddress;
+        rskAddress = await rnsUtil.resolveAddr(rnsAddress);
       }
-      
+
       const txParameters: TxParameters = {
         from: config.FAUCET_ADDRESS,
         to: rskAddress ? rskAddress : dispenseAddress,

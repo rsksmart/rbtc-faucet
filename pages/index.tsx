@@ -16,8 +16,8 @@ import '../assets/styles/App.css';
 const RSK_TESTNET_CHAIN = 31;
 
 interface ButtonLoaderProps {
-  onClick: () => void,
-  loading: boolean
+  onClick: () => void;
+  loading: boolean;
 }
 
 function App() {
@@ -131,13 +131,13 @@ function App() {
           <br />
           <Row>
             <Col className="col-centered">
-              { 
-                loading? 
-                <Spinner animation='border' role='status' /> :
-                <Button variant='success' onClick={handleFaucetButtonClick}>
+              {loading ? (
+                <Spinner animation="border" role="status" />
+              ) : (
+                <Button variant="success" onClick={handleFaucetButtonClick}>
                   Get test RBTC
-                </Button> 
-              }
+                </Button>
+              )}
             </Col>
           </Row>
         </Container>
