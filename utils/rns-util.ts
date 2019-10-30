@@ -3,7 +3,7 @@ import { Contract } from "web3-eth-contract";
 import { AbiItem } from "web3-utils";
 const namehash = require('eth-ens-namehash');
 
-class RNS {
+class RNSUtil {
 
     registry: Contract;
     web3: Web3;
@@ -12,32 +12,41 @@ class RNS {
         this.registry = new web3.eth.Contract([registryAbi], registryAddres);
         this.web3 = web3;
     }
-
-    /* async resolver(rnsAddress: string): Resolver {
-        const hash: string = this.nameHash(rnsAddress);
-        
-        return new Resolver(this.web3.currentProvider, hash, resolverAbiList);
-    } */
-
     nameHash(rnsAddress: string): string {
         return namehash.hash(rnsAddress);
     }
-
     async resolveAddr(rnsAddress: string): Promise<string> {
-        const hash = this.nameHash(rnsAddress);
-        const resolverAddr = await this.registry.methods.resolver(hash).call();
-        console.log('pase' + resolverAddr);
-        const resolver = new this.web3.eth.Contract(resolverAbiList, resolverAddr.toString().toLowerCase());
+        const nameHash = this.nameHash(rnsAddress);
+        const resolverAddr = await this.resolverAddress(rnsAddress);
+
+        if(resolverAddr == '0x0000000000000000000000000000000000000000')
+            throw 'No address resolver';
+
+        const resolver = new this.web3.eth.Contract(resolverAbiList, resolverAddr);
         if(!await resolver.methods.supportsInterface('0x3b3b57de').call())
             throw 'No address resolution found';
-        
-        return resolver.methods.addr(hash).call();   
-    }
 
+        const realAddr = await resolver.methods.addr(nameHash).call();
+        
+        return realAddr;   
+    }
+    async resolverAddress(rnsAlias: string): Promise<string> {
+        console.log('llego este name ' + rnsAlias)
+        
+        const hash = this.nameHash(rnsAlias);
+
+        console.log(hash.length);
+        console.log(hash);
+
+        return await this.registry.methods.resolver(hash).call();
+    }
     isRNS(address: string): boolean {
         const labels = address.split('.');
         
         return labels[labels.length - 1] === 'rsk';
+    }
+    async existingAlias(rnsAlias: string): Promise<boolean> {
+        return await this.resolveAddr(rnsAlias) != '0x0000000000000000000000000000000000000000' && rnsAlias != undefined;
     }
 }
 
@@ -99,4 +108,4 @@ const resolverAbiList: AbiItem[] = [
   }
 ];
 
-export default RNS;
+export default RNSUtil;

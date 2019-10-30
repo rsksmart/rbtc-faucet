@@ -13,7 +13,7 @@ import {
 } from '../../types/types';
 import axios from 'axios';
 import { CronJob } from 'cron';
-import RNS from '../../utils/rns-util';
+import RNSUtil from '../../utils/rns-util';
 
 let faucetHistory: FaucetHistory = {};
 
@@ -42,25 +42,12 @@ new CronJob(
 //Utils
 const web3: Web3 = new Web3(new Web3.providers.HttpProvider(config.RSK_NODE));
 web3.transactionConfirmationBlocks = 1; 
-const rnsUtil: RNS = new RNS(web3);
-
-//Validations
-const needsCaptchaReset = (captchaSolutionResponse: CaptchaSolutionResponse): boolean =>
-  captchaSolutionResponse.trials_left == 0;
-const captchaRejected = (result: string): string =>
-  result == 'rejected' ? 'Invalid captcha. Notice that this captcha is case sensitive.' : '';
-const alreadyDispensed = (dispenseAddress: string): string =>
-  faucetHistory.hasOwnProperty(dispenseAddress) ? 'Address already used today, try again tomorrow.' : '';
-const invalidAddress = (dispenseAddress: string): string =>
-  dispenseAddress == undefined ||
-  dispenseAddress == '' ||
-  (dispenseAddress.substring(0, 2) != '0x' && !rnsUtil.isRNS(dispenseAddress)) ||
-  (dispenseAddress.length != 42 && !rnsUtil.isRNS(dispenseAddress))
-    ? 'Invalid address.'
-    : '';
+const rnsUtil: RNSUtil = new RNSUtil(web3);
 
 //Request Handler
 const handleDispense = async (req: NextApiRequest, res: NextApiResponse): Promise<void> => {
+  const faucetBalance: number = Number(await web3.eth.getBalance(config.FAUCET_ADDRESS));
+  
   try {
     res.setHeader('Content-Type', 'application/json');
   
@@ -81,10 +68,32 @@ const handleDispense = async (req: NextApiRequest, res: NextApiResponse): Promis
 
     //Validations
     //each validation will return an error message, if it success it'll return an empty string (empty error message)
+    const existingAlias: boolean = await rnsUtil.existingAlias(dispenseAddress)
+
+    const needsCaptchaReset = (captchaSolutionResponse: CaptchaSolutionResponse): boolean =>
+    captchaSolutionResponse.trials_left == 0;
+    const captchaRejected = (result: string): string =>
+    result == 'rejected' ? 'Invalid captcha. Notice that this captcha is case sensitive.' : '';
+    const alreadyDispensed = (dispenseAddress: string): string =>
+    faucetHistory.hasOwnProperty(dispenseAddress) ? 'Address already used today, try again tomorrow.' : '';
+    const invalidAddress = (dispenseAddress: string): string =>
+    dispenseAddress == undefined ||
+    dispenseAddress == '' ||
+    (dispenseAddress.substring(0, 2) != '0x' && !rnsUtil.isRNS(dispenseAddress)) ||
+    (dispenseAddress.length != 42 && !rnsUtil.isRNS(dispenseAddress))
+      ? 'Invalid address.'
+      : '';
+    const unexistingRNSAlias = (dispenseAddress: string): string => !existingAlias ? dispenseAddress + ' is an unexisting alias, please provide an existing one' : ''
+    const insuficientFunds = () => faucetBalance < 100000000000000000 ? 'Faucet has enough funds' : ''; 
+
+    console.log('existingAlias ' + rnsUtil.existingAlias(dispenseAddress));
+
     const validations: (() => string)[] = [ 
       () => captchaRejected(captchaSolutionResponse.result),
       () => alreadyDispensed(dispenseAddress),
-      () => invalidAddress(dispenseAddress)
+      () => invalidAddress(dispenseAddress),
+      () => unexistingRNSAlias(dispenseAddress),
+      () => insuficientFunds()
     ];
     const errorMessages: string[] = validations.map(validate => validate()).filter(e => e != '');
     if (errorMessages.length > 0) {
@@ -103,8 +112,18 @@ const handleDispense = async (req: NextApiRequest, res: NextApiResponse): Promis
       let rskAddress: string = '';
 
       if(rnsUtil.isRNS(dispenseAddress)) {
-        const rnsAddress = dispenseAddress;
-        rskAddress = await rnsUtil.resolveAddr(rnsAddress);
+        try {
+          const rnsAddress = dispenseAddress;
+          rskAddress = await rnsUtil.resolveAddr(rnsAddress);
+        } catch(e) {
+          const data: DispenseResponse = {
+            titleText: 'Error',
+            text: e,
+            type: 'error',
+            resetCaptcha: needsCaptchaReset(captchaSolutionResponse)
+          };
+          res.status(409).end(JSON.stringify(data)); //409 Conflict
+        }
       }
       
       const txParameters: TxParameters = {
@@ -155,7 +174,6 @@ const handleDispense = async (req: NextApiRequest, res: NextApiResponse): Promis
           };
           res.status(500).json(JSON.stringify(data)); //500 Internal Server Error
         });
-        console.log('asd');
     }
   } catch (e) {
     logger.error(e);
