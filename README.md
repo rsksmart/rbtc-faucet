@@ -19,8 +19,22 @@ In order to run it you'll need to
 
 ### Setup config.json variables
 
-*TODO*
+Please check config.json and fill with right values
 
+```json
+{
+  "RSK_NODE": "NODE_URL", 
+  "API_URL": "API_FETCH_URL",
+  "NEW_CAPTCHA_URL": "http://localhost:8080/new/easy/5/998", //Checkout '/captcha/README.md'
+  "SOLVE_CAPTCHA_URL": "http://localhost:8080/solution/", //Checkout '/captcha/README.md'
+  "CAPTCHA_API_URL": "http://localhost:8080",  //Checkout '/captcha/README.md'
+  "FAUCET_ADDRESS": "A_FAUCET_ADDRESS",
+  "FAUCET_PRIVATE_KEY": "A_FAUCET_PRIVATE_KEY",
+  "GAS_PRICE": 60000000, //Minimum gas price
+  "GAS_LIMIT": 800000,
+  "VALUE_TO_DISPENSE": 0.001
+}
+```
 ### Running rust captcha service
 
 This app consumes from a captcha service, in order develop you'll need to run it locally.

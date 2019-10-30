@@ -6,6 +6,7 @@ import axios from 'axios';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import Spinner from 'react-bootstrap/Spinner';
 import config from '../config.json';
 import Swal, { SweetAlertOptions } from 'sweetalert2';
 import { DispenseResponse } from '../types/types.d';
@@ -14,11 +15,17 @@ import '../assets/styles/App.css';
 
 const RSK_TESTNET_CHAIN = 31;
 
+interface ButtonLoaderProps {
+  onClick: () => void,
+  loading: boolean
+}
+
 function App() {
   //Hooks
   const [captcha, setCaptcha] = useState({ id: '', png: '' });
   const [dispenseAddress, setDispenseAddress] = useState('');
   const [captchaValue, setCaptchaValue] = useState('');
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     fetchCaptcha();
@@ -26,6 +33,7 @@ function App() {
 
   //Handles
   const handleFaucetButtonClick = async () => {
+    setLoading(true);
     axios
       .post(config.API_URL + '/dispense', {
         dispenseAddress,
@@ -35,13 +43,16 @@ function App() {
         }
       })
       .then(res => {
+        setLoading(false);
         const data: DispenseResponse = res.data;
         Swal.fire(swalSetup(data));
       })
       .catch(e => {
         //codes 409 or 500
+        setLoading(false);
+        console.error(e);
         console.error(JSON.stringify(e.response));
-        const data: DispenseResponse = e.response.data;
+        const data: DispenseResponse = e.response.data ? e.response.data : e;
         Swal.fire(swalSetup(data));
       });
   };
@@ -120,9 +131,13 @@ function App() {
           <br />
           <Row>
             <Col className="col-centered">
-              <Button variant={'success'} onClick={handleFaucetButtonClick}>
-                Get test RBTC
-              </Button>
+              { 
+                loading? 
+                <Spinner animation='border' role='status' /> :
+                <Button variant='success' onClick={handleFaucetButtonClick}>
+                  Get test RBTC
+                </Button> 
+              }
             </Col>
           </Row>
         </Container>
