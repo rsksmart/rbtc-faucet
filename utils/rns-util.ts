@@ -19,7 +19,7 @@ class RNSUtil {
         const nameHash = this.nameHash(rnsAddress);
         const resolverAddr = await this.resolverAddress(rnsAddress);
 
-        if(resolverAddr == '0x0000000000000000000000000000000000000000')
+        if(resolverAddr == '0x0000000000000000000000000000000000000000' || resolverAddr == null)
             throw 'No address resolver';
 
         const resolver = new this.web3.eth.Contract(resolverAbiList, resolverAddr);
@@ -35,10 +35,11 @@ class RNSUtil {
         
         const hash = this.nameHash(rnsAlias);
 
-        console.log(hash.length);
-        console.log(hash);
+        const resolverAddress = await this.registry.methods.resolver(hash).call();
 
-        return await this.registry.methods.resolver(hash).call();
+        console.log(resolverAddress);
+
+        return resolverAddress;
     }
     isRNS(address: string): boolean {
         const labels = address.split('.');
@@ -46,7 +47,11 @@ class RNSUtil {
         return labels[labels.length - 1] === 'rsk';
     }
     async existingAlias(rnsAlias: string): Promise<boolean> {
-        return await this.resolveAddr(rnsAlias) != '0x0000000000000000000000000000000000000000' && rnsAlias != undefined;
+        try {
+            return this.isRNS(rnsAlias) && await this.resolveAddr(rnsAlias) != '0x0000000000000000000000000000000000000000' && rnsAlias != undefined;
+        } catch(e) {
+            return false;
+        }
     }
 }
 
