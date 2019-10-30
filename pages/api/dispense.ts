@@ -68,7 +68,7 @@ const handleDispense = async (req: NextApiRequest, res: NextApiResponse): Promis
 
     //Validations
     //each validation will return an error message, if it success it'll return an empty string (empty error message)
-    const existingAlias: boolean = await rnsUtil.existingAlias(dispenseAddress)
+    const existingAlias: boolean = rnsUtil.isRNS(dispenseAddress) ? await rnsUtil.existingAlias(dispenseAddress) : false;
 
     const needsCaptchaReset = (captchaSolutionResponse: CaptchaSolutionResponse): boolean =>
     captchaSolutionResponse.trials_left == 0;
@@ -83,7 +83,7 @@ const handleDispense = async (req: NextApiRequest, res: NextApiResponse): Promis
     (dispenseAddress.length != 42 && !rnsUtil.isRNS(dispenseAddress))
       ? 'Invalid address.'
       : '';
-    const unexistingRNSAlias = (dispenseAddress: string): string => !existingAlias ? dispenseAddress + ' is an unexisting alias, please provide an existing one' : ''
+    const unexistingRNSAlias = (dispenseAddress: string): string => !existingAlias ? ' ' + dispenseAddress + ' is an unexisting alias, please provide an existing one' : ''
     const insuficientFunds = () => faucetBalance < 100000000000000000 ? 'Faucet has enough funds' : ''; 
 
     console.log('existingAlias ' + rnsUtil.existingAlias(dispenseAddress));
@@ -92,7 +92,7 @@ const handleDispense = async (req: NextApiRequest, res: NextApiResponse): Promis
       () => captchaRejected(captchaSolutionResponse.result),
       () => alreadyDispensed(dispenseAddress),
       () => invalidAddress(dispenseAddress),
-      () => unexistingRNSAlias(dispenseAddress),
+      () => rnsUtil.isRNS(dispenseAddress) ? unexistingRNSAlias(dispenseAddress) : '',
       () => insuficientFunds()
     ];
     const errorMessages: string[] = validations.map(validate => validate()).filter(e => e != '');
