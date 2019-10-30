@@ -1,5 +1,5 @@
 {
-  "RSK_NODE": "https://public-node.testnet.rsk.co",
+  "RSK_NODE": "http://localhost:7545",
   "API_URL": "http://localhost:3000/api",
   "NEW_CAPTCHA_URL": "http://localhost:8080/new/easy/5/998",
   "SOLVE_CAPTCHA_URL": "http://localhost:8080/solution/",

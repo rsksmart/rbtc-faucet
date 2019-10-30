@@ -3,7 +3,7 @@ import config from '../../config.json';
 import Tx from 'ethereumjs-tx';
 import Web3 from 'web3';
 import logger from './../../utils/logger';
-import { isValidChecksumAddress, toChecksumAddres } from 'rskjs-util';
+import { isValidChecksumAddress, toChecksumAddress } from 'rskjs-util';
 import {
   TxParameters,
   FaucetHistory,
