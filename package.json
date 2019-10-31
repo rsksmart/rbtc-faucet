@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "debug": "NODE_OPTIONS=--inspect next",
-    "test": "mocha",
+    "test": "jest",
     "lint": "prettier --write '**/*.{js,css,html,json,ts,tsx}'"
   },
   "dependencies": {
