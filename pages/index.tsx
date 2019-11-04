@@ -15,11 +15,6 @@ import '../assets/styles/App.css';
 
 const RSK_TESTNET_CHAIN = 31;
 
-interface ButtonLoaderProps {
-  onClick: () => void;
-  loading: boolean;
-}
-
 function App() {
   //Hooks
   const [captcha, setCaptcha] = useState({ id: '', png: '' });
@@ -103,7 +98,7 @@ function App() {
             <Col className="col-centered">
               <Form.Control
                 type="input"
-                placeholder="0xcd7872.../ alice.rsk"
+                placeholder="0xcd7872... / alice.rsk"
                 value={dispenseAddress}
                 onChange={handleDispenseAddressChange}
               />
