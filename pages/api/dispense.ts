@@ -141,7 +141,8 @@ const handleDispense = async (req: NextApiRequest, res: NextApiResponse): Promis
                 '.\n Please consider using this address with RSK Testnet checksum: ' +
                 toChecksumAddress(dispenseAddress, 31)
               : 'Successfully sent some RBTCs to ' + dispenseAddress,
-            dispenseComplete: true
+            dispenseComplete: true,
+            checksumed: rskAddress ? isValidChecksumAddress(rskAddress, 31 ) : isValidChecksumAddress(dispenseAddress, 31)
           };
           res.status(200).json(JSON.stringify(data)); //200 OK
         })
