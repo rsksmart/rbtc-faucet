@@ -1,6 +1,7 @@
 import Web3 from 'web3';
 import { Contract } from 'web3-eth-contract';
 import { AbiItem } from 'web3-utils';
+import logger from './logger';
 const namehash = require('eth-ens-namehash');
 
 class RNSUtil {
@@ -24,18 +25,25 @@ class RNSUtil {
     const resolver = new this.web3.eth.Contract(resolverAbiList, resolverAddr);
     if (!(await resolver.methods.supportsInterface('0x3b3b57de').call())) throw 'No address resolution found';
 
+    logger.event('resolving namehash...')
+
     const realAddr = await resolver.methods.addr(nameHash).call();
+
+    logger.success('resolved namehash!')
+    logger.info('this namehash ' + nameHash + ' retrives this address ' + realAddr);
 
     return realAddr;
   }
   async resolverAddress(rnsAlias: string): Promise<string> {
-    console.log('llego este name ' + rnsAlias);
+    logger.info('resolving rns alias: ' + rnsAlias);
 
     const hash = this.nameHash(rnsAlias);
 
+    logger.info('retrived namehash: ' + hash);
+
     const resolverAddress = await this.registry.methods.resolver(hash).call();
 
-    console.log(resolverAddress);
+    logger.info('resolver address: ' + resolverAddress);
 
     return resolverAddress;
   }

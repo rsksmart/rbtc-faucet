@@ -134,7 +134,7 @@ const handleDispense = async (req: NextApiRequest, res: NextApiResponse): Promis
       web3.eth
         .sendSignedTransaction(encodedTx)
         .on('transactionHash', (txHash: string) => {
-          logger.dispensed(dispenseAddress, txHash);
+          logger.dispensed(rskAddress ? rskAddress : dispenseAddress, txHash);
 
           faucetHistory[dispenseAddress] = 'dispensed';
           const data: DispenseResponse = {
