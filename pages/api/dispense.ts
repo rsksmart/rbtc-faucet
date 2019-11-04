@@ -53,15 +53,9 @@ const handleDispense = async (req: NextApiRequest, res: NextApiResponse): Promis
 
     const dispenseAddress: string = req.body.dispenseAddress;
     const captchaSolutionRequest: CaptchaSolutionRequest = req.body.captcha;
-    const resetFaucetHistory: boolean = req.body.resetFaucetHistory;
 
     logger.event('dispensing to ' + dispenseAddress);
     logger.event('captcha ' + JSON.stringify(captchaSolutionRequest));
-
-    if (resetFaucetHistory) {
-      //don't know if this could be productive but i'm using it for testing
-      faucetHistory = {};
-    }
 
     const captchaSolutionResponse: CaptchaSolutionResponse = await solveCaptcha(captchaSolutionRequest);
     //const captchaSolutionResponse: CaptchaSolutionResponse = {result: 'accepted', reject_reason: '', trials_left: 5};
