@@ -31,4 +31,5 @@ export interface DispenseResponse {
   txHash?: string;
   resetCaptcha?: boolean;
   dispenseComplete?: boolean;
+  checksumed?: boolean;
 }
