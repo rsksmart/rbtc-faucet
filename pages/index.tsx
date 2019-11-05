@@ -7,11 +7,11 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Spinner from 'react-bootstrap/Spinner';
-import config from '../config.json';
 import Swal, { SweetAlertOptions } from 'sweetalert2';
 import { DispenseResponse } from '../types/types.d';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../assets/styles/App.css';
+import { apiUrl, newCaptchaUrl } from '../utils/env-util';
 
 const RSK_TESTNET_CHAIN = 31;
 
@@ -30,7 +30,7 @@ function App() {
   const handleFaucetButtonClick = async () => {
     setLoading(true);
     axios
-      .post(config.API_URL + '/dispense', {
+      .post(apiUrl() + '/dispense', {
         dispenseAddress,
         captcha: {
           solution: captchaValue,
@@ -60,7 +60,7 @@ function App() {
 
   //Methods
   const fetchCaptcha = async () => {
-    const result = await axios.post(config.NEW_CAPTCHA_URL);
+    const result = await axios.post(newCaptchaUrl());
     setCaptcha(result.data);
   };
   const swalSetup = (data: DispenseResponse): SweetAlertOptions => {

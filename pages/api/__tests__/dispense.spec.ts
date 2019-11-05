@@ -2,15 +2,15 @@ import axios from 'axios';
 const keccak256 = require('keccak256');
 import Web3 from 'web3';
 import nock from 'nock';
-import MockAdapter from 'axios-mock-adapter';
-import config from '../../../config.json';
+import sinon from 'sinon';
+import { provider, captchaApiUrl, valueToDispense, apiUrl } from '../../../utils/env-util';
 
-const web3 = new Web3(new Web3.providers.HttpProvider(config.RSK_NODE));
+const web3 = new Web3(provider());
 web3.transactionConfirmationBlocks = 1;
 
-const CAPTCHA_API_URL = config.CAPTCHA_API_URL;
-const VALUE_TO_DISPENSE = config.VALUE_TO_DISPENSE;
-const API_URL = config.API_URL;
+const CAPTCHA_API_URL = captchaApiUrl();
+const VALUE_TO_DISPENSE = valueToDispense();
+const API_URL = apiUrl();
 const randomAddress = (num: number) =>
   '0x' +
   keccak256(num)
@@ -22,10 +22,21 @@ nock(CAPTCHA_API_URL)
   .post('/solution(.*)')
   .reply(200, { result: 'accepted', reject_reason: '', trials_left: 5 });
 
+let clock = sinon.useFakeTimers();
+
+beforeAll(async () => { 
+  setupRNS(); 
+});
+  
+afterEach(() => resetFaucetHistory());
+
+afterAll(() => { 
+  clock.restore();
+});
+
 test('# dispense to a new address, should respond 200 and a txHash', async () => {
   const res = await axios.post(API_URL + '/dispense', {
     dispenseAddress: randomAddress(1),
-    resetFaucetHistory: true
   });
 
   expect(res.status).toBe(200);
@@ -72,7 +83,13 @@ test("# dispense to an invalid address, shouldn't dispense and respond 409", asy
   }
 });
 test('# dispense to an invalid checksum address (TODO), should dispense and respond 200', async () => {
-  expect(true).toBeTruthy();
+  const res = await axios.post(API_URL + '/dispense', {
+    dispenseAddress: '0xD5e6Bfc7E5d982C1F7bAc4D9c7e769BEb0A6f626',
+  });
+
+  expect(res.status).toBe(200);
+  expect(res.data.txHash).toBeTruthy();
+  expect(res.data.checksumed).toBeFalsy();
 });
 test('# dispense to a rns alias (TODO), should dispense and return 200', () => {
   expect(true).toBeTruthy();
@@ -84,14 +101,21 @@ test('# dispense right value, should be ' + VALUE_TO_DISPENSE, async () => {
   const dispenseAddress = randomAddress(3);
   const balance = await web3.eth.getBalance(dispenseAddress);
   await axios.post(API_URL + '/dispense', {
-    dispenseAddress,
-    resetFaucetHistory: true
+    dispenseAddress
   });
   const currentBalance = await web3.eth.getBalance(dispenseAddress);
   const expectedBalance = incrementByValueToDispense(balance);
 
   expect(Number(currentBalance)).toBe(expectedBalance);
 });
+
+
+const resetFaucetHistory = () => {
+  clock.tick(86400000)
+}
+
+const setupRNS = () => {
+}
 
 const incrementByValueToDispense = (balance: string) =>
   Number(balance) + Number(web3.utils.toWei(VALUE_TO_DISPENSE.toString(), 'ether'));

@@ -1,5 +1,4 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import config from '../../config.json';
 import Tx from 'ethereumjs-tx';
 import Web3 from 'web3';
 import logger from './../../utils/logger';
@@ -14,6 +13,7 @@ import {
 import axios from 'axios';
 import { CronJob } from 'cron';
 import RNSUtil from '../../utils/rns-util';
+import { faucetAddress, provider, faucetPrivateKey, gasPrice, gasLimit, valueToDispense, solveCaptchaUrl } from '../../utils/env-util';
 
 let faucetHistory: FaucetHistory = {};
 
@@ -40,13 +40,13 @@ new CronJob(
 );
 
 //Utils
-const web3: Web3 = new Web3(new Web3.providers.HttpProvider(config.RSK_NODE));
+const web3: Web3 = new Web3(provider());
 web3.transactionConfirmationBlocks = 1;
 const rnsUtil: RNSUtil = new RNSUtil(web3);
 
 //Request Handler
 const handleDispense = async (req: NextApiRequest, res: NextApiResponse): Promise<void> => {
-  const faucetBalance: number = Number(await web3.eth.getBalance(config.FAUCET_ADDRESS));
+  const faucetBalance: number = Number(await web3.eth.getBalance(faucetAddress()));
 
   try {
     res.setHeader('Content-Type', 'application/json');
@@ -109,18 +109,18 @@ const handleDispense = async (req: NextApiRequest, res: NextApiResponse): Promis
       }
 
       const txParameters: TxParameters = {
-        from: config.FAUCET_ADDRESS,
+        from: faucetAddress(),
         to: rskAddress ? rskAddress : dispenseAddress,
-        nonce: web3.utils.toHex(await web3.eth.getTransactionCount(config.FAUCET_ADDRESS)),
-        gasPrice: web3.utils.toHex(config.GAS_PRICE),
-        gas: web3.utils.toHex(config.GAS_LIMIT),
-        value: web3.utils.toHex(web3.utils.toWei(config.VALUE_TO_DISPENSE.toString()))
+        nonce: web3.utils.toHex(await web3.eth.getTransactionCount(faucetAddress())),
+        gasPrice: web3.utils.toHex(gasPrice()),
+        gas: web3.utils.toHex(gasLimit()),
+        value: web3.utils.toHex(web3.utils.toWei(valueToDispense().toString()))
       };
 
       logger.txParameters(txParameters);
 
       let tx = new Tx(txParameters);
-      tx.sign(Buffer.from(config.FAUCET_PRIVATE_KEY, 'hex'));
+      tx.sign(Buffer.from(faucetPrivateKey(), 'hex'));
       const encodedTx = '0x' + tx.serialize().toString('hex');
 
       logger.info('encodedTx ' + encodedTx);
@@ -175,7 +175,7 @@ const solveCaptcha = async (captcha: CaptchaSolutionRequest): Promise<CaptchaSol
   try {
     if (captcha.solution == '') captcha.solution = "doesn't matter";
 
-    const url = config.SOLVE_CAPTCHA_URL + captcha.id + '/' + captcha.solution;
+    const url = solveCaptchaUrl() + captcha.id + '/' + captcha.solution;
     const res = await axios.post(url, captcha);
     const result: CaptchaSolutionResponse = res.data;
     logger.event('captcha solution response ' + JSON.stringify(result));
