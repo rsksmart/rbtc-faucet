@@ -1,0 +1,13 @@
+{
+    "RSK_NODE": "http://localhost:7545",
+    "API_URL": "http://localhost:3000/api",
+    "NEW_CAPTCHA_URL": "http://localhost:8080/new/easy/5/998",
+    "SOLVE_CAPTCHA_URL": "http://localhost:8080/solution/",
+    "CAPTCHA_API_URL": "http://localhost:8080",
+    "FAUCET_ADDRESS": "0xF7D1dF4f96A812598d4E398f5539c4f98DA958ab",
+    "FAUCET_PRIVATE_KEY": "c3d40c98585e2c61add9c6a94b66cd7f5c5577e45d900c6c0e3139df1310292f",
+    "GAS_PRICE": 60000000,
+    "GAS_LIMIT": 800000,
+    "VALUE_TO_DISPENSE": 0.1
+}
+  
