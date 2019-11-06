@@ -37,6 +37,9 @@ export function provider(): any {
           },
           {
             balance: 0
+          },
+          {
+            balance: 0
           }
         ],
         gasPrice: '0x0'

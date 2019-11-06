@@ -65,8 +65,8 @@ const handleDispense = async (req: NextApiRequest, res: NextApiResponse): Promis
     logger.event('dispensing to ' + dispenseAddress);
     logger.event('captcha ' + JSON.stringify(captchaSolutionRequest));
 
-    //const captchaSolutionResponse: CaptchaSolutionResponse = await solveCaptcha(captchaSolutionRequest);
-    const captchaSolutionResponse: CaptchaSolutionResponse = { result: 'accepted', reject_reason: '', trials_left: 5 };
+    const captchaSolutionResponse: CaptchaSolutionResponse = await solveCaptcha(captchaSolutionRequest);
+    //const captchaSolutionResponse: CaptchaSolutionResponse = { result: 'accepted', reject_reason: '', trials_left: 5 };
 
     //Validations
     //each validation will return an error message, if it success it'll return an empty string (empty error message)
