@@ -25,11 +25,11 @@ class RNSUtil {
     const resolver = new this.web3.eth.Contract(resolverAbiList, resolverAddr);
     if (!(await resolver.methods.supportsInterface('0x3b3b57de').call())) throw 'No address resolution found';
 
-    logger.event('resolving namehash...')
+    logger.event('resolving namehash...');
 
     const realAddr = await resolver.methods.addr(nameHash).call();
 
-    logger.success('resolved namehash!')
+    logger.success('resolved namehash!');
     logger.info('this namehash ' + nameHash + ' retrives this address ' + realAddr);
 
     return realAddr;

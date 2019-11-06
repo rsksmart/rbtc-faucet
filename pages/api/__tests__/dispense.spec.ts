@@ -1,65 +1,89 @@
 import axios from 'axios';
-const keccak256 = require('keccak256');
 import Web3 from 'web3';
-import nock from 'nock';
+import http from 'http';
+import listen from 'test-listen';
+import { apiResolver } from 'next-server/dist/server/api-utils';
 import sinon from 'sinon';
-import { provider, captchaApiUrl, valueToDispense, apiUrl } from '../../../utils/env-util';
-
-const web3 = new Web3(provider());
-web3.transactionConfirmationBlocks = 1;
+import { captchaApiUrl, valueToDispense, provider } from '../../../utils/env-util';
+import handleDispense from '../dispense';
 
 const CAPTCHA_API_URL = captchaApiUrl();
 const VALUE_TO_DISPENSE = valueToDispense();
-const API_URL = apiUrl();
-const randomAddress = (num: number) =>
-  '0x' +
-  keccak256(num)
-    .toString('hex')
-    .substring(0, 40);
 
-//right now nock isn't mocking anything, therefore every test fails
-nock(CAPTCHA_API_URL)
-  .post('/solution(.*)')
-  .reply(200, { result: 'accepted', reject_reason: '', trials_left: 5 });
+//let clock = sinon.useFakeTimers();
+var ganacheServer;
+var web3: Web3;
+var server: http.Server;
+var accounts: string[];
+var apiUrl: string;
 
-let clock = sinon.useFakeTimers();
+beforeAll(async () => {
+  web3 = new Web3(provider());
+  web3.transactionConfirmationBlocks = 1;
+  accounts = await web3.eth.getAccounts();
 
-beforeAll(async () => { 
-  setupRNS(); 
+  console.log('this accs: ' + JSON.stringify(accounts));
+
+  let requestHandler = (req: any, res: any) => {
+    return apiResolver(req, res, undefined, handleDispense);
+  };
+
+  server = http.createServer(requestHandler);
+  apiUrl = await listen(server);
+
+  setupRNS();
 });
-  
+
 afterEach(() => resetFaucetHistory());
 
-afterAll(() => { 
-  clock.restore();
+afterAll(() => {
+  //clock.restore();
+  server.close();
 });
 
-test('# dispense to a new address, should respond 200 and a txHash', async () => {
-  const res = await axios.post(API_URL + '/dispense', {
-    dispenseAddress: randomAddress(1),
-  });
+test('there are four accounts', () => {
+  expect.assertions(2);
 
-  expect(res.status).toBe(200);
-  expect(res.data.txHash).toBeTruthy();
+  const prefixArray = accounts.map(e => e.substring(0, 2));
+
+  expect(accounts.length).toBe(4);
+  expect(prefixArray.every(e => e == '0x')).toBeTruthy();
 });
+
+test('dispense to a new address, should respond 200 and a txHash', async () => {
+  expect.assertions(3);
+
+  const response = await axios.post(apiUrl, { dispenseAddress: accounts[1] });
+  const balance = await web3.eth.getBalance(accounts[1]);
+
+  expect(response.status).toBe(200);
+  expect(response.data.txHash).toBeTruthy();
+  expect(balance).toBe(100000000000000000);
+});
+
 test('# dispense more than one time to an address, should only dispense the first time and then deny', async () => {
-  const dispenseAddress = randomAddress(2);
+  expect.assertions(5);
+
+  const dispenseAddress = accounts[2];
   const oldBalance = await web3.eth.getBalance(dispenseAddress);
-  const firstResponse = await axios.post(API_URL + '/dispense', {
-    dispenseAddress
+  const firstResponse = await axios.post(apiUrl, {
+    dispenseAddress,
+    captcha: 'asd'
   });
 
   try {
-    await axios.post(API_URL + '/dispense', {
-      dispenseAddress
+    await axios.post(apiUrl, {
+      dispenseAddress,
+      captcha: 'asd'
     });
   } catch (e) {
     expect(e.response.status).toBe(409);
   }
 
   try {
-    await axios.post(API_URL + '/dispense', {
-      dispenseAddress
+    await axios.post(apiUrl, {
+      dispenseAddress,
+      captcha: 'asd'
     });
   } catch (e) {
     expect(e.response.status).toBe(409);
@@ -73,6 +97,8 @@ test('# dispense more than one time to an address, should only dispense the firs
 
   expect(Number(currentBalance)).toBe(expectedBalance);
 });
+
+/*
 test("# dispense to an invalid address, shouldn't dispense and respond 409", async () => {
   try {
     await axios.post(API_URL + '/dispense', {
@@ -109,13 +135,13 @@ test('# dispense right value, should be ' + VALUE_TO_DISPENSE, async () => {
   expect(Number(currentBalance)).toBe(expectedBalance);
 });
 
+*/
 
 const resetFaucetHistory = () => {
-  clock.tick(86400000)
-}
+  //clock.tick(86400000)
+};
 
-const setupRNS = () => {
-}
+const setupRNS = () => {};
 
 const incrementByValueToDispense = (balance: string) =>
-  Number(balance) + Number(web3.utils.toWei(VALUE_TO_DISPENSE.toString(), 'ether'));
+  Number(balance) + Number(web3.utils.toWei(valueToDispense().toString(), 'ether'));

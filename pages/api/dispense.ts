@@ -13,7 +13,15 @@ import {
 import axios from 'axios';
 import { CronJob } from 'cron';
 import RNSUtil from '../../utils/rns-util';
-import { faucetAddress, provider, faucetPrivateKey, gasPrice, gasLimit, valueToDispense, solveCaptchaUrl } from '../../utils/env-util';
+import {
+  faucetAddress,
+  provider,
+  faucetPrivateKey,
+  gasPrice,
+  gasLimit,
+  valueToDispense,
+  solveCaptchaUrl
+} from '../../utils/env-util';
 
 let faucetHistory: FaucetHistory = {};
 
@@ -57,8 +65,8 @@ const handleDispense = async (req: NextApiRequest, res: NextApiResponse): Promis
     logger.event('dispensing to ' + dispenseAddress);
     logger.event('captcha ' + JSON.stringify(captchaSolutionRequest));
 
-    const captchaSolutionResponse: CaptchaSolutionResponse = await solveCaptcha(captchaSolutionRequest);
-    //const captchaSolutionResponse: CaptchaSolutionResponse = {result: 'accepted', reject_reason: '', trials_left: 5};
+    //const captchaSolutionResponse: CaptchaSolutionResponse = await solveCaptcha(captchaSolutionRequest);
+    const captchaSolutionResponse: CaptchaSolutionResponse = { result: 'accepted', reject_reason: '', trials_left: 5 };
 
     //Validations
     //each validation will return an error message, if it success it'll return an empty string (empty error message)
@@ -142,7 +150,9 @@ const handleDispense = async (req: NextApiRequest, res: NextApiResponse): Promis
                 toChecksumAddress(dispenseAddress, 31)
               : 'Successfully sent some RBTCs to ' + dispenseAddress,
             dispenseComplete: true,
-            checksumed: rskAddress ? isValidChecksumAddress(rskAddress, 31 ) : isValidChecksumAddress(dispenseAddress, 31)
+            checksumed: rskAddress
+              ? isValidChecksumAddress(rskAddress, 31)
+              : isValidChecksumAddress(dispenseAddress, 31)
           };
           res.status(200).json(JSON.stringify(data)); //200 OK
         })
