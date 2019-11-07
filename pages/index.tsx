@@ -12,6 +12,7 @@ import { DispenseResponse } from '../types/types.d';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../assets/styles/App.css';
 import { apiUrl, newCaptchaUrl } from '../utils/env-util';
+import FeatureCard from '../components/feature-card';
 
 const RSK_TESTNET_CHAIN = 31;
 
