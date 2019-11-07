@@ -80,7 +80,7 @@ const handleDispense = async (req: NextApiRequest, res: NextApiResponse): Promis
     const captchaRejected = (result: string): string =>
       result == 'rejected' ? 'Invalid captcha. Notice that this captcha is case sensitive.' : '';
     const alreadyDispensed = (dispenseAddress: string): string =>
-      faucetHistory.hasOwnProperty(dispenseAddress) ? 'Address already used today, try again tomorrow.' : '';
+      faucetHistory.hasOwnProperty(dispenseAddress.toLowerCase()) ? 'Address already used today, try again tomorrow.' : '';
     const invalidAddress = (dispenseAddress: string): string =>
       dispenseAddress == undefined ||
       dispenseAddress == '' ||
