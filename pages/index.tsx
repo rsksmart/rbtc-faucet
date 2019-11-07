@@ -84,7 +84,7 @@ function App() {
   return (
     <div className="background">
       <Navbar className="navbar-rsk">
-        <Navbar.Brand>
+        <Navbar.Brand className="navbar-brand-rsk">
           <img className="logo" />
         </Navbar.Brand>
       </Navbar>

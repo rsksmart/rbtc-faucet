@@ -4,18 +4,17 @@
 }
 
 .background {
-  background: url('./../images/leaves.jpg') !important;
   background-size: cover !important;
 }
 
 .app-body {
-  min-height: 100vh;
+  padding-bottom: 2%;
+  min-height: 100% ;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
   font-size: calc(7px + 2vmin);
-  color: white;
   text-align: center;
   background: transparent;
 }
@@ -27,7 +26,22 @@
 }
 
 .navbar-rsk {
-  height: 5%;
+  margin-bottom: 2%;
+  width: 100%;
+    height: 200px;
+    background: url('../../assets/images/green_shape.png');
+    background-repeat: no-repeat;
+    background-position: bottom center;
+    background-size: cover;
+    position: sticky;
+    top: -15px;
+    transition: all 0.5s ease;
+}
+
+.navbar-brand-rsk {
+  padding: 0% !important;
+  padding-left: 2% !important;
+  padding-bottom: 3% !important;
 }
 
 .faucet-button {
