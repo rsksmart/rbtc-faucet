@@ -138,7 +138,7 @@ const handleDispense = async (req: NextApiRequest, res: NextApiResponse): Promis
         .on('transactionHash', (txHash: string) => {
           logger.dispensed(rskAddress ? rskAddress : dispenseAddress, txHash);
 
-          faucetHistory[dispenseAddress] = 'dispensed';
+          faucetHistory[dispenseAddress.toLowerCase()] = 'dispensed';
           const data: DispenseResponse = {
             txHash,
             titleText: 'Sent',

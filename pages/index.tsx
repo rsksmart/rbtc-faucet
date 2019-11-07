@@ -50,6 +50,7 @@ function App() {
         const data: DispenseResponse = e.response.data ? e.response.data : e;
         Swal.fire(swalSetup(data));
       });
+      setCaptchaValue('');
   };
   const handleCaptchaValueChange = (event: any) => {
     setCaptchaValue(event.target.value);
