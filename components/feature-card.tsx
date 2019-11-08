@@ -13,14 +13,17 @@ interface FaucetCardProps {
 
 const FeatureCard = (props: FaucetCardProps) => {
   return (
-    <Card className="p-0 m-0 card shadow " style={{ backgroundColor: props.backgroundColor, border: 'transparent' }}>
+    <Card
+      className="p-0 m-0 card shadow "
+      style={{ backgroundColor: props.backgroundColor, border: 'white', borderRadius: '30px'}}
+    >
       <Card.Body className="p-0">
         <Container className="m-0 p-0 w-100 h-100">
           <Row className="w-100 m-0 p-0">
             <Col sm={4}>
               <Container className="w-100 h-100 p-0 vertical-center">{props.icon}</Container>
             </Col>
-            <Col sm={8} className="p-0" style={{ backgroundColor: 'white' }}>
+            <Col sm={8} className="p-0" style={{ backgroundColor: 'white',  borderTopRightRadius: '30px', borderBottomRightRadius: '30px'  }}>
               <Container fluid className={props.padding}>
                 <div className="font-weight-bold text-left">{props.title}</div>
                 {props.children}

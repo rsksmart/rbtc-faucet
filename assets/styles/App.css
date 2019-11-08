@@ -1,14 +1,16 @@
-#__next {
-  width: 100vw;
-  height: 100vh;
+html,
+body {
+  width: 100%;
+  height: 100%;
 }
 
 .background {
   background-size: cover !important;
+  height: 100%;
+  width: 100%;
 }
 
 .app-body {
-  padding-bottom: 2%;
   min-height: 100%;
   display: flex;
   flex-direction: column;
@@ -33,7 +35,7 @@
   background-repeat: no-repeat;
   background-position: bottom center;
   background-size: cover;
-  position: sticky;
+  position: relative;
   top: -15px;
   transition: all 0.5s ease;
 }
@@ -97,11 +99,35 @@
 .devportal-icon {
   content: url('../images/devportal.png');
   background-color: 'white';
-  width: 50%;
+  width: 60%;
+}
+
+.wallet-icon {
+  content: url('../images/wallet.png');
+  background-color: 'white';
+  width: 60%;
+}
+
+.tutorials-icon {
+  content: url('../images/tutorials.png');
+  background-color: 'white';
+  width: 60%;
 }
 
 .vertical-center {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.swal2-modal {
+  border-radius: 30px !important;
+}
+
+.swal2-confirm {
+  border-radius: 30px !important;
+}
+
+.swal2-styled.swal2-confirm {
+  background-color: yellowgreen;
 }

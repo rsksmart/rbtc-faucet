@@ -87,43 +87,17 @@ function App() {
     <div className="background">
       <Navbar className="navbar-rsk">
         <Navbar.Brand className="navbar-brand-rsk">
-          <img className="logo" />
+          <img className="logo ml-5" />
         </Navbar.Brand>
       </Navbar>
-      <body className="app-body">
+      <div className="app-body vertical-center">
         <Container style={{ margin: 0, padding: 0, width: '100%', maxWidth: '80%' }}>
           <Row style={{ width: '100%' }}>
-            <Col>
-              <Container className="h-100 w-100">
-                <ReactCardCarousel autoplay={ true } autoplay_speed={ 5000 }>
-                  <RskLinkCard
-                    link=""
-                    icon={<img className="devportal-icon" />}
-                    title="DevPortal"
-                    backgroundColor="#00b41f"
-                    description="For developers by developers"
-                  />
-                  <RskLinkCard
-                    link=""
-                    icon={<img className="devportal-icon" />}
-                    title="Wallets"
-                    backgroundColor="black"
-                    description="Try RSK with these wallets"
-                  />
-                  <RskLinkCard
-                    link=""
-                    icon={<img className="devportal-icon" />}
-                    title="Tutorials"
-                    backgroundColor="#fd7e14"
-                    description="How to develop on RSK"
-                  />
-                </ReactCardCarousel>
-              </Container>
-            </Col>
+            
             <Col>
               <FeatureCard
                 padding="p-5"
-                icon={<img className="faucet-icon"/>}
+                icon={<img className="faucet-icon" />}
                 title="Faucet"
                 backgroundColor="#007bff"
                 className="p-0 m-0"
@@ -163,7 +137,7 @@ function App() {
                       <Button
                         variant="primary"
                         onClick={handleFaucetButtonClick}
-                        style={{ width: '100%', fontSize: 'small' }}
+                        style={{ width: '100%', fontSize: 'small', borderRadius: '30px' }}
                       >
                         Get test RBTC
                       </Button>
@@ -172,9 +146,36 @@ function App() {
                 </Container>
               </FeatureCard>
             </Col>
+            <Col>
+              <Container className="h-100 w-100">
+                <ReactCardCarousel autoplay={true} autoplay_speed={5000}>
+                  <RskLinkCard
+                    link=""
+                    icon={<img className="devportal-icon" />}
+                    title="DevPortal"
+                    backgroundColor="#00b41f"
+                    description="For developers by developers"
+                  />
+                  <RskLinkCard
+                    link=""
+                    icon={<img className="wallet-icon" />}
+                    title="Wallets"
+                    backgroundColor="black"
+                    description="Try RSK with these wallets"
+                  />
+                  <RskLinkCard
+                    link=""
+                    icon={<img className="tutorials-icon" />}
+                    title="Tutorials"
+                    backgroundColor="#fd7e14"
+                    description="How to develop on RSK"
+                  />
+                </ReactCardCarousel>
+              </Container>
+            </Col>
           </Row>
         </Container>
-      </body>
+      </div>
     </div>
   );
 }
@@ -198,6 +199,7 @@ const RskLinkCard = (props: RskLinkCardProps) => {
               textAlign: 'center',
               backgroundColor: props.backgroundColor,
               border: 'transparent',
+              borderRadius: '30px'
             }}
           >
             Read More
