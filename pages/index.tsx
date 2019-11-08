@@ -13,6 +13,7 @@ import FeatureCard from '../components/feature-card';
 import ReactCardCarousel from 'react-card-carousel';
 import Faucet from '../components/faucet';
 import RskLinkCard from '../components/rsk-link-card';
+import '../assets/styles/globals.css';
 
 const RSK_TESTNET_CHAIN = 31;
 
@@ -91,8 +92,8 @@ function App() {
         </Navbar.Brand>
       </Navbar>
       <div className="app-body vertical-center">
-        <Container style={{ margin: 0, padding: 0, width: '100%', maxWidth: '80%' }}>
-          <Row style={{ width: '100%' }}>
+        <Container className="m-0 p-0 w-100" style={{maxWidth: '80%' }}>
+          <Row className="w-100" style={{ width: '100%' }}>
             <Col>
               <Faucet
                 captcha={captcha}

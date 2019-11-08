@@ -5,6 +5,7 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Spinner from 'react-bootstrap/Spinner';
 import FeatureCard from './feature-card';
+import '../assets/styles/faucet.css';
 
 interface FaucetProps {
   captcha: any;
@@ -27,13 +28,13 @@ const Faucet = (props: FaucetProps) => {
     >
       <Container className="p-0">
         <div>
-          <div style={{ fontSize: 'small', textAlign: 'start', marginBottom: '5%' }}>Address or RNS name</div>
+          <div className="faucet-label">Address or RNS name</div>
           <Form.Control
+            className="faucet-control rounded-rsk"
             type="input"
             placeholder="0xcd7872... / alice.rsk"
             value={props.dispenseAddress}
             onChange={props.onAddressChange}
-            style={{ marginBottom: '5%', fontSize: 'small', textAlign: 'start' }}
           />
         </div>
         <div>
@@ -42,16 +43,11 @@ const Faucet = (props: FaucetProps) => {
             placeholder="Captcha"
             value={props.captchaValue}
             onChange={props.onCaptchaValueChange}
-            className="rsk-captcha"
-            style={{ marginBottom: '5%', fontSize: 'small', textAlign: 'start' }}
+            className="faucet-control rounded-rsk"
           />
         </div>
         <div>
-          <img
-            className="captcha-image"
-            src={`data:image/png;base64,${props.captcha.png}`}
-            style={{ marginBottom: '5%', width: '100%' }}
-          />
+          <img className="faucet-captcha-image rounded-rsk" src={`data:image/png;base64,${props.captcha.png}`} />
         </div>
         <div>
           {props.loading ? (
@@ -60,13 +56,7 @@ const Faucet = (props: FaucetProps) => {
             <Button
               variant="primary"
               onClick={props.onDispenseClick}
-              style={{
-                width: '100%',
-                fontSize: 'small',
-                borderRadius: '30px',
-                borderColor: '#2c9dc3',
-                backgroundColor: '#2c9dc3'
-              }}
+              className="faucet-button button-rsk w-100 rounded-rsk"
             >
               Get test RBTC
             </Button>

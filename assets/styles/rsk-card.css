@@ -1,0 +1,9 @@
+.card-rsk {
+  border: white;
+}
+
+.white-background-right-rounded {
+  background-color: white;
+  border-top-right-radius: 30px;
+  border-bottom-right-radius: 30px;
+}

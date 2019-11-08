@@ -46,18 +46,6 @@ body {
   padding-bottom: 3% !important;
 }
 
-.faucet-button {
-  border-radius: 70px;
-}
-
-.captcha-image {
-  border-radius: 10px;
-}
-
-.faucet-container {
-  width: 60% !important;
-}
-
 .col-centered {
   float: none;
   margin: 0 auto;
@@ -65,16 +53,6 @@ body {
 
 .background-modal {
   background: #79554857;
-}
-
-.faucet-input {
-  margin-left: 20% !important;
-  margin-right: 20% !important;
-}
-
-.faucet-input-captcha {
-  margin-left: 25% !important;
-  margin-right: 25% !important;
 }
 
 .white-background {
@@ -88,12 +66,6 @@ body {
 
 .full-width {
   width: 100% !important;
-}
-
-.faucet-icon {
-  content: url('../images/tap-water.png');
-  background-color: 'white';
-  width: 70%;
 }
 
 .devportal-icon {
@@ -139,3 +111,4 @@ body {
 .rsk-shadow:hover {
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
+
