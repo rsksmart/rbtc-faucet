@@ -1,7 +1,6 @@
 import React from 'react';
 import Container from 'react-bootstrap/Container';
-import Row from 'react-bootstrap/Row';
-import FeatureCard from './feature-card';
+import RskCard from './feature-card';
 import Button from 'react-bootstrap/Button';
 import '../assets/styles/rsk-link-card.css';
 
@@ -15,8 +14,7 @@ interface RskLinkCardProps {
 
 const RskLinkCard = (props: RskLinkCardProps) => {
   return (
-    <Row>
-      <FeatureCard padding="p-5" icon={props.icon} title={props.title} backgroundColor={props.backgroundColor}>
+      <RskCard padding="p-5" icon={props.icon} title={props.title} backgroundColor={props.backgroundColor}>
         <Container className="p-0 text-left">
           <div className="rsk-link-card-description">{props.description} </div>
           <Button
@@ -31,8 +29,7 @@ const RskLinkCard = (props: RskLinkCardProps) => {
             </a>
           </Button>
         </Container>
-      </FeatureCard>
-    </Row>
+      </RskCard>
   );
 };
 

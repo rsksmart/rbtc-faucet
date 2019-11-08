@@ -3,7 +3,7 @@ import { Row, Container, Col, Card } from 'react-bootstrap';
 import '../assets/styles/rsk-link-card.css';
 import '../assets/styles/rsk-card.css';
 
-interface FaucetCardProps {
+interface RskCardProps {
   title: string;
   children: any;
   backgroundColor: string;
@@ -12,7 +12,7 @@ interface FaucetCardProps {
   padding: 'p-1' | 'p-2' | 'p-3' | 'p-4' | 'p-5';
 }
 
-const FeatureCard = (props: FaucetCardProps) => {
+const RskCard = (props: RskCardProps) => {
   return (
     <Card className="p-0 m-0 card rsk-shadow card-rsk rounded-rsk" style={{ backgroundColor: props.backgroundColor }}>
       <Card.Body className="p-0">
@@ -34,4 +34,4 @@ const FeatureCard = (props: FaucetCardProps) => {
   );
 };
 
-export default FeatureCard;
+export default RskCard;

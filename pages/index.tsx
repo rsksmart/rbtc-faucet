@@ -9,7 +9,7 @@ import { DispenseResponse } from '../types/types.d';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../assets/styles/App.css';
 import { apiUrl, newCaptchaUrl } from '../utils/env-util';
-import FeatureCard from '../components/feature-card';
+import RskCard from '../components/feature-card';
 import ReactCardCarousel from 'react-card-carousel';
 import Faucet from '../components/faucet';
 import RskLinkCard from '../components/rsk-link-card';
@@ -108,6 +108,7 @@ function App() {
             <Col>
               <Container className="h-100 w-100">
                 <ReactCardCarousel autoplay={true} autoplay_speed={5000}>
+                  <Row>
                   <RskLinkCard
                     link="https://developers.rsk.co/"
                     icon={<img className="devportal-icon" />}
@@ -115,6 +116,8 @@ function App() {
                     backgroundColor="#00b41f"
                     description="For developers by developers"
                   />
+                  </Row>
+                  <Row>
                   <RskLinkCard
                     link="https://developers.rsk.co/develop/apps/wallets/"
                     icon={<img className="wallet-icon" />}
@@ -122,6 +125,8 @@ function App() {
                     backgroundColor="black"
                     description="Try RSK with these wallets"
                   />
+                  </Row>
+                  <Row>
                   <RskLinkCard
                     link="https://developers.rsk.co/tutorials/"
                     icon={<img className="tutorials-icon" />}
@@ -129,6 +134,8 @@ function App() {
                     backgroundColor="#f26122"
                     description="How to develop on RSK"
                   />
+                  </Row>
+                  
                 </ReactCardCarousel>
               </Container>
             </Col>

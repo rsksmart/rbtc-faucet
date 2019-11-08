@@ -4,7 +4,7 @@ import Row from 'react-bootstrap/Row';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Spinner from 'react-bootstrap/Spinner';
-import FeatureCard from './feature-card';
+import RskCard from './feature-card';
 import '../assets/styles/faucet.css';
 
 interface FaucetProps {
@@ -19,7 +19,7 @@ interface FaucetProps {
 
 const Faucet = (props: FaucetProps) => {
   return (
-    <FeatureCard
+    <RskCard
       padding="p-5"
       icon={<img className="faucet-icon" />}
       title="Faucet"
@@ -63,7 +63,7 @@ const Faucet = (props: FaucetProps) => {
           )}
         </div>
       </Container>
-    </FeatureCard>
+    </RskCard>
   );
 };
 
