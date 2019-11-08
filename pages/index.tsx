@@ -51,7 +51,7 @@ function App() {
         const data: DispenseResponse = e.response.data ? e.response.data : e;
         Swal.fire(swalSetup(data));
       });
-      setCaptchaValue('');
+    setCaptchaValue('');
   };
   const handleCaptchaValueChange = (event: any) => {
     setCaptchaValue(event.target.value);
@@ -90,51 +90,56 @@ function App() {
         </Navbar.Brand>
       </Navbar>
       <body className="app-body">
-        <Container className="faucet-container">
-          <Row>
-            <Col className="col-centerer">
-              <Form.Label>Enter your testnet address or RNS name</Form.Label>
+        <Container style={{ margin: 0, padding: 0, width: '100%', maxWidth: '80%' }}>
+          <Row style={{ width: '100%' }}>
+            <Col>
+              <Container className="h-100 w-100">
+                
+              </Container>
             </Col>
-          </Row>
-          <Row className="faucet-input">
-            <Col className="col-centered">
-              <Form.Control
-                type="input"
-                placeholder="0xcd7872... / alice.rsk"
-                value={dispenseAddress}
-                onChange={handleDispenseAddressChange}
-              />
-            </Col>
-          </Row>
-          <br />
-          <Row>
-            <Col className="col-centered">
-              <img className="captcha-image" src={`data:image/png;base64,${captcha.png}`} />
-            </Col>
-          </Row>
-          <br />
-          <br />
-          <Row className="faucet-input-captcha">
-            <Col className="col-centered">
-              <Form.Control
-                type="input"
-                placeholder="Captcha"
-                value={captchaValue}
-                onChange={handleCaptchaValueChange}
-                className="rsk-captcha"
-              />
-            </Col>
-          </Row>
-          <br />
-          <Row>
-            <Col className="col-centered">
-              {loading ? (
-                <Spinner animation="border" role="status" />
-              ) : (
-                <Button variant="success" onClick={handleFaucetButtonClick}>
-                  Get test RBTC
-                </Button>
-              )}
+            <Col>
+              <FeatureCard icon={<img className="faucet-icon"/>} title="Faucet" backgroundColor="#007bff">
+                <Container className="p-0">
+                  <Row>
+                    <div style={{ fontSize: 'small', textAlign: 'start', marginBottom: '5%' }}>
+                      Address or RNS name
+                    </div>
+                    <Form.Control
+                      type="input"
+                      placeholder="0xcd7872... / alice.rsk"
+                      value={dispenseAddress}
+                      onChange={handleDispenseAddressChange}
+                      style={{ marginBottom: '5%', fontSize: 'small', textAlign: 'start' }}
+                    />
+                  </Row>
+                  <Row>
+                    <Form.Control
+                      type="input"
+                      placeholder="Captcha"
+                      value={captchaValue}
+                      onChange={handleCaptchaValueChange}
+                      className="rsk-captcha"
+                      style={{ marginBottom: '5%', fontSize: 'small', textAlign: 'start' }}
+                    />
+                  </Row>
+                  <Row>
+                    <img
+                      className="captcha-image"
+                      src={`data:image/png;base64,${captcha.png}`}
+                      style={{ marginBottom: '5%', width: '100%' }}
+                    />
+                  </Row>
+                  <Row>
+                    {loading ? (
+                      <Spinner animation="border" role="status" />
+                    ) : (
+                      <Button variant="primary" onClick={handleFaucetButtonClick} style={{ width: '100%', fontSize: 'small' }}>
+                        Get test RBTC
+                      </Button>
+                    )}
+                  </Row>
+                </Container>
+              </FeatureCard>
             </Col>
           </Row>
         </Container>

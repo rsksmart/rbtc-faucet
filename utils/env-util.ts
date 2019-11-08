@@ -23,27 +23,7 @@ export function provider(): any {
     currentProvider = productionDevelopmentTest(
       new Web3.providers.HttpProvider(prodConfig.RSK_NODE),
       new Web3.providers.HttpProvider(devConfig.RSK_NODE),
-      require('ganache-cli').provider({
-        accounts: [
-          {
-            balance: '0x56BC75E2D63100000',
-            secretKey: '0xc3d40c98585e2c61add9c6a94b66cd7f5c5577e45d900c6c0e3139df1310292f'
-          },
-          {
-            balance: 0
-          },
-          {
-            balance: 0
-          },
-          {
-            balance: 0
-          },
-          {
-            balance: 0
-          }
-        ],
-        gasPrice: '0x0'
-      })
+      null
     );
   }
   return currentProvider;

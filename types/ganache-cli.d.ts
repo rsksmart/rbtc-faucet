@@ -1,3 +1,1 @@
-export declare module 'ganache-cli'{
-  
-}
+export declare module 'ganache-cli' {}

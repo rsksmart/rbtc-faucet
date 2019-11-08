@@ -238,21 +238,14 @@
   "ast": {
     "absolutePath": "/Users/Fede/Downloads/rns-artifacts-master/contracts/registry/RNS.sol",
     "exportedSymbols": {
-      "RNS": [
-        807
-      ]
+      "RNS": [807]
     },
     "id": 808,
     "nodeType": "SourceUnit",
     "nodes": [
       {
         "id": 582,
-        "literals": [
-          "solidity",
-          "^",
-          "0.5",
-          ".2"
-        ],
+        "literals": ["solidity", "^", "0.5", ".2"],
         "nodeType": "PragmaDirective",
         "src": "0:23:5"
       },
@@ -288,17 +281,12 @@
             "src": "108:11:5"
           }
         ],
-        "contractDependencies": [
-          580
-        ],
+        "contractDependencies": [580],
         "contractKind": "contract",
         "documentation": "The RNS registry contract.",
         "fullyImplemented": true,
         "id": 807,
-        "linearizedBaseContracts": [
-          807,
-          580
-        ],
+        "linearizedBaseContracts": [807, 580],
         "name": "RNS",
         "nodeType": "ContractDefinition",
         "nodes": [
@@ -565,10 +553,7 @@
                       "id": 600,
                       "name": "require",
                       "nodeType": "Identifier",
-                      "overloadedDeclarations": [
-                        3424,
-                        3425
-                      ],
+                      "overloadedDeclarations": [3424, 3425],
                       "referencedDeclaration": 3424,
                       "src": "375:7:5",
                       "typeDescriptions": {
@@ -1559,9 +1544,7 @@
               "src": "1980:292:5",
               "statements": [
                 {
-                  "assignments": [
-                    701
-                  ],
+                  "assignments": [701],
                   "declarations": [
                     {
                       "constant": false,
@@ -3079,21 +3062,14 @@
   "legacyAST": {
     "absolutePath": "/Users/Fede/Downloads/rns-artifacts-master/contracts/registry/RNS.sol",
     "exportedSymbols": {
-      "RNS": [
-        807
-      ]
+      "RNS": [807]
     },
     "id": 808,
     "nodeType": "SourceUnit",
     "nodes": [
       {
         "id": 582,
-        "literals": [
-          "solidity",
-          "^",
-          "0.5",
-          ".2"
-        ],
+        "literals": ["solidity", "^", "0.5", ".2"],
         "nodeType": "PragmaDirective",
         "src": "0:23:5"
       },
@@ -3129,17 +3105,12 @@
             "src": "108:11:5"
           }
         ],
-        "contractDependencies": [
-          580
-        ],
+        "contractDependencies": [580],
         "contractKind": "contract",
         "documentation": "The RNS registry contract.",
         "fullyImplemented": true,
         "id": 807,
-        "linearizedBaseContracts": [
-          807,
-          580
-        ],
+        "linearizedBaseContracts": [807, 580],
         "name": "RNS",
         "nodeType": "ContractDefinition",
         "nodes": [
@@ -3406,10 +3377,7 @@
                       "id": 600,
                       "name": "require",
                       "nodeType": "Identifier",
-                      "overloadedDeclarations": [
-                        3424,
-                        3425
-                      ],
+                      "overloadedDeclarations": [3424, 3425],
                       "referencedDeclaration": 3424,
                       "src": "375:7:5",
                       "typeDescriptions": {
@@ -4400,9 +4368,7 @@
               "src": "1980:292:5",
               "statements": [
                 {
-                  "assignments": [
-                    701
-                  ],
+                  "assignments": [701],
                   "declarations": [
                     {
                       "constant": false,

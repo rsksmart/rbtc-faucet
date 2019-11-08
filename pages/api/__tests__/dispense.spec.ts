@@ -42,7 +42,6 @@ afterAll(async () => {
   server.close();
 });
 
-
 describe('NO CAPTCHA', () => {
   beforeEach(() =>
     nock(CAPTCHA_API_URL) //Mocking captcha service
@@ -171,11 +170,11 @@ describe('CAPTCHA', () => {
 
     try {
       await axios.post(apiUrl, { dispenseAddress: accounts[4], captcha: { id: 'invalid', solution: 'solution' } });
-    } catch(e) {
+    } catch (e) {
       expect(e.response.status).toBe(409);
       expect(e.response.data.text).toBe('Invalid captcha. Notice that this captcha is case sensitive.');
     }
-  })
-})
+  });
+});
 
 const setupRNS = () => {};

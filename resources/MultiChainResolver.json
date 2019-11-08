@@ -346,21 +346,14 @@
   "ast": {
     "absolutePath": "/Users/Fede/Downloads/rns-artifacts-master/contracts/resolver/MultiChainResolver.sol",
     "exportedSymbols": {
-      "MultiChainResolver": [
-        1301
-      ]
+      "MultiChainResolver": [1301]
     },
     "id": 1302,
     "nodeType": "SourceUnit",
     "nodes": [
       {
         "id": 906,
-        "literals": [
-          "solidity",
-          "^",
-          "0.5",
-          ".2"
-        ],
+        "literals": ["solidity", "^", "0.5", ".2"],
         "nodeType": "PragmaDirective",
         "src": "0:23:10"
       },
@@ -429,22 +422,12 @@
             "src": "213:26:10"
           }
         ],
-        "contractDependencies": [
-          833,
-          865,
-          904,
-          1824
-        ],
+        "contractDependencies": [833, 865, 904, 1824],
         "contractKind": "contract",
         "documentation": null,
         "fullyImplemented": true,
         "id": 1301,
-        "linearizedBaseContracts": [
-          1301,
-          865,
-          833,
-          904
-        ],
+        "linearizedBaseContracts": [1301, 865, 833, 904],
         "name": "MultiChainResolver",
         "nodeType": "ContractDefinition",
         "nodes": [
@@ -1177,10 +1160,7 @@
                       "id": 963,
                       "name": "require",
                       "nodeType": "Identifier",
-                      "overloadedDeclarations": [
-                        3424,
-                        3425
-                      ],
+                      "overloadedDeclarations": [3424, 3425],
                       "referencedDeclaration": 3424,
                       "src": "915:7:10",
                       "typeDescriptions": {
@@ -1526,10 +1506,7 @@
                       "id": 1000,
                       "name": "revert",
                       "nodeType": "Identifier",
-                      "overloadedDeclarations": [
-                        3426,
-                        3427
-                      ],
+                      "overloadedDeclarations": [3426, 3427],
                       "referencedDeclaration": 3426,
                       "src": "1206:6:10",
                       "typeDescriptions": {
@@ -1923,9 +1900,7 @@
               "src": "1488:228:10",
               "statements": [
                 {
-                  "assignments": [
-                    1036
-                  ],
+                  "assignments": [1036],
                   "declarations": [
                     {
                       "constant": false,
@@ -2749,9 +2724,7 @@
               "src": "2006:165:10",
               "statements": [
                 {
-                  "assignments": [
-                    1099
-                  ],
+                  "assignments": [1099],
                   "declarations": [
                     {
                       "constant": false,
@@ -3796,9 +3769,7 @@
                     "src": "2694:124:10",
                     "statements": [
                       {
-                        "assignments": [
-                          1181
-                        ],
+                        "assignments": [1181],
                         "declarations": [
                           {
                             "constant": false,
@@ -4670,9 +4641,7 @@
               "src": "3397:139:10",
               "statements": [
                 {
-                  "assignments": [
-                    1259
-                  ],
+                  "assignments": [1259],
                   "declarations": [
                     {
                       "constant": false,
@@ -5056,9 +5025,7 @@
                       "id": 1287,
                       "name": "setChainAddr",
                       "nodeType": "Identifier",
-                      "overloadedDeclarations": [
-                        1202
-                      ],
+                      "overloadedDeclarations": [1202],
                       "referencedDeclaration": 1202,
                       "src": "3686:12:10",
                       "typeDescriptions": {
@@ -5348,21 +5315,14 @@
   "legacyAST": {
     "absolutePath": "/Users/Fede/Downloads/rns-artifacts-master/contracts/resolver/MultiChainResolver.sol",
     "exportedSymbols": {
-      "MultiChainResolver": [
-        1301
-      ]
+      "MultiChainResolver": [1301]
     },
     "id": 1302,
     "nodeType": "SourceUnit",
     "nodes": [
       {
         "id": 906,
-        "literals": [
-          "solidity",
-          "^",
-          "0.5",
-          ".2"
-        ],
+        "literals": ["solidity", "^", "0.5", ".2"],
         "nodeType": "PragmaDirective",
         "src": "0:23:10"
       },
@@ -5431,22 +5391,12 @@
             "src": "213:26:10"
           }
         ],
-        "contractDependencies": [
-          833,
-          865,
-          904,
-          1824
-        ],
+        "contractDependencies": [833, 865, 904, 1824],
         "contractKind": "contract",
         "documentation": null,
         "fullyImplemented": true,
         "id": 1301,
-        "linearizedBaseContracts": [
-          1301,
-          865,
-          833,
-          904
-        ],
+        "linearizedBaseContracts": [1301, 865, 833, 904],
         "name": "MultiChainResolver",
         "nodeType": "ContractDefinition",
         "nodes": [
@@ -6179,10 +6129,7 @@
                       "id": 963,
                       "name": "require",
                       "nodeType": "Identifier",
-                      "overloadedDeclarations": [
-                        3424,
-                        3425
-                      ],
+                      "overloadedDeclarations": [3424, 3425],
                       "referencedDeclaration": 3424,
                       "src": "915:7:10",
                       "typeDescriptions": {
@@ -6528,10 +6475,7 @@
                       "id": 1000,
                       "name": "revert",
                       "nodeType": "Identifier",
-                      "overloadedDeclarations": [
-                        3426,
-                        3427
-                      ],
+                      "overloadedDeclarations": [3426, 3427],
                       "referencedDeclaration": 3426,
                       "src": "1206:6:10",
                       "typeDescriptions": {
@@ -6925,9 +6869,7 @@
               "src": "1488:228:10",
               "statements": [
                 {
-                  "assignments": [
-                    1036
-                  ],
+                  "assignments": [1036],
                   "declarations": [
                     {
                       "constant": false,
@@ -7751,9 +7693,7 @@
               "src": "2006:165:10",
               "statements": [
                 {
-                  "assignments": [
-                    1099
-                  ],
+                  "assignments": [1099],
                   "declarations": [
                     {
                       "constant": false,
@@ -8798,9 +8738,7 @@
                     "src": "2694:124:10",
                     "statements": [
                       {
-                        "assignments": [
-                          1181
-                        ],
+                        "assignments": [1181],
                         "declarations": [
                           {
                             "constant": false,
@@ -9672,9 +9610,7 @@
               "src": "3397:139:10",
               "statements": [
                 {
-                  "assignments": [
-                    1259
-                  ],
+                  "assignments": [1259],
                   "declarations": [
                     {
                       "constant": false,
@@ -10058,9 +9994,7 @@
                       "id": 1287,
                       "name": "setChainAddr",
                       "nodeType": "Identifier",
-                      "overloadedDeclarations": [
-                        1202
-                      ],
+                      "overloadedDeclarations": [1202],
                       "referencedDeclaration": 1202,
                       "src": "3686:12:10",
                       "typeDescriptions": {
