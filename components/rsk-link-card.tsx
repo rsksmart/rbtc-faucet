@@ -1,6 +1,6 @@
 import React from 'react';
 import Container from 'react-bootstrap/Container';
-import RskCard from './feature-card';
+import RskCard from './rsk-card';
 import Button from 'react-bootstrap/Button';
 import '../assets/styles/rsk-link-card.css';
 

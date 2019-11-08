@@ -20,6 +20,11 @@
   background-color: #2c9dc3;
 }
 
+.faucet-button:hover{
+  border-color: #2c9dc3;
+  background-color: #2c9dc3;
+}
+
 .faucet-container {
   width: 60% !important;
 }

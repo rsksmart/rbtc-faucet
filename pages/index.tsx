@@ -9,7 +9,7 @@ import { DispenseResponse } from '../types/types.d';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../assets/styles/App.css';
 import { apiUrl, newCaptchaUrl } from '../utils/env-util';
-import RskCard from '../components/feature-card';
+import RskCard from '../components/rsk-card';
 import ReactCardCarousel from 'react-card-carousel';
 import Faucet from '../components/faucet';
 import RskLinkCard from '../components/rsk-link-card';

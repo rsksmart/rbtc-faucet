@@ -4,7 +4,7 @@ import Row from 'react-bootstrap/Row';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Spinner from 'react-bootstrap/Spinner';
-import RskCard from './feature-card';
+import RskCard from './rsk-card';
 import '../assets/styles/faucet.css';
 
 interface FaucetProps {

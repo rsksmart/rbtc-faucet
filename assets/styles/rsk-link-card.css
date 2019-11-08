@@ -5,6 +5,6 @@
 }
 
 .inherit-style {
-  color: inherit;
-  text-decoration: inherit;
+  color: inherit !important;
+  text-decoration: inherit !important;
 }
