@@ -99,7 +99,7 @@ function App() {
                 padding="p-5"
                 icon={<img className="faucet-icon" />}
                 title="Faucet"
-                backgroundColor="#007bff"
+                backgroundColor="#2c9dc3"
                 className="p-0 m-0"
               >
                 <Container className="p-0">
@@ -137,7 +137,7 @@ function App() {
                       <Button
                         variant="primary"
                         onClick={handleFaucetButtonClick}
-                        style={{ width: '100%', fontSize: 'small', borderRadius: '30px' }}
+                        style={{ width: '100%', fontSize: 'small', borderRadius: '30px', borderColor: '#2c9dc3', backgroundColor: '#2c9dc3'}}
                       >
                         Get test RBTC
                       </Button>
@@ -150,24 +150,24 @@ function App() {
               <Container className="h-100 w-100">
                 <ReactCardCarousel autoplay={true} autoplay_speed={5000}>
                   <RskLinkCard
-                    link=""
+                    link="https://developers.rsk.co/"
                     icon={<img className="devportal-icon" />}
                     title="DevPortal"
                     backgroundColor="#00b41f"
                     description="For developers by developers"
                   />
                   <RskLinkCard
-                    link=""
+                    link="https://developers.rsk.co/develop/apps/wallets/"
                     icon={<img className="wallet-icon" />}
                     title="Wallets"
                     backgroundColor="black"
                     description="Try RSK with these wallets"
                   />
                   <RskLinkCard
-                    link=""
+                    link="https://developers.rsk.co/tutorials/"
                     icon={<img className="tutorials-icon" />}
                     title="Tutorials"
-                    backgroundColor="#fd7e14"
+                    backgroundColor="#f26122"
                     description="How to develop on RSK"
                   />
                 </ReactCardCarousel>
@@ -201,8 +201,11 @@ const RskLinkCard = (props: RskLinkCardProps) => {
               border: 'transparent',
               borderRadius: '30px'
             }}
+            href={props.link}
           >
-            Read More
+            <a href={props.link} target="__blank" style={{color: 'inherit', textDecoration:'inherit'}}>
+              Read More
+            </a>
           </Button>
         </Container>
       </FeatureCard>

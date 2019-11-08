@@ -14,7 +14,7 @@ interface FaucetCardProps {
 const FeatureCard = (props: FaucetCardProps) => {
   return (
     <Card
-      className="p-0 m-0 card shadow "
+      className="p-0 m-0 card rsk-shadow"
       style={{ backgroundColor: props.backgroundColor, border: 'white', borderRadius: '30px'}}
     >
       <Card.Body className="p-0">
