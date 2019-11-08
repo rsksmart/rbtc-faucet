@@ -22,6 +22,7 @@ import {
   valueToDispense,
   solveCaptchaUrl
 } from '../../utils/env-util';
+import Validations from '../../utils/validations';
 
 let faucetHistory: FaucetHistory = {};
 
@@ -66,36 +67,19 @@ const handleDispense = async (req: NextApiRequest, res: NextApiResponse): Promis
     logger.event('captcha ' + JSON.stringify(captchaSolutionRequest));
 
     const captchaSolutionResponse: CaptchaSolutionResponse = await solveCaptcha(captchaSolutionRequest);
-    //const captchaSolutionResponse: CaptchaSolutionResponse = { result: 'accepted', reject_reason: '', trials_left: 5 };
 
     //Validations
     //each validation will return an error message, if it success it'll return an empty string (empty error message)
     const existingAlias: boolean = await rnsUtil.existingAlias(dispenseAddress);
 
-    const unexistingRNSAlias = (dispenseAddress: string): string =>
-      !existingAlias ? dispenseAddress + ' is an unexisting alias, please provide an existing one' : '';
-    const insuficientFunds = () => (faucetBalance < 100000000000000000 ? 'Faucet has enough funds' : '');
     const needsCaptchaReset = (captchaSolutionResponse: CaptchaSolutionResponse): boolean =>
       captchaSolutionResponse.trials_left == 0;
-    const captchaRejected = (result: string): string =>
-      result == 'rejected' ? 'Invalid captcha. Notice that this captcha is case sensitive.' : '';
-    const alreadyDispensed = (dispenseAddress: string): string =>
-      faucetHistory.hasOwnProperty(dispenseAddress.toLowerCase())
-        ? 'Address already used today, try again tomorrow.'
-        : '';
-    const invalidAddress = (dispenseAddress: string): string =>
-      dispenseAddress == undefined ||
-      dispenseAddress == '' ||
-      (dispenseAddress.substring(0, 2) != '0x' && !rnsUtil.isRNS(dispenseAddress)) ||
-      (dispenseAddress.length != 42 && !rnsUtil.isRNS(dispenseAddress))
-        ? 'Invalid address.'
-        : '';
 
-    const validations: (() => string)[] = [
-      () => captchaRejected(captchaSolutionResponse.result),
-      () => alreadyDispensed(dispenseAddress),
-      () => (dispenseAddress.includes('rsk') ? unexistingRNSAlias(dispenseAddress) : invalidAddress(dispenseAddress)),
-      () => insuficientFunds()
+      const validations: (() => string)[] = [
+      () => Validations.captchaRejected(captchaSolutionResponse.result),
+      () => Validations.alreadyDispensed(faucetHistory, dispenseAddress),
+      () => (dispenseAddress.includes('rsk') ? Validations.unexistingRNSAlias(existingAlias, dispenseAddress) : Validations.invalidAddress(dispenseAddress, rnsUtil)),
+      () => Validations.insuficientFunds(faucetBalance)
     ];
     const errorMessages: string[] = validations.map(validate => validate()).filter(e => e != '' && e != '-');
     if (errorMessages.length > 0) {

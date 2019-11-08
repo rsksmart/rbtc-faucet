@@ -42,15 +42,13 @@ function App() {
       .then(res => {
         setLoading(false);
         const data: DispenseResponse = res.data;
-        Swal.fire(swalSetup(data));
+        Swal.fire(swalConfig(data));
       })
       .catch(e => {
         //codes 409 or 500
         setLoading(false);
-        console.error(e);
-        console.error(JSON.stringify(e.response));
         const data: DispenseResponse = e.response.data ? e.response.data : e;
-        Swal.fire(swalSetup(data));
+        Swal.fire(swalConfig(data));
       });
     setCaptchaValue('');
   };
@@ -67,7 +65,7 @@ function App() {
     setCaptcha(result.data);
   };
 
-  const swalSetup = (data: DispenseResponse): SweetAlertOptions => {
+  const swalConfig = (data: DispenseResponse): SweetAlertOptions => {
     return {
       titleText: data.titleText,
       text: data.text,

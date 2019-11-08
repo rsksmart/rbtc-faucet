@@ -19,8 +19,6 @@ var accounts: string[];
 var apiUrl: string;
 var faucetAddress: string;
 
-//console.log(CAPTCHA_API_URL);
-
 beforeAll(async () => {
   web3 = new Web3(provider());
   web3.transactionConfirmationBlocks = 1;
