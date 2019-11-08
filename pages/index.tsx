@@ -13,6 +13,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import '../assets/styles/App.css';
 import { apiUrl, newCaptchaUrl } from '../utils/env-util';
 import FeatureCard from '../components/feature-card';
+import ReactCardCarousel from 'react-card-carousel';
 
 const RSK_TESTNET_CHAIN = 31;
 
@@ -94,16 +95,42 @@ function App() {
           <Row style={{ width: '100%' }}>
             <Col>
               <Container className="h-100 w-100">
-                
+                <ReactCardCarousel autoplay={ true } autoplay_speed={ 5000 }>
+                  <RskLinkCard
+                    link=""
+                    icon={<img className="devportal-icon" />}
+                    title="DevPortal"
+                    backgroundColor="#00b41f"
+                    description="For developers by developers"
+                  />
+                  <RskLinkCard
+                    link=""
+                    icon={<img className="devportal-icon" />}
+                    title="Wallets"
+                    backgroundColor="black"
+                    description="Try RSK with these wallets"
+                  />
+                  <RskLinkCard
+                    link=""
+                    icon={<img className="devportal-icon" />}
+                    title="Tutorials"
+                    backgroundColor="#fd7e14"
+                    description="How to develop on RSK"
+                  />
+                </ReactCardCarousel>
               </Container>
             </Col>
             <Col>
-              <FeatureCard icon={<img className="faucet-icon"/>} title="Faucet" backgroundColor="#007bff">
+              <FeatureCard
+                padding="p-5"
+                icon={<img className="faucet-icon"/>}
+                title="Faucet"
+                backgroundColor="#007bff"
+                className="p-0 m-0"
+              >
                 <Container className="p-0">
-                  <Row>
-                    <div style={{ fontSize: 'small', textAlign: 'start', marginBottom: '5%' }}>
-                      Address or RNS name
-                    </div>
+                  <div>
+                    <div style={{ fontSize: 'small', textAlign: 'start', marginBottom: '5%' }}>Address or RNS name</div>
                     <Form.Control
                       type="input"
                       placeholder="0xcd7872... / alice.rsk"
@@ -111,8 +138,8 @@ function App() {
                       onChange={handleDispenseAddressChange}
                       style={{ marginBottom: '5%', fontSize: 'small', textAlign: 'start' }}
                     />
-                  </Row>
-                  <Row>
+                  </div>
+                  <div>
                     <Form.Control
                       type="input"
                       placeholder="Captcha"
@@ -121,23 +148,27 @@ function App() {
                       className="rsk-captcha"
                       style={{ marginBottom: '5%', fontSize: 'small', textAlign: 'start' }}
                     />
-                  </Row>
-                  <Row>
+                  </div>
+                  <div>
                     <img
                       className="captcha-image"
                       src={`data:image/png;base64,${captcha.png}`}
                       style={{ marginBottom: '5%', width: '100%' }}
                     />
-                  </Row>
-                  <Row>
+                  </div>
+                  <div>
                     {loading ? (
                       <Spinner animation="border" role="status" />
                     ) : (
-                      <Button variant="primary" onClick={handleFaucetButtonClick} style={{ width: '100%', fontSize: 'small' }}>
+                      <Button
+                        variant="primary"
+                        onClick={handleFaucetButtonClick}
+                        style={{ width: '100%', fontSize: 'small' }}
+                      >
                         Get test RBTC
                       </Button>
                     )}
-                  </Row>
+                  </div>
                 </Container>
               </FeatureCard>
             </Col>
@@ -147,5 +178,34 @@ function App() {
     </div>
   );
 }
+
+interface RskLinkCardProps {
+  title: string;
+  description: string;
+  link: string;
+  icon: any;
+  backgroundColor: string;
+}
+const RskLinkCard = (props: RskLinkCardProps) => {
+  return (
+    <Row>
+      <FeatureCard padding="p-5" icon={props.icon} title={props.title} backgroundColor={props.backgroundColor}>
+        <Container className="p-0 text-left">
+          <div style={{ fontSize: 'small', textAlign: 'start', marginBottom: '5%' }}>{props.description} </div>
+          <Button
+            style={{
+              fontSize: 'small',
+              textAlign: 'center',
+              backgroundColor: props.backgroundColor,
+              border: 'transparent',
+            }}
+          >
+            Read More
+          </Button>
+        </Container>
+      </FeatureCard>
+    </Row>
+  );
+};
 
 export default App;

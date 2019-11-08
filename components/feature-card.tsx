@@ -2,31 +2,32 @@ import React from 'react';
 //import '../assets/styles/sb-admin-2/sb-admin-2.scss';
 import { Row, Container, Col, Card } from 'react-bootstrap';
 
-
 interface FaucetCardProps {
   title: string;
   children: any;
   backgroundColor: string;
   icon: any;
+  className?: string;
+  padding: 'p-1' | 'p-2' | 'p-3' | 'p-4' | 'p-5';
 }
 
 const FeatureCard = (props: FaucetCardProps) => {
   return (
     <Card className="p-0 m-0 card shadow " style={{ backgroundColor: props.backgroundColor, border: 'transparent' }}>
-      <Card.Body className="m-0 p-0 ">
-        <Row noGutters>
-          <Col sm={4}>
-            <Container className="w-100 h-100" style={{paddingTop: '100%'}}>
-              {props.icon}
-            </Container>
-          </Col>
-          <Col sm={8} style={{ backgroundColor: 'white' }}>
-            <Container className="p-5">
-              <Row className="font-weight-bold text-gray-800 p-1">{props.title}</Row>
-              <Row className="text-xs pt-0 pb-3 pr-3 pl-3">{props.children}</Row>
-            </Container>
-          </Col>
-        </Row>
+      <Card.Body className="p-0">
+        <Container className="m-0 p-0 w-100 h-100">
+          <Row className="w-100 m-0 p-0">
+            <Col sm={4}>
+              <Container className="w-100 h-100 p-0 vertical-center">{props.icon}</Container>
+            </Col>
+            <Col sm={8} className="p-0" style={{ backgroundColor: 'white' }}>
+              <Container fluid className={props.padding}>
+                <div className="font-weight-bold text-left">{props.title}</div>
+                {props.children}
+              </Container>
+            </Col>
+          </Row>
+        </Container>
       </Card.Body>
     </Card>
   );

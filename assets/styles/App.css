@@ -93,3 +93,15 @@
   background-color: 'white';
   width: 70%;
 }
+
+.devportal-icon {
+  content: url('../images/devportal.png');
+  background-color: 'white';
+  width: 50%;
+}
+
+.vertical-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
