@@ -92,7 +92,7 @@ function App() {
         </Navbar.Brand>
       </Navbar>
       <div className="app-body vertical-center">
-        <Container className="m-0 p-0 w-100" style={{maxWidth: '80%' }}>
+        <Container className="m-0 p-0 w-100" style={{ maxWidth: '80%' }}>
           <Row className="w-100" style={{ width: '100%' }}>
             <Col>
               <Faucet
@@ -109,33 +109,32 @@ function App() {
               <Container className="h-100 w-100">
                 <ReactCardCarousel autoplay={true} autoplay_speed={5000}>
                   <Row>
-                  <RskLinkCard
-                    link="https://developers.rsk.co/"
-                    icon={<img className="devportal-icon" />}
-                    title="DevPortal"
-                    backgroundColor="#00b41f"
-                    description="For developers by developers"
-                  />
+                    <RskLinkCard
+                      link="https://developers.rsk.co/"
+                      icon={<img className="devportal-icon" />}
+                      title="DevPortal"
+                      backgroundColor="#00b41f"
+                      description="For developers by developers"
+                    />
                   </Row>
                   <Row>
-                  <RskLinkCard
-                    link="https://developers.rsk.co/develop/apps/wallets/"
-                    icon={<img className="wallet-icon" />}
-                    title="Wallets"
-                    backgroundColor="black"
-                    description="Try RSK with these wallets"
-                  />
+                    <RskLinkCard
+                      link="https://developers.rsk.co/develop/apps/wallets/"
+                      icon={<img className="wallet-icon" />}
+                      title="Wallets"
+                      backgroundColor="black"
+                      description="Try RSK with these wallets"
+                    />
                   </Row>
                   <Row>
-                  <RskLinkCard
-                    link="https://developers.rsk.co/tutorials/"
-                    icon={<img className="tutorials-icon" />}
-                    title="Tutorials"
-                    backgroundColor="#f26122"
-                    description="How to develop on RSK"
-                  />
+                    <RskLinkCard
+                      link="https://developers.rsk.co/tutorials/"
+                      icon={<img className="tutorials-icon" />}
+                      title="Tutorials"
+                      backgroundColor="#f26122"
+                      description="How to develop on RSK"
+                    />
                   </Row>
-                  
                 </ReactCardCarousel>
               </Container>
             </Col>

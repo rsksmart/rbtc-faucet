@@ -14,22 +14,22 @@ interface RskLinkCardProps {
 
 const RskLinkCard = (props: RskLinkCardProps) => {
   return (
-      <RskCard padding="p-5" icon={props.icon} title={props.title} backgroundColor={props.backgroundColor}>
-        <Container className="p-0 text-left">
-          <div className="rsk-link-card-description">{props.description} </div>
-          <Button
-            className="button-rsk rounded-rsk"
-            style={{
-              backgroundColor: props.backgroundColor
-            }}
-            href={props.link}
-          >
-            <a href={props.link} target="__blank" className="inherit-style">
-              Read More
-            </a>
-          </Button>
-        </Container>
-      </RskCard>
+    <RskCard padding="p-5" icon={props.icon} title={props.title} backgroundColor={props.backgroundColor}>
+      <Container className="p-0 text-left">
+        <div className="rsk-link-card-description">{props.description} </div>
+        <Button
+          className="button-rsk rounded-rsk"
+          style={{
+            backgroundColor: props.backgroundColor
+          }}
+          href={props.link}
+        >
+          <a href={props.link} target="__blank" className="inherit-style">
+            Read More
+          </a>
+        </Button>
+      </Container>
+    </RskCard>
   );
 };
 
