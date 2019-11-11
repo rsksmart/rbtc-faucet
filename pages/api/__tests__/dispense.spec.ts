@@ -3,26 +3,29 @@ import Web3 from 'web3';
 import http from 'http';
 import listen from 'test-listen';
 import { apiResolver } from 'next-server/dist/server/api-utils';
-import { captchaApiUrl, valueToDispense, provider, solveCaptchaUrl } from '../../../utils/env-util';
+import { captchaApiUrl, valueToDispense, provider } from '../../../utils/env-util';
 import handleDispense from '../dispense';
-import { isValidAddress, isValidChecksumAddress } from 'rskjs-util';
+import { isValidChecksumAddress } from 'rskjs-util';
 import nock from 'nock';
-import sinon, { SinonFakeTimers } from 'sinon';
 
 const CAPTCHA_API_URL = captchaApiUrl();
 const VALUE_TO_DISPENSE = valueToDispense();
 const TESTNET_CHAIN_ID = 31;
-const SOLVE_CAPTCHA_URL = solveCaptchaUrl();
 
-var web3: Web3;
-var server: http.Server;
-var accounts: string[];
-var apiUrl: string;
-var faucetAddress: string;
-var nockScope: nock.Scope;
+let web3: Web3;
+let server: http.Server;
+let accounts: string[];
+let apiUrl: string;
+let faucetAddress: string;
+let nockScope: nock.Scope;
 
 
 describe('Dispense tests', () => {
+  const mockCaptchaService = (): nock.Scope => nockScope = nock(CAPTCHA_API_URL)
+    .post('/solution/1/1')
+    .reply(200, { result: 'accepted', reject_reason: '', trials_left: 5 })
+  const restoreMockedCaptchaService = (): void => nockScope.restore();
+
   beforeAll(async () => {
     web3 = new Web3(provider());
     web3.transactionConfirmationBlocks = 1;
@@ -54,7 +57,7 @@ describe('Dispense tests', () => {
   });
   describe('Dispense value tests', () => {
     beforeEach(() => mockCaptchaService());
-    afterAll(() => resetMockedCaptchaService());
+    afterAll(() => restoreMockedCaptchaService());
     test('Dispense right value, should be ' + VALUE_TO_DISPENSE, async () => {
       const dispenseAddress = accounts[3];
       const oldBalance = Number(await web3.eth.getBalance(dispenseAddress));
@@ -73,7 +76,7 @@ describe('Dispense tests', () => {
   describe('Address tests', () => {
     describe('Normal address tests', () => {
       beforeEach(() => mockCaptchaService());
-      afterAll(() => resetMockedCaptchaService());
+      afterAll(() => restoreMockedCaptchaService());
       test('Dispense to a new address', async () => {
         expect.assertions(3);
   
@@ -162,13 +165,16 @@ describe('Dispense tests', () => {
       });
     })*/
   });
-  /*describe('Timmer tests', () => {
-      var clock: SinonFakeTimers;
-  
+  /* describe('Timmer tests', () => {
+      let clock: any;
+
       beforeAll(()=> {
-        clock = sinon.useFakeTimers();
       })
-      afterAll(() => clock.restore());
+      afterAll(() => { 
+        restoreMockedCaptchaService();
+        //restore clock
+      });
+      beforeEach(() => mockCaptchaService());
       test('Dispense and then dispense next day', async () => {
         expect.assertions(6);
     
@@ -201,10 +207,5 @@ describe('Dispense tests', () => {
       test('Dispense one time, then another time at the same day. Finally dispense the next day', async () =>{
     
       })
-  })*/
+  }) */
 });
-
-const mockCaptchaService = () => nockScope = nock(CAPTCHA_API_URL)
-  .post('/solution/1/1')
-  .reply(200, { result: 'accepted', reject_reason: '', trials_left: 5 })
-const resetMockedCaptchaService = () => nockScope.restore();
