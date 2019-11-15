@@ -1,6 +1,7 @@
 import Web3 from 'web3';
 import prodConfig from '../prod-config.json';
 import devConfig from '../dev-config.json';
+import testConfig from '../test-config.json';
 
 //This section is for environment variables (I'll only mock variables when I cant control them)
 
@@ -80,7 +81,7 @@ export function solveCaptchaUrl(): string {
 }
 
 export function captchaApiUrl(): string {
-  return productionDevelopmentTest(prodConfig.CAPTCHA_API_URL, devConfig.CAPTCHA_API_URL, devConfig.CAPTCHA_API_URL);
+  return productionDevelopmentTest(prodConfig.CAPTCHA_API_URL, devConfig.CAPTCHA_API_URL, testConfig.CAPTCHA_API_URL);
 }
 
 export function gasPrice(): number {
