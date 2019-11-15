@@ -14,7 +14,7 @@ interface RskLinkCardProps {
 
 const RskLinkCard = (props: RskLinkCardProps) => {
   return (
-    <RskCard padding="p-5" icon={props.icon} title={props.title} backgroundColor={props.backgroundColor}>
+    <RskCard padding="p-3" icon={props.icon} title={props.title} backgroundColor={props.backgroundColor}>
       <Container className="p-0 text-left">
         <div className="rsk-link-card-description">{props.description} </div>
         <Button

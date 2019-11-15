@@ -4,22 +4,21 @@ import axios from 'axios';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import Swal, { SweetAlertOptions } from 'sweetalert2';
-import { DispenseResponse } from '../types/types.d';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import '../assets/styles/App.css';
-import { apiUrl, newCaptchaUrl } from '../utils/env-util';
-import RskCard from '../components/rsk-card';
 import ReactCardCarousel from 'react-card-carousel';
-import Faucet from '../components/faucet';
 import RskLinkCard from '../components/rsk-link-card';
+import withSizes from 'react-sizes';
+import Faucet, { FaucetProps } from '../components/faucet';
+import Swal, { SweetAlertOptions } from 'sweetalert2';
+import { apiUrl, newCaptchaUrl } from '../utils/env-util';
+import { DispenseResponse } from '../types/types.d';
+import Fade from 'react-reveal/Fade';
+import '../assets/styles/index.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import '../assets/styles/globals.css';
 
-const RSK_TESTNET_CHAIN = 31;
-
-function App() {
+function App({ isMobile }) {
   //Hooks
-  const [captcha, setCaptcha] = useState({ id: '', png: '' });
+  const [captcha, setCaptcha] = useState({ id: '-1', png: '-1' });
   const [dispenseAddress, setDispenseAddress] = useState('');
   const [captchaValue, setCaptchaValue] = useState('');
   const [loading, setLoading] = useState(false);
@@ -30,6 +29,23 @@ function App() {
 
   //Handles
   const handleFaucetButtonClick = async () => {
+    const swalSetup = (data: DispenseResponse): SweetAlertOptions => {
+      return {
+        titleText: data.titleText,
+        text: data.text,
+        type: data.type,
+        onClose: () => {
+          if (data.dispenseComplete) {
+            fetchCaptcha();
+            setDispenseAddress('');
+            setCaptchaValue('');
+          } else if (data.resetCaptcha) {
+            fetchCaptcha();
+          }
+        }
+      };
+    };
+
     setLoading(true);
     axios
       .post(apiUrl() + '/dispense', {
@@ -39,18 +55,21 @@ function App() {
           id: captcha.id
         }
       })
-      .then(res => {
+      .then((res: any) => {
+        setCaptchaValue('');
         setLoading(false);
         const data: DispenseResponse = res.data;
-        Swal.fire(swalConfig(data));
+        Swal.fire(swalSetup(data));
       })
-      .catch(e => {
+      .catch((e: any) => {
         //codes 409 or 500
+        setCaptchaValue('');
         setLoading(false);
+        console.error(e);
+        console.error(JSON.stringify(e.response));
         const data: DispenseResponse = e.response.data ? e.response.data : e;
-        Swal.fire(swalConfig(data));
+        Swal.fire(swalSetup(data));
       });
-    setCaptchaValue('');
   };
   const handleCaptchaValueChange = (event: any) => {
     setCaptchaValue(event.target.value);
@@ -65,82 +84,86 @@ function App() {
     setCaptcha(result.data);
   };
 
-  const swalConfig = (data: DispenseResponse): SweetAlertOptions => {
-    return {
-      titleText: data.titleText,
-      text: data.text,
-      type: data.type,
-      onClose: () => {
-        if (data.dispenseComplete) {
-          fetchCaptcha();
-          setDispenseAddress('');
-          setCaptchaValue('');
-        } else if (data.resetCaptcha) {
-          fetchCaptcha();
-        }
-      }
-    };
+  const faucetPropsDesktop: FaucetProps = {
+    captcha: captcha,
+    loading: loading,
+    dispenseAddress: dispenseAddress,
+    captchaValue: captchaValue,
+    onAddressChange: handleDispenseAddressChange,
+    onCaptchaValueChange: handleCaptchaValueChange,
+    onDispenseClick: handleFaucetButtonClick
+  };
+  const reactCardCarouselProps = {
+    autoplay: true,
+    autoplay_speed: 5000
+  };
+  const devportalLinkCardProps = {
+    link: 'https://developers.rsk.co/',
+    icon: <img className="devportal-icon" />,
+    title: 'DevPortal',
+    backgroundColor: '#00b41f',
+    description: 'For developers by developers'
+  };
+  const tutorialLinkCardProps = {
+    link: 'https://developers.rsk.co/tutorials/',
+    icon: <img className="tutorials-icon" />,
+    title: 'Tutorials',
+    backgroundColor: '#f26122',
+    description: 'How to develop on RSK'
+  };
+  const walletsLinkCardProps = {
+    link: 'https://developers.rsk.co/develop/apps/wallets/',
+    icon: <img className="wallet-icon" />,
+    title: 'Wallets',
+    backgroundColor: 'black',
+    description: 'Try RSK with these wallets'
   };
 
   return (
-    <div className="background">
-      <Navbar className="navbar-rsk">
-        <Navbar.Brand className="navbar-brand-rsk">
-          <img className="logo ml-5" />
-        </Navbar.Brand>
-      </Navbar>
-      <div className="app-body vertical-center">
-        <Container className="m-0 p-0 w-100" style={{ maxWidth: '80%' }}>
-          <Row className="w-100" style={{ width: '100%' }}>
-            <Col>
-              <Faucet
-                captcha={captcha}
-                loading={loading}
-                dispenseAddress={dispenseAddress}
-                captchaValue={captchaValue}
-                onAddressChange={handleDispenseAddressChange}
-                onCaptchaValueChange={handleCaptchaValueChange}
-                onDispenseClick={handleFaucetButtonClick}
-              />
-            </Col>
-            <Col>
-              <Container className="h-100 w-100">
-                <ReactCardCarousel autoplay={true} autoplay_speed={5000}>
-                  <Row>
-                    <RskLinkCard
-                      link="https://developers.rsk.co/"
-                      icon={<img className="devportal-icon" />}
-                      title="DevPortal"
-                      backgroundColor="#00b41f"
-                      description="For developers by developers"
-                    />
-                  </Row>
-                  <Row>
-                    <RskLinkCard
-                      link="https://developers.rsk.co/develop/apps/wallets/"
-                      icon={<img className="wallet-icon" />}
-                      title="Wallets"
-                      backgroundColor="black"
-                      description="Try RSK with these wallets"
-                    />
-                  </Row>
-                  <Row>
-                    <RskLinkCard
-                      link="https://developers.rsk.co/tutorials/"
-                      icon={<img className="tutorials-icon" />}
-                      title="Tutorials"
-                      backgroundColor="#f26122"
-                      description="How to develop on RSK"
-                    />
-                  </Row>
-                </ReactCardCarousel>
-              </Container>
-            </Col>
-          </Row>
+    <div className="custom-body">
+      <Fade top>
+        <Navbar className="navbar-rsk">
+          <Navbar.Brand className="navbar-brand-rsk">
+            <img className="logo ml-5" />
+          </Navbar.Brand>
+        </Navbar>
+      </Fade>
+      <div className="app-body">
+        <Container className="m-0 p-0 w-100 container-rsk">
+          <Fade bottom>
+            <Row className="w-100">
+              <Col>
+                <Faucet {...faucetPropsDesktop} />
+              </Col>
+              {!isMobile ? (
+                <Col>
+                  <Container className="h-100 w-100">
+                    <ReactCardCarousel {...reactCardCarouselProps}>
+                      <Row>
+                        <RskLinkCard {...devportalLinkCardProps} />
+                      </Row>
+                      <Row>
+                        <RskLinkCard {...walletsLinkCardProps} />
+                      </Row>
+                      <Row>
+                        <RskLinkCard {...tutorialLinkCardProps} />
+                      </Row>
+                    </ReactCardCarousel>
+                  </Container>
+                </Col>
+              ) : (
+                <></>
+              )}
+            </Row>
+          </Fade>
         </Container>
       </div>
     </div>
   );
 }
 
-export default App;
+const mapSizesToProps = ({ width }) => ({
+  isMobile: width < 768
+});
+
+export default withSizes(mapSizesToProps)(App);

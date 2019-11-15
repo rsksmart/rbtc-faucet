@@ -1,12 +1,13 @@
 import React from 'react';
 import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Spinner from 'react-bootstrap/Spinner';
 import RskCard from './rsk-card';
 import '../assets/styles/faucet.css';
 
-interface FaucetProps {
+export interface FaucetProps {
   captcha: any;
   loading: boolean;
   dispenseAddress: string;
@@ -19,7 +20,7 @@ interface FaucetProps {
 const Faucet = (props: FaucetProps) => {
   return (
     <RskCard
-      padding="p-5"
+      padding="p-4"
       icon={<img className="faucet-icon" />}
       title="Faucet"
       backgroundColor="#2c9dc3"
@@ -46,17 +47,17 @@ const Faucet = (props: FaucetProps) => {
           />
         </div>
         <div>
-          <img className="faucet-captcha-image rounded-rsk" src={`data:image/png;base64,${props.captcha.png}`} />
+          {props.captcha.id != '-1' ? (
+            <img className="faucet-captcha-image rounded-rsk" src={`data:image/png;base64,${props.captcha.png}`} />
+          ) : (
+            <Spinner className="faucet-captcha-spinner" animation="border" role="status" />
+          )}
         </div>
         <div>
           {props.loading ? (
             <Spinner animation="border" role="status" />
           ) : (
-            <Button
-              variant="primary"
-              onClick={props.onDispenseClick}
-              className="faucet-button button-rsk w-100 rounded-rsk"
-            >
+            <Button onClick={props.onDispenseClick} className="faucet-button button-rsk  rounded-rsk">
               Get test RBTC
             </Button>
           )}
