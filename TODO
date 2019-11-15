@@ -1,17 +1,1 @@
-Implementar 
-[x] Quitar el store singleton (implementar)
-[x] Quitar el web3-util (implementar)
-[x] Llevar a Sweetalert2 para capturar el onClose
-[x] restear ui solo cuando se hace todo con exito
-[x] Dispensar desde UI
-[x] Job que limpia todos los dias el faucet history (implementar)
-[] Estilos (implementar)
 [] Mas dispenses para cuentas seleccionadas (implementar)
-
-Testing
-[x] Que no se puedan mandar mas de un dispense si esta en el historial (testear)
-[x] Que se envien exacamente la cantidad indicada (testear)
-
-Fix 
-[x] Ver por que manda tantos requests el web3
-[x] type rskjutil

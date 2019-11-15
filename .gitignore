@@ -9,6 +9,7 @@ yarn.lock
 "assets/images/React App_files"
 assets/images/localhost.htm
 assets/images/localhost_files/
+.vscode/
   
 captcha/.idea
 captcha/dump.rdb
