@@ -43,12 +43,11 @@ afterAll(async () => {
 });
 
 describe('NO CAPTCHA', () => {
-  beforeEach(() =>{
+  beforeEach(() => {
     nock(CAPTCHA_API_URL) //Mocking captcha service
       .post('/solution/1/1')
-      .reply(200, { result: 'accepted', reject_reason: '', trials_left: 5 })
-  }
-  );
+      .reply(200, { result: 'accepted', reject_reason: '', trials_left: 5 });
+  });
 
   test('there are five accounts', () => {
     expect.assertions(2);

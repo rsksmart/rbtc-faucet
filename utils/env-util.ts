@@ -17,28 +17,29 @@ const productionDevelopmentTest = (prod: any, dev: any, test: any): any => {
       throw 'Undefined environment';
   }
 };
-type Account = {balance: string, secretKey?: string}
+type Account = { balance: string; secretKey?: string };
 const emptyAccounts = (size: number): Account[] => {
-  let accounts: Account[] = [{
-    balance: '0x56BC75E2D63100000',
-    secretKey: '0xc3d40c98585e2c61add9c6a94b66cd7f5c5577e45d900c6c0e3139df1310292f'
-  }];
-  for(let i = 0; i < (size - 1); i++)
-    accounts.push({balance: '0x0'})
+  let accounts: Account[] = [
+    {
+      balance: '0x56BC75E2D63100000',
+      secretKey: '0xc3d40c98585e2c61add9c6a94b66cd7f5c5577e45d900c6c0e3139df1310292f'
+    }
+  ];
+  for (let i = 0; i < size - 1; i++) accounts.push({ balance: '0x0' });
 
   return accounts;
-}
+};
 
 //bundling ganache-cli at dev/prod env, produces compiling error (missing dependencies on client side)
 var currentProvider: any;
 export function provider(): any {
   if (!currentProvider) {
     let ganache = null;
-    if(process.env.NODE_ENV == 'test') 
+    if (process.env.NODE_ENV == 'test')
       ganache = require('ganache-cli').provider({
         accounts: emptyAccounts(5),
         gasPrice: '0x0'
-    })
+      });
     currentProvider = productionDevelopmentTest(
       new Web3.providers.HttpProvider(prodConfig.RSK_NODE),
       new Web3.providers.HttpProvider(devConfig.RSK_NODE),

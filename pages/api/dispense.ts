@@ -78,7 +78,7 @@ const handleDispense = async (req: NextApiRequest, res: NextApiResponse): Promis
     const needsCaptchaReset = (captchaSolutionResponse: CaptchaSolutionResponse): boolean =>
       captchaSolutionResponse.trials_left == 0;
     const captchaRejected = (result: string): string =>
-      result == 'rejected' ? 'Invalid captcha. Notice that this captcha is case sensitive.' : '';
+      result == 'rejected' ? 'Invalid captcha (notice that this captcha is case sensitive).' : '';
     const alreadyDispensed = (dispenseAddress: string): string =>
       faucetHistory.hasOwnProperty(dispenseAddress.toLowerCase())
         ? 'Address already used today, try again tomorrow.'
@@ -101,7 +101,7 @@ const handleDispense = async (req: NextApiRequest, res: NextApiResponse): Promis
     if (errorMessages.length > 0) {
       errorMessages.forEach(e => logger.error(e));
 
-      const parsedMessages: string = errorMessages.reduce((a, b) => '- ' + a + '\n-' + b);
+      const parsedMessages: string = errorMessages.reduce((a, b) => '<br/> <strong>- </strong>' + a + '<br/> <strong>- </strong>' + b);
       const data: DispenseResponse = {
         titleText: 'Error',
         text: parsedMessages,

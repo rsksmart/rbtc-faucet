@@ -47,7 +47,7 @@ const Faucet = (props: FaucetProps) => {
           />
         </div>
         <div>
-          {props.captcha.id != '-1' ? (
+          {loadingCaptcha(props.captcha.id) ? (
             <img className="faucet-captcha-image rounded-rsk" src={`data:image/png;base64,${props.captcha.png}`} />
           ) : (
             <Spinner className="faucet-captcha-spinner" animation="border" role="status" />
@@ -66,5 +66,7 @@ const Faucet = (props: FaucetProps) => {
     </RskCard>
   );
 };
+
+const loadingCaptcha = (id: string) => id != '-1';
 
 export default Faucet;

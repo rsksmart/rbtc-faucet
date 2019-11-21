@@ -32,7 +32,7 @@ function App({ isMobile }) {
     const swalSetup = (data: DispenseResponse): SweetAlertOptions => {
       return {
         titleText: data.titleText,
-        text: data.text,
+        html: data.text,
         type: data.type,
         onClose: () => {
           if (data.dispenseComplete) {
@@ -85,10 +85,10 @@ function App({ isMobile }) {
   };
 
   const faucetPropsDesktop: FaucetProps = {
-    captcha: captcha,
-    loading: loading,
-    dispenseAddress: dispenseAddress,
-    captchaValue: captchaValue,
+    captcha,
+    loading,
+    dispenseAddress,
+    captchaValue,
     onAddressChange: handleDispenseAddressChange,
     onCaptchaValueChange: handleCaptchaValueChange,
     onDispenseClick: handleFaucetButtonClick
