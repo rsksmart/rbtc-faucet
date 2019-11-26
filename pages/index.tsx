@@ -12,6 +12,8 @@ import Swal, { SweetAlertOptions } from 'sweetalert2';
 import { apiUrl, newCaptchaUrl } from '../utils/env-util';
 import { DispenseResponse } from '../types/types.d';
 import Fade from 'react-reveal/Fade';
+import Head from 'next/head'
+
 import '../assets/styles/index.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../assets/styles/globals.css';
@@ -120,43 +122,48 @@ function App({ isMobile }) {
   };
 
   return (
-    <div className="custom-body">
-      <Fade top>
-        <Navbar className="navbar-rsk">
-          <Navbar.Brand className="navbar-brand-rsk">
-            <img className="logo ml-5" />
-          </Navbar.Brand>
-        </Navbar>
-      </Fade>
-      <div className="app-body">
-        <Container className="m-0 p-0 w-100 container-rsk">
-          <Fade bottom>
-            <Row className="w-100">
-              <Col>
-                <Faucet {...faucetPropsDesktop} />
-              </Col>
-              {!isMobile ? (
+    <div>
+      <Head>
+        <title>RSK Testnet Faucet</title>
+      </Head>
+      <div className="custom-body">
+        <Fade top>
+          <Navbar className="navbar-rsk">
+            <Navbar.Brand className="navbar-brand-rsk">
+              <img className="logo ml-5" />
+            </Navbar.Brand>
+          </Navbar>
+        </Fade>
+        <div className="app-body">
+          <Container className="m-0 p-0 w-100 container-rsk">
+            <Fade bottom>
+              <Row className="w-100">
                 <Col>
-                  <Container className="h-100 w-100">
-                    <ReactCardCarousel {...reactCardCarouselProps}>
-                      <Row>
-                        <RskLinkCard {...devportalLinkCardProps} />
-                      </Row>
-                      <Row>
-                        <RskLinkCard {...walletsLinkCardProps} />
-                      </Row>
-                      <Row>
-                        <RskLinkCard {...tutorialLinkCardProps} />
-                      </Row>
-                    </ReactCardCarousel>
-                  </Container>
+                  <Faucet {...faucetPropsDesktop} />
                 </Col>
-              ) : (
-                <></>
-              )}
-            </Row>
-          </Fade>
-        </Container>
+                {!isMobile ? (
+                  <Col>
+                    <Container className="h-100 w-100">
+                      <ReactCardCarousel {...reactCardCarouselProps}>
+                        <Row>
+                          <RskLinkCard {...devportalLinkCardProps} />
+                        </Row>
+                        <Row>
+                          <RskLinkCard {...walletsLinkCardProps} />
+                        </Row>
+                        <Row>
+                          <RskLinkCard {...tutorialLinkCardProps} />
+                        </Row>
+                      </ReactCardCarousel>
+                    </Container>
+                  </Col>
+                ) : (
+                  <></>
+                )}
+              </Row>
+            </Fade>
+          </Container>
+        </div>
       </div>
     </div>
   );
