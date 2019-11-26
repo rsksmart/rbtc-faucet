@@ -12,7 +12,7 @@ import Swal, { SweetAlertOptions } from 'sweetalert2';
 import { apiUrl, newCaptchaUrl } from '../utils/env-util';
 import { DispenseResponse } from '../types/types.d';
 import Fade from 'react-reveal/Fade';
-import Head from 'next/head'
+import Head from 'next/head';
 
 import '../assets/styles/index.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
