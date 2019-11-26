@@ -172,7 +172,7 @@ describe('CAPTCHA', () => {
       await axios.post(apiUrl, { dispenseAddress: accounts[4], captcha: { id: 'invalid', solution: 'solution' } });
     } catch (e) {
       expect(e.response.status).toBe(409);
-      expect(e.response.data.text).toBe('Invalid captcha. Notice that this captcha is case sensitive.');
+      expect(e.response.data.text).toBe('Invalid captcha (notice that this captcha is case sensitive).');
     }
   });
 });
