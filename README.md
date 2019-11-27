@@ -4,66 +4,57 @@
 
 Faucet to dispense test RBTC for RSK Testnet.
 
-## Stack
+## Architecture
 
-*ARCHITECTURE-DIAGRAM*
+![diagram](./diagrams/stack.png)
 
-## Running development environment
+## Setup -config.json variables
 
-In order to run it you'll need to 
+There are 3 differents environments, production, development and testing, each one has a specific -config.json file 
 
-- Setup *config.json* variables
-- Run rust-captcha service
-- Run Next JS App
+- Production: `prod-config.json`
+- Development: `dev-config.json`
+- Testing: `test-config.json`
 
-
-### Setup config.json variables
-
-Please check config.json and fill with right values
+Please check `-config.json` and fill them with right values.
 
 ```json
 {
   "RSK_NODE": "NODE_URL", 
   "API_URL": "API_FETCH_URL",
-  "NEW_CAPTCHA_URL": "http://localhost:8080/new/easy/5/998", //Checkout '/captcha/README.md'
-  "SOLVE_CAPTCHA_URL": "http://localhost:8080/solution/", //Checkout '/captcha/README.md'
-  "CAPTCHA_API_URL": "http://localhost:8080",  //Checkout '/captcha/README.md'
-  "FAUCET_ADDRESS": "A_FAUCET_ADDRESS",
-  "FAUCET_PRIVATE_KEY": "A_FAUCET_PRIVATE_KEY",
-  "GAS_PRICE": 60000000, //Minimum gas price
+  "NEW_CAPTCHA_URL": "http://rust-captcha.com/new/easy/5/998",
+  "SOLVE_CAPTCHA_URL": "http://rust-captcha.com:8080/solution/",
+  "CAPTCHA_API_URL": "http://rust-captcha.com:8080",
+  "FAUCET_ADDRESS": "ADDRESS",
+  "FAUCET_PRIVATE_KEY": "PRIVATE_KEY",
+  "GAS_PRICE": 60000000,
   "GAS_LIMIT": 800000,
-  "VALUE_TO_DISPENSE": 0.001
+  "VALUE_TO_DISPENSE": 0.001,
+  "TAG_MANAGER_ID": "GTM-XXXXXXX"
 }
 ```
-### Running rust captcha service
 
-This app consumes from a captcha service, in order develop you'll need to run it locally.
+**NEW_CAPTCHA_URL** is the url where you're gonna request a new captcha, **SOLVE_CAPTCHA_URL** is for checking the solution and **CAPTCHA_API_URL** is where the captcha-api is hosted, to get more info please read [this README](https://github.com/rsksmart/rust-captcha/blob/master/README.md).
 
-It can be run in a docker container (recomended) or from sources. 
+## Running development environment
 
-Please check [README.md](https://github.com/rootstock/rbtc-faucet/tree/master/captcha) at *captcha/*
-
-Notice that this server is missing Access-Control-Allow-Origin headers, you can install [this](https://chrome.google.com/webstore/detail/allow-cors-access-control/lhobafahddgcelffkeicbaginigeejlf?hl=es) chrome extension to disable this check. 
-
-### Running Next JS App
+Open a terminal at root folder.
 
 1. First install depenecies
 
 ```bash
-# At root folder
-
 yarn
 ```
 
-2. Run captcha service
-
-3. Then run app 
+2. Then run app 
 
 ```bash
-# At root folder
-
 yarn dev
 ```
+
+## Production deploy
+
+Checkout Next.js [tutorial](https://nextjs.org/learn/basics/deploying-a-nextjs-app/deploying-to-your-own-environment) or [docs](https://nextjs.org/docs#production-deployment)
 
 ## Debugging with VS Code
 
