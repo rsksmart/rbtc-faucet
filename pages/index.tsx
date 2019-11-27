@@ -9,7 +9,7 @@ import RskLinkCard from '../components/rsk-link-card';
 import withSizes from 'react-sizes';
 import Faucet, { FaucetProps } from '../components/faucet';
 import Swal, { SweetAlertOptions } from 'sweetalert2';
-import { apiUrl, newCaptchaUrl } from '../utils/env-util';
+import { apiUrl, newCaptchaUrl, tagManagerId } from '../utils/env-util';
 import { DispenseResponse } from '../types/types.d';
 import TagManager from 'react-gtm-module'
 import Fade from 'react-reveal/Fade';
@@ -177,7 +177,7 @@ function App({ isMobile }) {
 
 App.getInitialProps = async function() {
   const tagManagerArgs = {
-    id: 'GTM-56J7JTD'
+    id: tagManagerId()
   }
   TagManager.initialize(tagManagerArgs)
 

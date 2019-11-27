@@ -100,3 +100,11 @@ export function valueToDispense(): number {
     devConfig.VALUE_TO_DISPENSE
   );
 }
+
+export function tagManagerId(): string {
+  return productionDevelopmentTest(
+    prodConfig.TAG_MANAGER_ID,
+    devConfig.TAG_MANAGER_ID,
+    devConfig.TAG_MANAGER_ID
+  );
+}
