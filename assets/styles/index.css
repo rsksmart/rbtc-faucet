@@ -1,13 +1,132 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+html,
+body,
+#__next {
+  width: 100%;
+  height: 100%;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+.custom-body {
+  width: 100%;
+  height: 100%;
+}
+
+.background {
+  background-size: cover !important;
+  height: 100%;
+  width: 100%;
+}
+
+.app-body {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  font-size: calc(7px + 2vmin);
+  text-align: center;
+  background: transparent;
+}
+
+.logo {
+  content: url('./../images/rsk_logo.svg');
+  height: fit-content;
+  padding: 30px;
+}
+
+@media (max-width: 768px) {
+  .logo {
+    height: 120px !important;
+    padding-left: 27% !important;
+  }
+
+  .faucet-icon {
+    width: 40% !important;
+  }
+}
+
+.navbar-rsk {
+  margin-bottom: 2%;
+  width: 100%;
+  height: 200px;
+  background: url('../../assets/images/green_shape.png');
+  background-repeat: no-repeat;
+  background-position: bottom center;
+  background-size: cover;
+  position: relative;
+  top: -15px;
+  transition: all 0.5s ease;
+}
+
+.navbar-brand-rsk {
+  padding: 0% !important;
+  padding-left: 2% !important;
+  padding-bottom: 3% !important;
+}
+
+.col-centered {
+  float: none;
+  margin: 0 auto;
+}
+
+.background-modal {
+  background: #79554857;
+}
+
+.white-background {
+  background-color: white !important;
+}
+
+.no-padding {
+  padding-right: 0% !important;
+  padding-left: 0% !important;
+}
+
+.full-width {
+  width: 100% !important;
+}
+
+.faucet-icon {
+  content: url('../images/tap-water.png');
+  background-color: 'white';
+  width: 50%;
+}
+
+.devportal-icon {
+  content: url('../images/devportal.png');
+  background-color: 'white';
+  width: 60%;
+}
+
+.wallet-icon {
+  content: url('../images/wallet.png');
+  background-color: 'white';
+  width: 60%;
+}
+
+.tutorials-icon {
+  content: url('../images/tutorials.png');
+  background-color: 'white';
+  width: 60%;
+}
+
+.vertical-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.swal2-modal {
+  border-radius: 30px !important;
+}
+
+.swal2-confirm {
+  border-radius: 30px !important;
+}
+
+.swal2-styled.swal2-confirm {
+  background-color: yellowgreen;
+}
+
+.container-rsk {
+  max-width: 80%;
 }

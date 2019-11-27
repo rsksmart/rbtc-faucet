@@ -7,5 +7,6 @@
     "useTabs": false, 
     "quoteProps": "consistent",
     "arrowParens": "avoid",
-    "jsxBracketSameLine": false
+    "jsxBracketSameLine": false,
+    "printWidth": 120
 }

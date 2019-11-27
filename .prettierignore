@@ -7,6 +7,11 @@ node_modules
 package-lock.json
 yarn.lock
 "assets/images/React App_files"
+assets/styles/sb-admin-2
+assets/localhost_files
+assets/images/localhost_files
+
+
 .vscode/
   
 captcha/.idea
@@ -14,6 +19,7 @@ captcha/dump.rdb
 captcha/target
 captcha/Cargo.lock
 
+tsconfig.json
 
 # dependencies
 /node_modules

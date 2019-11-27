@@ -1,0 +1,46 @@
+.faucet-label {
+  font-size: small;
+  text-align: start;
+  margin-bottom: 5%;
+}
+
+.faucet-control {
+  margin-bottom: 5% !important;
+  font-size: small !important;
+  text-align: start !important;
+}
+
+.faucet-captcha-image {
+  margin-bottom: 5% !important;
+  width: 100% !important;
+}
+
+.faucet-button {
+  border-color: #2c9dc3 !important;
+  background-color: #2c9dc3 !important;
+  text-decoration: inherit !important;
+}
+
+.faucet-button:hover {
+  border-color: #2c9dc3;
+  background-color: #2c9dc3;
+}
+
+.faucet-container {
+  width: 60% !important;
+}
+
+.faucet-input {
+  margin-left: 20% !important;
+  margin-right: 20% !important;
+}
+
+.faucet-input-captcha {
+  margin-left: 25% !important;
+  margin-right: 25% !important;
+}
+
+.faucet-captcha-spinner {
+  margin: 10%;
+  color: #2c9dc3;
+}

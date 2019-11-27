@@ -19,15 +19,35 @@ In order to run it you'll need to
 
 ### Setup config.json variables
 
-*TODO*
+Please check config.json and fill with right values
 
+```json
+{
+  "RSK_NODE": "NODE_URL", 
+  "API_URL": "API_FETCH_URL",
+  "NEW_CAPTCHA_URL": "http://localhost:8080/new/easy/5/998", //Checkout '/captcha/README.md'
+  "SOLVE_CAPTCHA_URL": "http://localhost:8080/solution/", //Checkout '/captcha/README.md'
+  "CAPTCHA_API_URL": "http://localhost:8080",  //Checkout '/captcha/README.md'
+  "FAUCET_ADDRESS": "A_FAUCET_ADDRESS",
+  "FAUCET_PRIVATE_KEY": "A_FAUCET_PRIVATE_KEY",
+  "GAS_PRICE": 60000000, //Minimum gas price
+  "GAS_LIMIT": 800000,
+  "VALUE_TO_DISPENSE": 0.001
+}
+```
 ### Running rust captcha service
+
+This app consumes from a captcha service, in order develop you'll need to run it locally.
+
+It can be run in a docker container (recomended) or from sources. 
 
 Please check [README.md](https://github.com/rootstock/rbtc-faucet/tree/master/captcha) at *captcha/*
 
+Notice that this server is missing Access-Control-Allow-Origin headers, you can install [this](https://chrome.google.com/webstore/detail/allow-cors-access-control/lhobafahddgcelffkeicbaginigeejlf?hl=es) chrome extension to disable this check. 
+
 ### Running Next JS App
 
-First install depenecies
+1. First install depenecies
 
 ```bash
 # At root folder
@@ -35,7 +55,9 @@ First install depenecies
 yarn
 ```
 
-Then run app 
+2. Run captcha service
+
+3. Then run app 
 
 ```bash
 # At root folder

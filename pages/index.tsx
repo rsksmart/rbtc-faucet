@@ -1,66 +1,79 @@
 import React, { useState, useEffect } from 'react';
-import Form from 'react-bootstrap/Form';
-import Button from 'react-bootstrap/Button';
 import Navbar from 'react-bootstrap/Navbar';
 import axios from 'axios';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import Modal from 'react-bootstrap/Modal';
-import config from '../config.json';
-import {
-  isValidAddress,
-  isValidChecksumAddress,
-  toChecksumAddress
-} from 'rskjs-util';
-import { FaucetButton } from '../types/types';
+import ReactCardCarousel from 'react-card-carousel';
+import RskLinkCard from '../components/rsk-link-card';
+import withSizes from 'react-sizes';
+import Faucet, { FaucetProps } from '../components/faucet';
+import Swal, { SweetAlertOptions } from 'sweetalert2';
+import { apiUrl, newCaptchaUrl, tagManagerId } from '../utils/env-util';
+import { DispenseResponse } from '../types/types.d';
+import TagManager from 'react-gtm-module'
+import Fade from 'react-reveal/Fade';
+import Head from 'next/head';
+
+
+import '../assets/styles/index.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import '../assets/styles/App.css';
+import '../assets/styles/globals.css';
 
-const RSK_TESTNET_CHAIN = 31;
-
-function App() {
-  //Components
-  const FaucetButton = (props: FaucetButton) => {
-    return (
-      <Button variant={props.variant} onClick={props.onClick}>
-        Get test RBTC
-      </Button>
-    );
-  };
-
+function App({ isMobile }) {
   //Hooks
-  const [faucetVariant, setFaucetVariant] = useState<any>('success');
-  const [captcha, setCaptcha] = useState({ id: '', png: '' });
+  const [captcha, setCaptcha] = useState({ id: '-1', png: '-1' });
   const [dispenseAddress, setDispenseAddress] = useState('');
   const [captchaValue, setCaptchaValue] = useState('');
-  const [showModal, setShowModal] = useState(false);
-  const [errorTooltipAddressVisible, setErrorTooltipAddressVisible] = useState(
-    false
-  );
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const fetchCaptcha = async () => {
-      const result = await axios.post(config.NEW_CAPTCHA_URL);
-      setCaptcha(result.data);
-    };
     fetchCaptcha();
   }, []);
 
-  //Methods
+  //Handles
   const handleFaucetButtonClick = async () => {
-    try {
-      if (!isValidAddress(dispenseAddress)) {
-        setErrorTooltipAddressVisible(true);
-      }
+    const swalSetup = (data: DispenseResponse): SweetAlertOptions => {
+      return {
+        titleText: data.titleText,
+        html: data.text,
+        type: data.type,
+        onClose: () => {
+          if (data.dispenseComplete) {
+            fetchCaptcha();
+            setDispenseAddress('');
+            setCaptchaValue('');
+          } else if (data.resetCaptcha) {
+            fetchCaptcha();
+          }
+        }
+      };
+    };
 
-      const res = await axios.post(config.SOLVE_CAPTCHA_URL, {
-        dispenseAddress
+    setLoading(true);
+    axios
+      .post(apiUrl() + '/dispense', {
+        dispenseAddress,
+        captcha: {
+          solution: captchaValue,
+          id: captcha.id
+        }
+      })
+      .then((res: any) => {
+        setCaptchaValue('');
+        setLoading(false);
+        const data: DispenseResponse = res.data;
+        Swal.fire(swalSetup(data));
+      })
+      .catch((e: any) => {
+        //codes 409 or 500
+        setCaptchaValue('');
+        setLoading(false);
+        console.error(e);
+        console.error(JSON.stringify(e.response));
+        const data: DispenseResponse = e.response.data ? e.response.data : e;
+        Swal.fire(swalSetup(data));
       });
-    } catch (e) {
-      setFaucetVariant('danger');
-    }
-    setShowModal(true);
   };
   const handleCaptchaValueChange = (event: any) => {
     setCaptchaValue(event.target.value);
@@ -68,93 +81,111 @@ function App() {
   const handleDispenseAddressChange = (event: any) => {
     setDispenseAddress(event.target.value);
   };
-  const handleClose = () => setShowModal(false);
-  const handleShow = () => setShowModal(true);
 
+  //Methods
+  const fetchCaptcha = async () => {
+    setLoading(true);
+    const result = await axios.post(newCaptchaUrl());
+    setCaptcha(result.data);
+    setLoading(false);
+  };
+
+  //Props
+
+  const faucetPropsDesktop: FaucetProps = {
+    captcha,
+    loading,
+    dispenseAddress,
+    captchaValue,
+    onAddressChange: handleDispenseAddressChange,
+    onCaptchaValueChange: handleCaptchaValueChange,
+    onDispenseClick: handleFaucetButtonClick
+  };
+  const reactCardCarouselProps = {
+    autoplay: true,
+    autoplay_speed: 5000
+  };
+  const devportalLinkCardProps = {
+    link: 'https://developers.rsk.co/',
+    icon: <img className="devportal-icon" />,
+    title: 'DevPortal',
+    backgroundColor: '#00b41f',
+    description: 'For developers by developers'
+  };
+  const tutorialLinkCardProps = {
+    link: 'https://developers.rsk.co/tutorials/',
+    icon: <img className="tutorials-icon" />,
+    title: 'Tutorials',
+    backgroundColor: '#f26122',
+    description: 'How to develop on RSK'
+  };
+  const walletsLinkCardProps = {
+    link: 'https://developers.rsk.co/develop/apps/wallets/',
+    icon: <img className="wallet-icon" />,
+    title: 'Wallets',
+    backgroundColor: 'black',
+    description: 'Try RSK with these wallets'
+  };
+  
   return (
-    <div className="background">
-      <Navbar className="navbar-rsk">
-        <Navbar.Brand>
-          <img className="logo" />
-        </Navbar.Brand>
-      </Navbar>
-      <body className="app-body">
-        <Container className="faucet-container">
-          <Row>
-            <Col className="col-centerer">
-              <Form.Label>Enter your testnet address or RNS name</Form.Label>
-            </Col>
-          </Row>
-          <Row>
-            <Col className="col-centered">
-              <Form.Control
-                type="input"
-                placeholder="Address"
-                value={dispenseAddress}
-                onChange={handleDispenseAddressChange}
-              />
-            </Col>
-          </Row>
-          <br />
-          <Row>
-            <Col className="col-centered">
-              <img
-                className="captcha-image"
-                src={`data:image/png;base64,${captcha.png}`}
-              />
-            </Col>
-          </Row>
-          <br />
-          <br />
-          <Row>
-            <Col className="col-centered">
-              <Form.Control
-                className="faucet-input"
-                type="input"
-                placeholder="Captcha"
-                value={captchaValue}
-                onChange={handleCaptchaValueChange}
-              />
-            </Col>
-          </Row>
-          <br />
-          <Row>
-            <Col className="col-centered">
-              <FaucetButton
-                variant={faucetVariant}
-                onClick={handleFaucetButtonClick}
-              />
-            </Col>
-          </Row>
-          <Modal centered show={showModal} onHide={handleClose}>
-            <Modal.Header className="background-modal" closeButton>
-              <Modal.Title>
-                Successfully sent some RBTCs to {dispenseAddress}
-              </Modal.Title>
-            </Modal.Header>
-            <Modal.Body className="background-modal">
-              {!isValidChecksumAddress(dispenseAddress, RSK_TESTNET_CHAIN) ? (
-                <>
-                  Please consider using this address with RSK Testnet checksum:{' '}
-                  {toChecksumAddress(dispenseAddress, RSK_TESTNET_CHAIN)}
-                </>
-              ) : (
-                <></>
-              )}
-            </Modal.Body>
-            <Modal.Footer className="background-modal">
-              <Button variant="secondary" onClick={handleClose}>
-                Close
-              </Button>
-              <Button variant="success" onClick={handleClose}>
-                Save Changes
-              </Button>
-            </Modal.Footer>
-          </Modal>
-        </Container>
-      </body>
+    <div>
+      <Head>
+        <title>RSK Testnet Faucet</title>
+      </Head>
+      <div className="custom-body">
+        <Fade top>
+          <Navbar className="navbar-rsk">
+            <Navbar.Brand className="navbar-brand-rsk">
+              <img className="logo ml-5" />
+            </Navbar.Brand>
+          </Navbar>
+        </Fade>
+        <div className="app-body">
+          <Container className="m-0 p-0 w-100 container-rsk">
+            <Fade bottom>
+              <Row className="w-100">
+                <Col>
+                  <Faucet {...faucetPropsDesktop} />
+                </Col>
+                {!isMobile ? (
+                  <Col>
+                    <Container className="h-100 w-100">
+                      <ReactCardCarousel {...reactCardCarouselProps}>
+                        <Row>
+                          <RskLinkCard {...devportalLinkCardProps} />
+                        </Row>
+                        <Row>
+                          <RskLinkCard {...walletsLinkCardProps} />
+                        </Row>
+                        <Row>
+                          <RskLinkCard {...tutorialLinkCardProps} />
+                        </Row>
+                      </ReactCardCarousel>
+                    </Container>
+                  </Col>
+                ) : (
+                  <></>
+                )}
+              </Row>
+            </Fade>
+          </Container>
+        </div>
+      </div>
     </div>
   );
 }
 
-export default App;
+App.getInitialProps = async function() {
+  const tagManagerArgs = {
+    id: tagManagerId()
+  }
+  TagManager.initialize(tagManagerArgs)
+
+  return {};
+}
+
+const mapSizesToProps = ({ width }) => ({
+  isMobile: width < 768
+});
+
+export default withSizes(mapSizesToProps)(App);
