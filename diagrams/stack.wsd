@@ -1,0 +1,12 @@
+@startuml
+package "rbtc-faucet" {
+    [Frontend] - API
+    API - [API-ROUTE]
+}
+
+package "captcha-service" {
+    [API-ROUTE] - CaptchaAPI
+    CaptchaAPI - [Captcha Service Implementation]
+    database "Redis"
+}
+@enduml
