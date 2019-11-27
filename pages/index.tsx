@@ -11,8 +11,10 @@ import Faucet, { FaucetProps } from '../components/faucet';
 import Swal, { SweetAlertOptions } from 'sweetalert2';
 import { apiUrl, newCaptchaUrl } from '../utils/env-util';
 import { DispenseResponse } from '../types/types.d';
+import TagManager from 'react-gtm-module'
 import Fade from 'react-reveal/Fade';
 import Head from 'next/head';
+
 
 import '../assets/styles/index.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -82,9 +84,13 @@ function App({ isMobile }) {
 
   //Methods
   const fetchCaptcha = async () => {
+    setLoading(true);
     const result = await axios.post(newCaptchaUrl());
     setCaptcha(result.data);
+    setLoading(false);
   };
+
+  //Props
 
   const faucetPropsDesktop: FaucetProps = {
     captcha,
@@ -120,7 +126,7 @@ function App({ isMobile }) {
     backgroundColor: 'black',
     description: 'Try RSK with these wallets'
   };
-
+  
   return (
     <div>
       <Head>
@@ -167,6 +173,15 @@ function App({ isMobile }) {
       </div>
     </div>
   );
+}
+
+App.getInitialProps = async function() {
+  const tagManagerArgs = {
+    id: 'GTM-56J7JTD'
+  }
+  TagManager.initialize(tagManagerArgs)
+
+  return {};
 }
 
 const mapSizesToProps = ({ width }) => ({
