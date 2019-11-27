@@ -55,7 +55,7 @@ const Faucet = (props: FaucetProps) => {
         </div>
         <div>
           {props.loading ? (
-            <Spinner animation="border" role="status" />
+            <Spinner className="faucet-captcha-spinner" animation="border" role="status" />
           ) : (
             <Button onClick={props.onDispenseClick} className="faucet-button button-rsk  rounded-rsk">
               Get test RBTC
