@@ -1,6 +1,5 @@
 import React from 'react';
 import Container from 'react-bootstrap/Container';
-import Row from 'react-bootstrap/Row';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Spinner from 'react-bootstrap/Spinner';
@@ -47,11 +46,11 @@ const Faucet = (props: FaucetProps) => {
           />
         </div>
         <div>
-          {loadingCaptcha(props.captcha.id) ? (
+          { isLoadingCaptcha(props.captcha.id) ? (
             <img className="faucet-captcha-image rounded-rsk" src={`data:image/png;base64,${props.captcha.png}`} />
           ) : (
             <Spinner className="faucet-captcha-spinner" animation="border" role="status" />
-          )}
+          ) }
         </div>
         <div>
           {props.loading ? (
@@ -67,6 +66,6 @@ const Faucet = (props: FaucetProps) => {
   );
 };
 
-const loadingCaptcha = (id: string) => id != '-1';
+const isLoadingCaptcha = (id: string) => id != '-1';
 
 export default Faucet;
