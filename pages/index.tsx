@@ -15,7 +15,6 @@ import TagManager from 'react-gtm-module'
 import Fade from 'react-reveal/Fade';
 import Head from 'next/head';
 
-
 import '../assets/styles/index.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../assets/styles/globals.css';
@@ -39,12 +38,10 @@ function App({ isMobile }) {
         html: data.text,
         type: data.type,
         onClose: () => {
+          fetchCaptcha();
           if (data.dispenseComplete) {
-            fetchCaptcha();
             setDispenseAddress('');
             setCaptchaValue('');
-          } else if (data.resetCaptcha) {
-            fetchCaptcha();
           }
         }
       };
