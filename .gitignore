@@ -4,8 +4,6 @@
 .idea/
 node_modules
 .next
-package-lock.json
-yarn.lock
 "assets/images/React App_files"
 assets/images/localhost.htm
 assets/images/localhost_files/
