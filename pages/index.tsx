@@ -11,7 +11,7 @@ import Faucet, { FaucetProps } from '../components/faucet';
 import Swal, { SweetAlertOptions } from 'sweetalert2';
 import { apiUrl, newCaptchaUrl, tagManagerId } from '../utils/env-util';
 import { DispenseResponse } from '../types/types.d';
-import TagManager from 'react-gtm-module'
+import TagManager from 'react-gtm-module';
 import Fade from 'react-reveal/Fade';
 import Head from 'next/head';
 
@@ -96,7 +96,8 @@ function App({ isMobile }) {
     captchaValue,
     onAddressChange: handleDispenseAddressChange,
     onCaptchaValueChange: handleCaptchaValueChange,
-    onDispenseClick: handleFaucetButtonClick
+    onDispenseClick: handleFaucetButtonClick,
+    onReloadCaptchaClick: fetchCaptcha
   };
   const reactCardCarouselProps = {
     autoplay: true,
@@ -123,7 +124,7 @@ function App({ isMobile }) {
     backgroundColor: 'black',
     description: 'Try RSK with these wallets'
   };
-  
+
   return (
     <div>
       <Head>
@@ -132,7 +133,7 @@ function App({ isMobile }) {
       <div className="custom-body">
         <Fade top>
           <Navbar className="navbar-rsk">
-            <Navbar.Brand className="navbar-brand-rsk">
+            <Navbar.Brand className="navbar-brand-rsk" onClick={() => window.open('https://rsk.co', '__blank')}>
               <img className="logo ml-5" />
             </Navbar.Brand>
           </Navbar>
@@ -175,11 +176,11 @@ function App({ isMobile }) {
 App.getInitialProps = async function() {
   const tagManagerArgs = {
     id: tagManagerId()
-  }
-  TagManager.initialize(tagManagerArgs)
+  };
+  TagManager.initialize(tagManagerArgs);
 
   return {};
-}
+};
 
 const mapSizesToProps = ({ width }) => ({
   isMobile: width < 768

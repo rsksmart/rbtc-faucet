@@ -102,9 +102,5 @@ export function valueToDispense(): number {
 }
 
 export function tagManagerId(): string {
-  return productionDevelopmentTest(
-    prodConfig.TAG_MANAGER_ID,
-    devConfig.TAG_MANAGER_ID,
-    devConfig.TAG_MANAGER_ID
-  );
+  return productionDevelopmentTest(prodConfig.TAG_MANAGER_ID, devConfig.TAG_MANAGER_ID, devConfig.TAG_MANAGER_ID);
 }

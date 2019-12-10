@@ -11,15 +11,12 @@ import nock from 'nock';
 const CAPTCHA_API_URL = captchaApiUrl();
 const VALUE_TO_DISPENSE = valueToDispense();
 const TESTNET_CHAIN_ID = 31;
-const SOLVE_CAPTCHA_URL = solveCaptchaUrl();
 
 var web3: Web3;
 var server: http.Server;
 var accounts: string[];
 var apiUrl: string;
 var faucetAddress: string;
-
-//console.log(CAPTCHA_API_URL);
 
 beforeAll(async () => {
   web3 = new Web3(provider());

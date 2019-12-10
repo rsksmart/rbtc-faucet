@@ -10,12 +10,12 @@ yarn.lock
 assets/images/localhost.htm
 assets/images/localhost_files/
 .vscode/
+prod-config.json
   
 captcha/.idea
 captcha/dump.rdb
 captcha/target
 captcha/Cargo.lock
-
 
 # dependencies
 /node_modules
