@@ -1,5 +1,8 @@
 import React from 'react';
-import { Row, Container, Col, Card } from 'react-bootstrap';
+import Row from 'react-bootstrap/Row';
+import Container from 'react-bootstrap/Container';
+import Col from 'react-bootstrap/Col';
+import Card from 'react-bootstrap/Card';
 import '../assets/styles/rsk-link-card.css';
 import '../assets/styles/rsk-card.css';
 

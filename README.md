@@ -34,19 +34,19 @@ Please check `-config.json` and fill them with right values.
 }
 ```
 
-**NEW_CAPTCHA_URL** is the url where you're gonna request a new captcha, **SOLVE_CAPTCHA_URL** is for checking the solution and **CAPTCHA_API_URL** is where the captcha-api is hosted, to get more info please read [this README](https://github.com/rsksmart/rust-captcha/blob/master/README.md).
+In order to run a production version, please check if `prod-config.json` exists, if not create one with de configuration described previously.
+
+**NEW_CAPTCHA_URL** is the URL where you're gonna request a new captcha, **SOLVE_CAPTCHA_URL** is for checking the solution and **CAPTCHA_API_URL** is where the captcha-api is hosted, to get more info please read [this README](https://github.com/rsksmart/rust-captcha/blob/master/README.md).
 
 ## Running development environment
 
-Open a terminal at root folder.
-
-1. First install depenecies
+First install depenecies
 
 ```bash
 yarn
 ```
 
-2. Then run app 
+Then run app 
 
 ```bash
 yarn dev
@@ -56,44 +56,28 @@ yarn dev
 
 Checkout Next.js [tutorial](https://nextjs.org/learn/basics/deploying-a-nextjs-app/deploying-to-your-own-environment) or [docs](https://nextjs.org/docs#production-deployment)
 
-## Debugging with VS Code
+## Docker 
 
-Next.js can be started in debug mode by using the `--inspect` flag like regular Node processes. Remember to start your `next` process with this flag, as VS Code otherwise won't be able to connect to your Node process and debug your server-side code. The following *launch.json* sets this flag for you, but if you start your Next process in different way, remember to add this flag.
+This project has been dockerized 
 
-In order to debug with VS Code debugger, setup you *.vscode/launch.json* like this
+First build the image
 
-```js
-// At .vscode/launch.json
-
-{
-    "version": "0.2.0",
-    "configurations": [
-        {
-            "type": "node",
-            "request": "launch",
-            "name": "Next: Node",
-            "runtimeExecutable": "npm",
-            "runtimeArgs": [
-                "run-script",
-                "debug"
-            ],
-            "port": 9229,
-            "console": "integratedTerminal"
-        }
-    ]
-}
+```bash
+docker build -t rbtc-faucet .
 ```
 
-Create a debug script at *package.json* and setup `NODE_OPTIONS` with `--inspect` flag.
+Then run
 
-```js
-// At package.json
-
-{
-    "scripts": {
-        "debug": "NODE_OPTIONS=--inspect next"
-    }
-}
+```bash
+docker run -d --name rbtc-faucet -p 3000:3000 rbtc-faucet
 ```
 
-To get detailed info, please go to [this](https://github.com/microsoft/vscode-recipes/tree/master/Next-js) site.
+## Linting
+
+There it's a script in order to lint using [prettier](https://prettier.io/) the whole project, just run
+
+```bash
+yarn lint
+```
+
+You can setup linting options at `.prettierrc`

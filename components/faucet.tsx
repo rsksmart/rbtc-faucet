@@ -1,9 +1,10 @@
 import React from 'react';
 import Container from 'react-bootstrap/Container';
-import Row from 'react-bootstrap/Row';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Spinner from 'react-bootstrap/Spinner';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
 import RskCard from './rsk-card';
 import '../assets/styles/faucet.css';
 
@@ -15,6 +16,7 @@ export interface FaucetProps {
   onAddressChange: (event: any) => void;
   onCaptchaValueChange: (event: any) => void;
   onDispenseClick: () => void;
+  onReloadCaptchaClick: () => void;
 }
 
 const Faucet = (props: FaucetProps) => {
@@ -47,19 +49,28 @@ const Faucet = (props: FaucetProps) => {
           />
         </div>
         <div>
-          {loadingCaptcha(props.captcha.id) ? (
+          {isLoadingCaptcha(props.captcha.id) ? (
             <img className="faucet-captcha-image rounded-rsk" src={`data:image/png;base64,${props.captcha.png}`} />
           ) : (
             <Spinner className="faucet-captcha-spinner" animation="border" role="status" />
           )}
         </div>
         <div>
-          {props.loading ? (
+          { props.loading ? (
             <Spinner className="faucet-captcha-spinner" animation="border" role="status" />
           ) : (
-            <Button onClick={props.onDispenseClick} className="faucet-button button-rsk  rounded-rsk">
-              Get test RBTC
-            </Button>
+            <Row noGutters>
+              <Col>
+                <Button onClick={props.onDispenseClick} className="faucet-button button-rsk  rounded-rsk">
+                  Get test RBTC
+                </Button>
+              </Col>
+              <Col>
+                <Button onClick={props.onReloadCaptchaClick} className="faucet-button button-rsk  rounded-rsk">
+                  Reload captcha
+                </Button>
+              </Col>
+            </Row>
           )}
         </div>
       </Container>
@@ -67,6 +78,6 @@ const Faucet = (props: FaucetProps) => {
   );
 };
 
-const loadingCaptcha = (id: string) => id != '-1';
+const isLoadingCaptcha = (id: string) => id != '-1';
 
 export default Faucet;
