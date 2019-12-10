@@ -22,11 +22,9 @@ const RskLinkCard = (props: RskLinkCardProps) => {
           style={{
             backgroundColor: props.backgroundColor
           }}
-          href={props.link}
+          onClick={() => window.open(props.link, '__blank')}
         >
-          <a href={props.link} target="__blank" className="inherit-style">
-            Read More
-          </a>
+          Read More
         </Button>
       </Container>
     </RskCard>
