@@ -34,6 +34,8 @@ Please check `-config.json` and fill them with right values.
 }
 ```
 
+In order to run a production version, please check if `prod-config.json` exists, if not create one with de configuration described previously.
+
 **NEW_CAPTCHA_URL** is the URL where you're gonna request a new captcha, **SOLVE_CAPTCHA_URL** is for checking the solution and **CAPTCHA_API_URL** is where the captcha-api is hosted, to get more info please read [this README](https://github.com/rsksmart/rust-captcha/blob/master/README.md).
 
 ## Running development environment
