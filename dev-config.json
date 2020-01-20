@@ -1,9 +1,9 @@
 {
   "RSK_NODE": "http://localhost:7545",
   "API_URL": "http://localhost:3000/api",
-  "NEW_CAPTCHA_URL": "https://cors-anywhere.herokuapp.com/https://rust-captcha.herokuapp.com/new/easy/5/998",
+  "NEW_CAPTCHA_URL": "https://rust-captcha.herokuapp.com/new/easy/5/998",
   "SOLVE_CAPTCHA_URL": "https://rust-captcha.herokuapp.com/solution/",
-  "CAPTCHA_API_URL": "https://cors-anywhere.herokuapp.com/https://rust-captcha.herokuapp.com",
+  "CAPTCHA_API_URL": "https://rust-captcha.herokuapp.com",
   "FAUCET_ADDRESS": "0xF7D1dF4f96A812598d4E398f5539c4f98DA958ab",
   "FAUCET_PRIVATE_KEY": "c3d40c98585e2c61add9c6a94b66cd7f5c5577e45d900c6c0e3139df1310292f",
   "GAS_PRICE": 60000000,
