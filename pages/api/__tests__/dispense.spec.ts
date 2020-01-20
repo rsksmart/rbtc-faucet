@@ -3,20 +3,34 @@ import Web3 from 'web3';
 import http from 'http';
 import listen from 'test-listen';
 import { apiResolver } from 'next-server/dist/server/api-utils';
-import { captchaApiUrl, valueToDispense, provider, solveCaptchaUrl } from '../../../utils/env-util';
+import {captchaApiUrl, valueToDispense, provider, solveCaptchaUrl, gasPrice, gasLimit} from '../../../utils/env-util';
 import handleDispense from '../dispense';
-import { isValidAddress, isValidChecksumAddress } from 'rskjs-util';
+import { isValidAddress, isValidChecksumAddress, toChecksumAddress } from 'rskjs-util';
 import nock from 'nock';
+import {Keccak}from 'sha3';
+import {TxParameters} from "../../../types/types";
+import TxParametersGenerator from "../tx-parameters-generator";
+jest.mock('../tx-parameters-generator.ts');
 
 const CAPTCHA_API_URL = captchaApiUrl();
 const VALUE_TO_DISPENSE = valueToDispense();
 const TESTNET_CHAIN_ID = 31;
 
-var web3: Web3;
-var server: http.Server;
-var accounts: string[];
-var apiUrl: string;
-var faucetAddress: string;
+let web3: Web3;
+let server: http.Server;
+let accounts: string[];
+let apiUrl: string;
+let faucetAddress: string;
+
+const generateRandomAddress = () => {
+  const word = Math.random().toString();
+  const keccak = new Keccak(256);
+  keccak.update(word);
+  const fullKeccak = keccak.digest('hex');
+  const hash = '0x' + fullKeccak.substring(fullKeccak.length - 40, fullKeccak.length);
+
+  return toChecksumAddress(hash, TESTNET_CHAIN_ID);
+};
 
 beforeAll(async () => {
   web3 = new Web3(provider());
@@ -45,7 +59,6 @@ describe('NO CAPTCHA', () => {
       .post('/solution/1/1')
       .reply(200, { result: 'accepted', reject_reason: '', trials_left: 5 });
   });
-
   test('there are five accounts', () => {
     expect.assertions(2);
 
@@ -54,7 +67,6 @@ describe('NO CAPTCHA', () => {
     expect(accounts.length).toBe(5);
     expect(validAddresses.every(e => e)).toBeTruthy();
   });
-
   test('dispense to a new address', async () => {
     expect.assertions(3);
 
@@ -65,7 +77,6 @@ describe('NO CAPTCHA', () => {
     expect(response.data.txHash).toBeTruthy();
     expect(balance).toBe(valueToDispense());
   });
-
   test('# dispense more than one time to an address, should only dispense the first time and then deny', async () => {
     expect.assertions(5);
 
@@ -102,7 +113,6 @@ describe('NO CAPTCHA', () => {
 
     expect(currentBalance).toBe(expectedBalance);
   });
-
   test("# dispense to an invalid address, shouldn't dispense and respond 409", async () => {
     expect.assertions(2);
 
@@ -135,7 +145,6 @@ describe('NO CAPTCHA', () => {
     expect(res.data.txHash).toBeTruthy();
     expect(res.data.checksumed).toBeFalsy();
   });
-
   /*
   test('# dispense to a rns alias (TODO), should dispense and return 200', () => {
     expect(true).toBeTruthy();
@@ -144,7 +153,6 @@ describe('NO CAPTCHA', () => {
     expect(true).toBeTruthy();
   });
   */
-
   test('# dispense right value, should be ' + VALUE_TO_DISPENSE, async () => {
     const dispenseAddress = accounts[3];
     const oldBalance = Number(await web3.eth.getBalance(dispenseAddress));
@@ -159,6 +167,37 @@ describe('NO CAPTCHA', () => {
 
     expect(expectedValueToDispense).toBe(valueToDispense());
   });
+  test('# transaction reverted, shouldn\'t dispense and respond 500', async () => {
+    expect.assertions(2);
+
+    const fctAddr = faucetAddress;
+
+    TxParametersGenerator.prototype.generate = jest.fn().mockImplementationOnce(async (rskAddress: string, dispenseAddress: string, web3: Web3) => {
+        console.log('mocked');
+        const txParameters: TxParameters = {
+          from: fctAddr,
+          to: rskAddress ? rskAddress : dispenseAddress,
+          nonce: web3.utils.toHex(10),
+          gasPrice: web3.utils.toHex(gasPrice()),
+          gas: web3.utils.toHex(gasLimit()),
+          value: web3.utils.toHex(web3.utils.toWei(valueToDispense().toString()))
+        };
+
+        return txParameters;
+    });
+
+    const dispenseAddress = generateRandomAddress();
+
+    try {
+      const res = await axios.post(apiUrl, {
+        dispenseAddress,
+        captcha: { id: 1, solution: 1 }
+      });
+    } catch (e) {
+      expect(e.response.status).toBe(500);
+      expect(e.response.data.text).toBe('Something went wrong, please try again in a while');
+    }
+  });
 });
 
 describe('CAPTCHA', () => {
@@ -168,6 +207,7 @@ describe('CAPTCHA', () => {
     try {
       await axios.post(apiUrl, { dispenseAddress: accounts[4], captcha: { id: 'invalid', solution: 'solution' } });
     } catch (e) {
+      console.error('entro')
       expect(e.response.status).toBe(409);
       expect(e.response.data.text).toBe('Invalid captcha (notice that this captcha is case sensitive).');
     }

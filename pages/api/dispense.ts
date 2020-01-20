@@ -30,6 +30,7 @@ import {
   unexistingRNSAlias
 } from "./validations";
 import ValidationStatus from "../../model/validation-status";
+import TxParametersGenerator from "./tx-parameters-generator";
 
 let faucetHistory: FaucetHistory = {};
 
@@ -59,7 +60,7 @@ new CronJob(
 const web3: Web3 = new Web3(provider());
 web3.transactionConfirmationBlocks = 1;
 const rnsUtil: RNSUtil = new RNSUtil(web3);
-
+const TESTNET_CHAIN_ID = 31;
 
 //Request Handler
 const handleDispense = async (req: NextApiRequest, res: NextApiResponse): Promise<void> => {
@@ -95,20 +96,14 @@ const handleDispense = async (req: NextApiRequest, res: NextApiResponse): Promis
     } else {
       //Dispensing
       let rskAddress: string = '';
+      const txParametersGenerator = new TxParametersGenerator();
 
       if (existingAlias) {
         const rnsAddress = dispenseAddress;
         rskAddress = await rnsUtil.resolveAddr(rnsAddress);
       }
 
-      const txParameters: TxParameters = {
-        from: faucetAddress(),
-        to: rskAddress ? rskAddress : dispenseAddress,
-        nonce: web3.utils.toHex(await web3.eth.getTransactionCount(faucetAddress())),
-        gasPrice: web3.utils.toHex(gasPrice()),
-        gas: web3.utils.toHex(gasLimit()),
-        value: web3.utils.toHex(web3.utils.toWei(valueToDispense().toString()))
-      };
+      const txParameters: TxParameters = await txParametersGenerator.generate(rskAddress, dispenseAddress, web3);
 
       logger.txParameters(txParameters);
 
@@ -140,16 +135,16 @@ const handleDispense = async (req: NextApiRequest, res: NextApiResponse): Promis
               txHash,
               titleText: 'Sent',
               type: 'success',
-              text: !isValidChecksumAddress(dispenseAddress, 31)
+              text: !isValidChecksumAddress(dispenseAddress, TESTNET_CHAIN_ID)
                 ? 'Successfully sent some RBTCs to ' +
                   dispenseAddress +
                   '.\n Please consider using this address with RSK Testnet checksum: ' +
-                  toChecksumAddress(dispenseAddress, 31)
+                  toChecksumAddress(dispenseAddress, TESTNET_CHAIN_ID)
                 : 'Successfully sent some RBTCs to ' + dispenseAddress,
               dispenseComplete: true,
               checksumed: rskAddress
-                ? isValidChecksumAddress(rskAddress, 31)
-                : isValidChecksumAddress(dispenseAddress, 31)
+                ? isValidChecksumAddress(rskAddress, TESTNET_CHAIN_ID)
+                : isValidChecksumAddress(dispenseAddress, TESTNET_CHAIN_ID)
             };
             res.status(200).json(JSON.stringify(data)); //200 OK
           }
