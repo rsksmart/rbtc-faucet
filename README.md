@@ -52,6 +52,27 @@ Then run app
 yarn dev
 ```
 
+
+Notice that you'll need a running blockchain in order to run this environment. To do this, you can run a local ganache and point it as described 
+
+```json
+{
+  "RSK_NODE": "http://localhost:7545",
+  "API_URL": "http://localhost:3000/api",
+  "NEW_CAPTCHA_URL": "https://rust-captcha.herokuapp.com/new/easy/5/998",
+  "SOLVE_CAPTCHA_URL": "https://rust-captcha.herokuapp.com/solution/",
+  "CAPTCHA_API_URL": "https://rust-captcha.herokuapp.com",
+  "FAUCET_ADDRESS": "A_GANACHE_ACCOUNT",
+  "FAUCET_PRIVATE_KEY": "A_GANACHE_PRIVATE_KEY",
+  "GAS_PRICE": 60000000,
+  "GAS_LIMIT": 800000,
+  "VALUE_TO_DISPENSE": 0.05,
+  "TAG_MANAGER_ID": "NO_ID"
+}
+```
+
+
+
 ## Production deploy
 
 Checkout Next.js [tutorial](https://nextjs.org/learn/basics/deploying-a-nextjs-app/deploying-to-your-own-environment) or [docs](https://nextjs.org/docs#production-deployment)
