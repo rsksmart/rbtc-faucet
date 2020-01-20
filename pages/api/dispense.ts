@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import Tx from 'ethereumjs-tx';
 import Web3 from 'web3';
 import logger from './../../utils/logger';
-import { isValidChecksumAddress, toChecksumAddress } from 'rskjs-util';
+import { isValidChecksumAddress } from 'rskjs-util';
 import {
   TxParameters,
   FaucetHistory,
@@ -17,9 +17,6 @@ import {
   faucetAddress,
   provider,
   faucetPrivateKey,
-  gasPrice,
-  gasLimit,
-  valueToDispense,
   solveCaptchaUrl
 } from '../../utils/env-util';
 import {
@@ -110,55 +107,37 @@ const handleDispense = async (req: NextApiRequest, res: NextApiResponse): Promis
       let tx = new Tx(txParameters);
       tx.sign(Buffer.from(faucetPrivateKey(), 'hex'));
       const encodedTx = '0x' + tx.serialize().toString('hex');
-
+      const txHash = '0x' + tx.hash(true).toString('hex')
       logger.info('encodedTx ' + encodedTx);
 
-      web3.eth
-        .sendSignedTransaction(encodedTx, (e: Error, txHash: string) => {
-          if(e) {
-            logger.sendSignedTransactionError(e);
+      web3.eth.sendSignedTransaction(encodedTx);
+      faucetHistory[dispenseAddress.toLowerCase()] = 'dispensed';
 
-            const data: DispenseResponse = {
-              titleText: 'Error',
-              type: 'error',
-              text: 'Something went wrong, please try again in a while',
-              resetCaptcha: needsCaptchaReset(captchaSolutionResponse)
-            };
+      logger.dispensed(rskAddress ? rskAddress : dispenseAddress, txHash);
 
-            logger.event('Sending response ' + JSON.stringify(data));
-            res.status(500).json(JSON.stringify(data)); //500 Internal Server Error
-          } else {
-            logger.dispensed(rskAddress ? rskAddress : dispenseAddress, txHash);
-
-            faucetHistory[dispenseAddress.toLowerCase()] = 'dispensed';
-            const data: DispenseResponse = {
-              txHash,
-              titleText: 'Sent',
-              type: 'success',
-              text: !isValidChecksumAddress(dispenseAddress, TESTNET_CHAIN_ID)
-                ? 'Successfully sent some RBTCs to ' +
-                  dispenseAddress +
-                  '.\n Please consider using this address with RSK Testnet checksum: ' +
-                  toChecksumAddress(dispenseAddress, TESTNET_CHAIN_ID)
-                : 'Successfully sent some RBTCs to ' + dispenseAddress,
-              dispenseComplete: true,
-              checksumed: rskAddress
-                ? isValidChecksumAddress(rskAddress, TESTNET_CHAIN_ID)
-                : isValidChecksumAddress(dispenseAddress, TESTNET_CHAIN_ID)
-            };
-            res.status(200).json(JSON.stringify(data)); //200 OK
-          }
-        })
+      const data: DispenseResponse = {
+        txHash,
+        titleText: 'Sent',
+        type: 'success',
+        text: dispenseTextForFrontend(dispenseAddress, txHash),
+        dispenseComplete: true,
+        checksumed: rskAddress
+            ? isValidChecksumAddress(rskAddress, TESTNET_CHAIN_ID)
+            : isValidChecksumAddress(dispenseAddress, TESTNET_CHAIN_ID)
+      };
+      res.status(200).json(JSON.stringify(data)); //200 OK
     }
   } catch (e) {
     logger.error(e);
 
     const data: DispenseResponse = {
       titleText: 'Error',
-      text: 'This is unexpected, please try again later.',
+      text: 'Something went wrong, please try again in a while',
       type: 'error',
       resetCaptcha: true
     };
+
+    logger.event('Sending response ' + JSON.stringify(data));
     res.status(500).end(JSON.stringify(data)); //500 Internal Server Error
   }
 };
@@ -194,6 +173,14 @@ function runValidations(captchaSolutionResponse: CaptchaSolutionResponse, dispen
   const errorMessages: string[] = validations.map(validate => validate()).filter(e => e != '' && e != '-');
 
   return new ValidationStatus(errorMessages);
+}
+
+function dispenseTextForFrontend(dispenseAddress: string, txHash: string) {
+  const message = 'Successfully sent some RBTCs to ' + dispenseAddress;
+
+  const withTransactionHash = message + '<br/> <a href="https://explorer.testnet.rsk.co/tx/' + txHash + '" target="_blank">Transaction hash</a>';
+
+  return withTransactionHash;
 }
 
 export default handleDispense;

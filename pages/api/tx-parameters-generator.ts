@@ -4,8 +4,6 @@ import Web3 from 'web3';
 
 class TxParametersGenerator {
     async generate(rskAddress: string, dispenseAddress: string, web3: Web3) {
-        console.log('mocked ');
-
         const txParameters: TxParameters = {
             from: faucetAddress(),
             to: rskAddress ? rskAddress : dispenseAddress,
