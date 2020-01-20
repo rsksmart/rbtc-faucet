@@ -22,6 +22,14 @@ import {
   valueToDispense,
   solveCaptchaUrl
 } from '../../utils/env-util';
+import {
+  alreadyDispensed,
+  captchaRejected,
+  insuficientFunds, invalidAddress,
+  needsCaptchaReset,
+  unexistingRNSAlias
+} from "./validations";
+import ValidationStatus from "../../model/validation-status";
 
 let faucetHistory: FaucetHistory = {};
 
@@ -52,6 +60,7 @@ const web3: Web3 = new Web3(provider());
 web3.transactionConfirmationBlocks = 1;
 const rnsUtil: RNSUtil = new RNSUtil(web3);
 
+
 //Request Handler
 const handleDispense = async (req: NextApiRequest, res: NextApiResponse): Promise<void> => {
   const faucetBalance: number = Number(await web3.eth.getBalance(faucetAddress()));
@@ -66,47 +75,19 @@ const handleDispense = async (req: NextApiRequest, res: NextApiResponse): Promis
     logger.event('captcha ' + JSON.stringify(captchaSolutionRequest));
 
     const captchaSolutionResponse: CaptchaSolutionResponse = await solveCaptcha(captchaSolutionRequest);
-    //const captchaSolutionResponse: CaptchaSolutionResponse = { result: 'accepted', reject_reason: '', trials_left: 5 };
 
     //Validations
     //each validation will return an error message, if it success it'll return an empty string (empty error message)
     const existingAlias: boolean = await rnsUtil.existingAlias(dispenseAddress);
 
-    const unexistingRNSAlias = (dispenseAddress: string): string =>
-      !existingAlias ? dispenseAddress + ' is an unexisting alias, please provide an existing one' : '';
-    const insuficientFunds = () => (faucetBalance < 100000000000000000 ? 'Faucet has enough funds' : '');
-    const needsCaptchaReset = (captchaSolutionResponse: CaptchaSolutionResponse): boolean =>
-      captchaSolutionResponse.trials_left == 0;
-    const captchaRejected = (result: string): string =>
-      result == 'rejected' ? 'Invalid captcha (notice that this captcha is case sensitive).' : '';
-    const alreadyDispensed = (dispenseAddress: string): string =>
-      faucetHistory.hasOwnProperty(dispenseAddress.toLowerCase())
-        ? 'Address already used today, try again tomorrow.'
-        : '';
-    const invalidAddress = (dispenseAddress: string): string =>
-      dispenseAddress == undefined ||
-      dispenseAddress == '' ||
-      (dispenseAddress.substring(0, 2) != '0x' && !rnsUtil.isRNS(dispenseAddress)) ||
-      (dispenseAddress.length != 42 && !rnsUtil.isRNS(dispenseAddress))
-        ? 'Invalid address.'
-        : '';
+    const validationStatus = runValidations(captchaSolutionResponse, dispenseAddress, existingAlias, faucetBalance);
 
-    const validations: (() => string)[] = [
-      () => captchaRejected(captchaSolutionResponse.result),
-      () => alreadyDispensed(dispenseAddress),
-      () => (dispenseAddress.includes('rsk') ? unexistingRNSAlias(dispenseAddress) : invalidAddress(dispenseAddress)),
-      () => insuficientFunds()
-    ];
-    const errorMessages: string[] = validations.map(validate => validate()).filter(e => e != '' && e != '-');
-    if (errorMessages.length > 0) {
-      errorMessages.forEach(e => logger.error(e));
+    if (validationStatus.valid()) {
+      validationStatus.logErrors();
 
-      const parsedMessages: string = errorMessages.reduce(
-        (a, b) => '<br/> <strong>- </strong>' + a + '<br/> <strong>- </strong>' + b
-      );
       const data: DispenseResponse = {
         titleText: 'Error',
-        text: parsedMessages,
+        text: validationStatus.parsedErrorsForFrontend(),
         type: 'error',
         resetCaptcha: needsCaptchaReset(captchaSolutionResponse)
       };
@@ -138,41 +119,41 @@ const handleDispense = async (req: NextApiRequest, res: NextApiResponse): Promis
       logger.info('encodedTx ' + encodedTx);
 
       web3.eth
-        .sendSignedTransaction(encodedTx)
-        .on('transactionHash', (txHash: string) => {
-          logger.dispensed(rskAddress ? rskAddress : dispenseAddress, txHash);
+        .sendSignedTransaction(encodedTx, (e: Error, txHash: string) => {
+          if(e) {
+            logger.sendSignedTransactionError(e);
 
-          faucetHistory[dispenseAddress.toLowerCase()] = 'dispensed';
-          const data: DispenseResponse = {
-            txHash,
-            titleText: 'Sent',
-            type: 'success',
-            text: !isValidChecksumAddress(dispenseAddress, 31)
-              ? 'Successfully sent some RBTCs to ' +
-                dispenseAddress +
-                '.\n Please consider using this address with RSK Testnet checksum: ' +
-                toChecksumAddress(dispenseAddress, 31)
-              : 'Successfully sent some RBTCs to ' + dispenseAddress,
-            dispenseComplete: true,
-            checksumed: rskAddress
-              ? isValidChecksumAddress(rskAddress, 31)
-              : isValidChecksumAddress(dispenseAddress, 31)
-          };
-          res.status(200).json(JSON.stringify(data)); //200 OK
+            const data: DispenseResponse = {
+              titleText: 'Error',
+              type: 'error',
+              text: 'Something went wrong, please try again in a while',
+              resetCaptcha: needsCaptchaReset(captchaSolutionResponse)
+            };
+
+            logger.event('Sending response ' + JSON.stringify(data));
+            res.status(500).json(JSON.stringify(data)); //500 Internal Server Error
+          } else {
+            logger.dispensed(rskAddress ? rskAddress : dispenseAddress, txHash);
+
+            faucetHistory[dispenseAddress.toLowerCase()] = 'dispensed';
+            const data: DispenseResponse = {
+              txHash,
+              titleText: 'Sent',
+              type: 'success',
+              text: !isValidChecksumAddress(dispenseAddress, 31)
+                ? 'Successfully sent some RBTCs to ' +
+                  dispenseAddress +
+                  '.\n Please consider using this address with RSK Testnet checksum: ' +
+                  toChecksumAddress(dispenseAddress, 31)
+                : 'Successfully sent some RBTCs to ' + dispenseAddress,
+              dispenseComplete: true,
+              checksumed: rskAddress
+                ? isValidChecksumAddress(rskAddress, 31)
+                : isValidChecksumAddress(dispenseAddress, 31)
+            };
+            res.status(200).json(JSON.stringify(data)); //200 OK
+          }
         })
-        .on('error', (error: Error) => {
-          logger.sendSignedTransactionError(error);
-
-          const data: DispenseResponse = {
-            titleText: 'Error',
-            type: 'error',
-            text: 'Something went wrong, please try again in a while',
-            resetCaptcha: needsCaptchaReset(captchaSolutionResponse)
-          };
-
-          logger.event('Sending response ' + JSON.stringify(data));
-          res.status(500).json(JSON.stringify(data)); //500 Internal Server Error
-        });
     }
   } catch (e) {
     logger.error(e);
@@ -180,14 +161,15 @@ const handleDispense = async (req: NextApiRequest, res: NextApiResponse): Promis
     const data: DispenseResponse = {
       titleText: 'Error',
       text: 'This is unexpected, please try again later.',
-      type: 'error'
+      type: 'error',
+      resetCaptcha: true
     };
     res.status(500).end(JSON.stringify(data)); //500 Internal Server Error
   }
 };
 
 //Captcha solver
-const solveCaptcha = async (captcha: CaptchaSolutionRequest): Promise<CaptchaSolutionResponse> => {
+async function solveCaptcha(captcha: CaptchaSolutionRequest): Promise<CaptchaSolutionResponse> {
   try {
     if (captcha.solution == '') captcha.solution = "doesn't matter";
 
@@ -206,5 +188,17 @@ const solveCaptcha = async (captcha: CaptchaSolutionRequest): Promise<CaptchaSol
     return { result: <'accepted' | 'rejected'>'rejected', reject_reason: e, trials_left: 0 };
   }
 };
+
+function runValidations(captchaSolutionResponse: CaptchaSolutionResponse, dispenseAddress: string, existingAlias: boolean, faucetBalance: number): ValidationStatus {
+  const validations: (() => string)[] = [
+    () => captchaRejected(captchaSolutionResponse.result),
+    () => alreadyDispensed(dispenseAddress, faucetHistory),
+    () => (dispenseAddress.includes('rsk') ? unexistingRNSAlias(dispenseAddress, existingAlias) : invalidAddress(dispenseAddress, rnsUtil)),
+    () => insuficientFunds(faucetBalance)
+  ];
+  const errorMessages: string[] = validations.map(validate => validate()).filter(e => e != '' && e != '-');
+
+  return new ValidationStatus(errorMessages);
+}
 
 export default handleDispense;
