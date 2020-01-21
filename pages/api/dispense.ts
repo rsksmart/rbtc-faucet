@@ -104,10 +104,19 @@ const handleDispense = async (req: NextApiRequest, res: NextApiResponse): Promis
       tx.sign(Buffer.from(faucetPrivateKey(), 'hex'));
       const encodedTx = '0x' + tx.serialize().toString('hex');
       const txHash = '0x' + tx.hash(true).toString('hex');
+
       logger.info('encodedTx ' + encodedTx);
 
-      web3.eth.sendSignedTransaction(encodedTx);
-      faucetHistory[dispenseAddress.toLowerCase()] = 'dispensed';
+      web3.eth.sendSignedTransaction(encodedTx).on('error', error => {
+          logger.error('Error produced after sending a signed transaction. Encoded transaction: ' + encodedTx);
+          logger.error(error);
+      }).on('receipt', receipt => {
+          logger.success('Transaction succesfuly mined!');
+          logger.success('Retrived this receipt');
+          logger.success(JSON.stringify(receipt));
+      });
+
+      faucetHistory[dispenseAddress.toLowerCase()] = new Date().getTime();
 
       logger.dispensed(rskAddress ? rskAddress : dispenseAddress, txHash);
 
