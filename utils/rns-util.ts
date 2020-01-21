@@ -2,6 +2,7 @@ import Web3 from 'web3';
 import { Contract } from 'web3-eth-contract';
 import { AbiItem } from 'web3-utils';
 import logger from './logger';
+import { ExistingAliasStatus } from '../types/types';
 const namehash = require('eth-ens-namehash');
 
 class RNSUtil {
@@ -52,15 +53,17 @@ class RNSUtil {
 
     return labels[labels.length - 1] === 'rsk';
   }
-  async existingAlias(rnsAlias: string): Promise<boolean> {
+  async existingAlias(rnsAlias: string): Promise<ExistingAliasStatus> {
     try {
-      return (
+      const realAddr = await this.resolveAddr(rnsAlias);
+      const existing = (
         this.isRNS(rnsAlias) &&
-        (await this.resolveAddr(rnsAlias)) != '0x0000000000000000000000000000000000000000' &&
+        (realAddr != '0x0000000000000000000000000000000000000000') &&
         rnsAlias != undefined
       );
+      return {realAddress: realAddr, status: existing}
     } catch (e) {
-      return false;
+      return {realAddress: 'NO_ALIAS', status: false};
     }
   }
 }

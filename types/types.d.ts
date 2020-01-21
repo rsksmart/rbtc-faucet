@@ -33,3 +33,8 @@ export interface DispenseResponse {
   dispenseComplete?: boolean;
   checksumed?: boolean;
 }
+
+export interface ExistingAliasStatus {
+  status: boolean;
+  realAddress: string;
+}

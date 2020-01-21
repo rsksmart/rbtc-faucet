@@ -8,7 +8,7 @@ import {
   FaucetHistory,
   CaptchaSolutionRequest,
   CaptchaSolutionResponse,
-  DispenseResponse
+  DispenseResponse, ExistingAliasStatus
 } from '../../types/types';
 import axios from 'axios';
 import { CronJob } from 'cron';
@@ -72,7 +72,7 @@ const handleDispense = async (req: NextApiRequest, res: NextApiResponse): Promis
 
     //Validations
     //each validation will return an error message, if it success it'll return an empty string (empty error message)
-    const existingAlias: boolean = await rnsUtil.existingAlias(dispenseAddress);
+    const existingAlias: ExistingAliasStatus = await rnsUtil.existingAlias(dispenseAddress);
 
     const validationStatus = runValidations(captchaSolutionResponse, dispenseAddress, existingAlias, faucetBalance);
 
@@ -88,15 +88,10 @@ const handleDispense = async (req: NextApiRequest, res: NextApiResponse): Promis
       res.status(409).end(JSON.stringify(data)); //409 Conflict
     } else {
       //Dispensing
-      let rskAddress: string = '';
+      let rskAddress: string | null = '';
       const txParametersGenerator = new TxParametersGenerator();
 
-      if (existingAlias) {
-        const rnsAddress = dispenseAddress;
-        rskAddress = await rnsUtil.resolveAddr(rnsAddress);
-      }
-
-      const txParameters: TxParameters = await txParametersGenerator.generate(rskAddress, dispenseAddress, web3);
+      const txParameters: TxParameters = await txParametersGenerator.generate(existingAlias.status? existingAlias.realAddress : dispenseAddress, web3);
 
       logger.txParameters(txParameters);
 
@@ -171,7 +166,7 @@ async function solveCaptcha(captcha: CaptchaSolutionRequest): Promise<CaptchaSol
 function runValidations(
   captchaSolutionResponse: CaptchaSolutionResponse,
   dispenseAddress: string,
-  existingAlias: boolean,
+  existingAlias: ExistingAliasStatus,
   faucetBalance: number
 ): ValidationStatus {
   const validations: (() => string)[] = [

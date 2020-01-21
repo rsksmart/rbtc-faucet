@@ -1,8 +1,8 @@
-import { CaptchaSolutionResponse } from '../types/types';
+import { CaptchaSolutionResponse, ExistingAliasStatus } from '../types/types';
 import RNSUtil from './rns-util';
 
-export const unexistingRNSAlias = (dispenseAddress: string, existingAlias: boolean): string =>
-  !existingAlias ? dispenseAddress + ' is an unexisting alias, please provide an existing one' : '';
+export const unexistingRNSAlias = (dispenseAddress: string, existingAlias: ExistingAliasStatus): string =>
+  !existingAlias.status ? dispenseAddress + ' is an unexisting alias, please provide an existing one' : '';
 export const insuficientFunds = (faucetBalance: number) =>
   faucetBalance < 100000000000000000 ? 'Faucet has enough funds' : '';
 export const needsCaptchaReset = (captchaSolutionResponse: CaptchaSolutionResponse): boolean =>
