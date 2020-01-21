@@ -5,10 +5,10 @@ import listen from 'test-listen';
 import handleDispense from '../dispense';
 import nock from 'nock';
 import { apiResolver } from 'next-server/dist/server/api-utils';
-import { captchaApiUrl, valueToDispense, provider } from '../../../utils/env-util';
+import { valueToDispense, provider } from '../../../utils/env-util';
 import { isValidChecksumAddress } from 'rskjs-util';
 
-const CAPTCHA_API_URL = captchaApiUrl();
+const CAPTCHA_API_URL = 'https://rust-captcha.herokuapp.com';
 const VALUE_TO_DISPENSE = valueToDispense();
 const TESTNET_CHAIN_ID = 31;
 
