@@ -4,6 +4,12 @@
 
 Faucet to dispense test RBTC for RSK Testnet.
 
+This is a NextJS app that interacts with the RSK blockchain and uses a captcha service. Therefore we can identify 3 actors
+
+1. NextJS app
+2. RSK Blockchain
+3. Captcha service 
+
 ## Architecture
 
 ![diagram](./diagrams/stack.png)
@@ -24,7 +30,6 @@ Please check `-config.json` and fill them with right values.
   "API_URL": "API_FETCH_URL",
   "NEW_CAPTCHA_URL": "http://rust-captcha.com/new/easy/5/998",
   "SOLVE_CAPTCHA_URL": "http://rust-captcha.com:8080/solution/",
-  "CAPTCHA_API_URL": "http://rust-captcha.com:8080",
   "FAUCET_ADDRESS": "ADDRESS",
   "FAUCET_PRIVATE_KEY": "PRIVATE_KEY",
   "GAS_PRICE": 60000000,
@@ -34,13 +39,20 @@ Please check `-config.json` and fill them with right values.
 }
 ```
 
-In order to run a production version, please check if `prod-config.json` exists, if not create one with de configuration described previously.
+In order to run a production version, please check if `prod-config.json` exists, if not create one with the configuration described previously.
 
-**NEW_CAPTCHA_URL** is the URL where you're gonna request a new captcha, **SOLVE_CAPTCHA_URL** is for checking the solution and **CAPTCHA_API_URL** is where the captcha-api is hosted, to get more info please read [this README](https://github.com/rsksmart/rust-captcha/blob/master/README.md).
+- **RSK_NODE** is the URL where the node is running.
+- **API_URL** where the API is hosted.
+- **NEW_CAPTCHA_URL** is the URL where you're gonna request a new captcha.
+- **SOLVE_CAPTCHA_URL** is for checking the solution.
+- **CAPTCHA_API_URL** is where the captcha-api is hosted. 
+- **TAG_MANAGER_ID** id for google service (this one shouldn't be changed).
+
+To get more about info the captcha service, please read [this README](https://github.com/rsksmart/rust-captcha/blob/master/README.md).
 
 ## Running development environment
 
-First install depenecies
+First install depenecies (use yarn)
 
 ```bash
 yarn
@@ -52,26 +64,19 @@ Then run app
 yarn dev
 ```
 
+You'll need a running blockchain in order to run this environment. To do this, you can run a local ganache and point it at _dev-config.json_, **RSK_NODE** variable.
 
-Notice that you'll need a running blockchain in order to run this environment. To do this, you can run a local ganache and point it as described 
+For this environment you can use a test captcha service with this config (at __dev-config.json__).
 
 ```json
-{
-  "RSK_NODE": "http://localhost:7545",
-  "API_URL": "http://localhost:3000/api",
-  "NEW_CAPTCHA_URL": "https://rust-captcha.herokuapp.com/new/easy/5/998",
-  "SOLVE_CAPTCHA_URL": "https://rust-captcha.herokuapp.com/solution/",
-  "CAPTCHA_API_URL": "https://rust-captcha.herokuapp.com",
-  "FAUCET_ADDRESS": "A_GANACHE_ACCOUNT",
-  "FAUCET_PRIVATE_KEY": "A_GANACHE_PRIVATE_KEY",
-  "GAS_PRICE": 60000000,
-  "GAS_LIMIT": 800000,
-  "VALUE_TO_DISPENSE": 0.05,
-  "TAG_MANAGER_ID": "NO_ID"
-}
+  {
+    "NEW_CAPTCHA_URL": "https://rust-captcha.herokuapp.com/new/easy/5/998",
+    "SOLVE_CAPTCHA_URL": "https://rust-captcha.herokuapp.com/solution/",
+    "CAPTCHA_API_URL": "https://rust-captcha.herokuapp.com"
+  }
 ```
 
-
+There is no need to change API_URL, VALUE_TO_DISPENSE, GAS_PRICE, GAS_LIMIT and TAG_MANAGER_ID.
 
 ## Production deploy
 
@@ -95,10 +100,10 @@ docker run -d --name rbtc-faucet -p 3000:3000 rbtc-faucet
 
 ## Linting
 
-There it's a script in order to lint using [prettier](https://prettier.io/) the whole project, just run
+You can lint the whole project with [prettier](https://prettier.io/), just run
 
 ```bash
 yarn lint
 ```
 
-You can setup linting options at `.prettierrc`
+Setup linting options at `.prettierrc`
