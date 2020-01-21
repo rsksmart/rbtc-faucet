@@ -13,21 +13,17 @@ import {
 import axios from 'axios';
 import { CronJob } from 'cron';
 import RNSUtil from '../../utils/rns-util';
-import {
-  faucetAddress,
-  provider,
-  faucetPrivateKey,
-  solveCaptchaUrl
-} from '../../utils/env-util';
+import { faucetAddress, provider, faucetPrivateKey, solveCaptchaUrl } from '../../utils/env-util';
 import {
   alreadyDispensed,
   captchaRejected,
-  insuficientFunds, invalidAddress,
+  insuficientFunds,
+  invalidAddress,
   needsCaptchaReset,
   unexistingRNSAlias
-} from "./validations";
-import ValidationStatus from "../../model/validation-status";
-import TxParametersGenerator from "./tx-parameters-generator";
+} from './validations';
+import ValidationStatus from '../../model/validation-status';
+import TxParametersGenerator from './tx-parameters-generator';
 
 let faucetHistory: FaucetHistory = {};
 
@@ -107,7 +103,7 @@ const handleDispense = async (req: NextApiRequest, res: NextApiResponse): Promis
       let tx = new Tx(txParameters);
       tx.sign(Buffer.from(faucetPrivateKey(), 'hex'));
       const encodedTx = '0x' + tx.serialize().toString('hex');
-      const txHash = '0x' + tx.hash(true).toString('hex')
+      const txHash = '0x' + tx.hash(true).toString('hex');
       logger.info('encodedTx ' + encodedTx);
 
       web3.eth.sendSignedTransaction(encodedTx);
@@ -122,8 +118,8 @@ const handleDispense = async (req: NextApiRequest, res: NextApiResponse): Promis
         text: dispenseTextForFrontend(dispenseAddress, txHash),
         dispenseComplete: true,
         checksumed: rskAddress
-            ? isValidChecksumAddress(rskAddress, TESTNET_CHAIN_ID)
-            : isValidChecksumAddress(dispenseAddress, TESTNET_CHAIN_ID)
+          ? isValidChecksumAddress(rskAddress, TESTNET_CHAIN_ID)
+          : isValidChecksumAddress(dispenseAddress, TESTNET_CHAIN_ID)
       };
       res.status(200).json(JSON.stringify(data)); //200 OK
     }
@@ -161,13 +157,21 @@ async function solveCaptcha(captcha: CaptchaSolutionRequest): Promise<CaptchaSol
     logger.error(e);
     return { result: <'accepted' | 'rejected'>'rejected', reject_reason: e, trials_left: 0 };
   }
-};
+}
 
-function runValidations(captchaSolutionResponse: CaptchaSolutionResponse, dispenseAddress: string, existingAlias: boolean, faucetBalance: number): ValidationStatus {
+function runValidations(
+  captchaSolutionResponse: CaptchaSolutionResponse,
+  dispenseAddress: string,
+  existingAlias: boolean,
+  faucetBalance: number
+): ValidationStatus {
   const validations: (() => string)[] = [
     () => captchaRejected(captchaSolutionResponse.result),
     () => alreadyDispensed(dispenseAddress, faucetHistory),
-    () => (dispenseAddress.includes('rsk') ? unexistingRNSAlias(dispenseAddress, existingAlias) : invalidAddress(dispenseAddress, rnsUtil)),
+    () =>
+      dispenseAddress.includes('rsk')
+        ? unexistingRNSAlias(dispenseAddress, existingAlias)
+        : invalidAddress(dispenseAddress, rnsUtil),
     () => insuficientFunds(faucetBalance)
   ];
   const errorMessages: string[] = validations.map(validate => validate()).filter(e => e != '' && e != '-');
@@ -178,7 +182,8 @@ function runValidations(captchaSolutionResponse: CaptchaSolutionResponse, dispen
 function dispenseTextForFrontend(dispenseAddress: string, txHash: string) {
   const message = 'Successfully sent some RBTCs to ' + dispenseAddress;
 
-  const withTransactionHash = message + '<br/> <a href="https://explorer.testnet.rsk.co/tx/' + txHash + '" target="_blank">Transaction hash</a>';
+  const withTransactionHash =
+    message + '<br/> <a href="https://explorer.testnet.rsk.co/tx/' + txHash + '" target="_blank">Transaction hash</a>';
 
   return withTransactionHash;
 }
