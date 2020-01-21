@@ -151,5 +151,3 @@ describe('CAPTCHA', () => {
     }
   });
 });
-
-const setupRNS = () => {};
