@@ -21,9 +21,9 @@ import {
   invalidAddress,
   needsCaptchaReset,
   unexistingRNSAlias
-} from './validations';
+} from '../../utils/validations';
 import ValidationStatus from '../../model/validation-status';
-import TxParametersGenerator from './tx-parameters-generator';
+import TxParametersGenerator from '../../utils/tx-parameters-generator';
 
 let faucetHistory: FaucetHistory = {};
 

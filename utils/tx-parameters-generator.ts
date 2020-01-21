@@ -1,5 +1,5 @@
-import { TxParameters } from '../../types/types';
-import { faucetAddress, gasLimit, gasPrice, valueToDispense } from '../../utils/env-util';
+import { TxParameters } from '../types/types';
+import { faucetAddress, gasLimit, gasPrice, valueToDispense } from './env-util';
 import Web3 from 'web3';
 
 class TxParametersGenerator {

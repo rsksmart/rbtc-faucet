@@ -1,5 +1,5 @@
-import { CaptchaSolutionResponse } from '../../types/types';
-import RNSUtil from '../../utils/rns-util';
+import { CaptchaSolutionResponse } from '../types/types';
+import RNSUtil from './rns-util';
 
 export const unexistingRNSAlias = (dispenseAddress: string, existingAlias: boolean): string =>
   !existingAlias ? dispenseAddress + ' is an unexisting alias, please provide an existing one' : '';
