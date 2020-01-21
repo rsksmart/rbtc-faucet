@@ -62,7 +62,7 @@ const handleDispense = async (req: NextApiRequest, res: NextApiResponse): Promis
   try {
     res.setHeader('Content-Type', 'application/json');
 
-    const dispenseAddress: string = req.body.dispenseAddress;
+    let dispenseAddress: string = req.body.dispenseAddress;
     const captchaSolutionRequest: CaptchaSolutionRequest = req.body.captcha;
 
     logger.event('dispensing to ' + dispenseAddress);
@@ -73,7 +73,6 @@ const handleDispense = async (req: NextApiRequest, res: NextApiResponse): Promis
     //Validations
     //each validation will return an error message, if it success it'll return an empty string (empty error message)
     const existingAlias: ExistingAliasStatus = await rnsUtil.existingAlias(dispenseAddress);
-
     const validationStatus = runValidations(captchaSolutionResponse, dispenseAddress, existingAlias, faucetBalance);
 
     if (validationStatus.valid()) {
@@ -88,15 +87,14 @@ const handleDispense = async (req: NextApiRequest, res: NextApiResponse): Promis
       res.status(409).end(JSON.stringify(data)); //409 Conflict
     } else {
       //Dispensing
-      let rskAddress: string | null = '';
       const txParametersGenerator = new TxParametersGenerator();
-
-      const txParameters: TxParameters = await txParametersGenerator.generate(existingAlias.status? existingAlias.realAddress : dispenseAddress, web3);
+      const txParameters: TxParameters = await txParametersGenerator.generate(dispenseAddress, web3);
 
       logger.txParameters(txParameters);
 
-      let tx = new Tx(txParameters);
+      const tx = new Tx(txParameters);
       tx.sign(Buffer.from(faucetPrivateKey(), 'hex'));
+
       const encodedTx = '0x' + tx.serialize().toString('hex');
       const txHash = '0x' + tx.hash(true).toString('hex');
 
@@ -113,7 +111,7 @@ const handleDispense = async (req: NextApiRequest, res: NextApiResponse): Promis
 
       faucetHistory[dispenseAddress.toLowerCase()] = new Date().getTime();
 
-      logger.dispensed(rskAddress ? rskAddress : dispenseAddress, txHash);
+      logger.dispensed(dispenseAddress, txHash);
 
       const data: DispenseResponse = {
         txHash,
@@ -121,9 +119,7 @@ const handleDispense = async (req: NextApiRequest, res: NextApiResponse): Promis
         type: 'success',
         text: dispenseTextForFrontend(dispenseAddress, txHash),
         dispenseComplete: true,
-        checksumed: rskAddress
-          ? isValidChecksumAddress(rskAddress, TESTNET_CHAIN_ID)
-          : isValidChecksumAddress(dispenseAddress, TESTNET_CHAIN_ID)
+        checksumed: isValidChecksumAddress(dispenseAddress, TESTNET_CHAIN_ID)
       };
       res.status(200).json(JSON.stringify(data)); //200 OK
     }
