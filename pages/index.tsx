@@ -48,29 +48,39 @@ function App({ isMobile }) {
     };
 
     setLoading(true);
-    axios
-      .post(apiUrl() + '/dispense', {
-        dispenseAddress,
-        captcha: {
-          solution: captchaValue,
-          id: captcha.id
-        }
-      })
-      .then((res: any) => {
-        setCaptchaValue('');
-        setLoading(false);
-        const data: DispenseResponse = res.data;
-        Swal.fire(swalSetup(data));
-      })
-      .catch((e: any) => {
-        //codes 409 or 500
-        setCaptchaValue('');
-        setLoading(false);
-        console.error(e);
-        console.error(JSON.stringify(e.response));
-        const data: DispenseResponse = e.response.data ? e.response.data : e;
-        Swal.fire(swalSetup(data));
-      });
+
+    Swal.fire({
+      title: 'Dispensing RBTCs',
+      text: 'You\'ll need to wait about 30 seconds while the transaction is being mined',
+      onBeforeOpen: () => {
+        Swal.showLoading()
+        axios
+          .post(apiUrl() + '/dispense', {
+            dispenseAddress,
+            captcha: {
+              solution: captchaValue,
+              id: captcha.id
+            }
+          })
+          .then((res: any) => {
+            setCaptchaValue('');
+            setLoading(false);
+            const data: DispenseResponse = res.data;
+            Swal.fire(swalSetup(data));
+          })
+          .catch((e: any) => {
+            //codes 409 or 500
+            setCaptchaValue('');
+            setLoading(false);
+            console.error(e);
+            console.error(JSON.stringify(e.response));
+            const data: DispenseResponse = e.response.data ? e.response.data : e;
+            Swal.fire(swalSetup(data));
+          });
+      },
+    })
+
+
   };
   const handleCaptchaValueChange = (event: any) => {
     setCaptchaValue(event.target.value);

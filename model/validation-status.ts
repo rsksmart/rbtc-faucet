@@ -11,11 +11,9 @@ class ValidationStatus {
     this.errorMessages.forEach(e => logger.error(e));
   }
 
-  parsedErrorsForFrontend() {
-    return this.errorMessages.reduce((a, b) => '<br/> <strong>- </strong>' + a + '<br/> <strong>- </strong>' + b);
-  }
+
   valid() {
-    return this.errorMessages.length > 0;
+    return this.errorMessages.length == 0;
   }
 }
 

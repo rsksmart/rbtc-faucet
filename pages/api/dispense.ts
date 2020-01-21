@@ -10,10 +10,9 @@ import {
   CaptchaSolutionResponse,
   DispenseResponse, ExistingAliasStatus
 } from '../../types/types';
-import axios from 'axios';
 import { CronJob } from 'cron';
 import RNSUtil from '../../utils/rns-util';
-import { faucetAddress, provider, faucetPrivateKey, solveCaptchaUrl } from '../../utils/env-util';
+import { faucetAddress, provider, faucetPrivateKey } from '../../utils/env-util';
 import {
   alreadyDispensed,
   captchaRejected,
@@ -24,6 +23,8 @@ import {
 } from '../../utils/validations';
 import ValidationStatus from '../../model/validation-status';
 import TxParametersGenerator from '../../utils/tx-parameters-generator';
+import FrontendText from '../../utils/frontend-text';
+import CaptchaSolver from '../../utils/captcha-solver';
 
 let faucetHistory: FaucetHistory = {};
 
@@ -54,6 +55,8 @@ const web3: Web3 = new Web3(provider());
 web3.transactionConfirmationBlocks = 1;
 const rnsUtil: RNSUtil = new RNSUtil(web3);
 const TESTNET_CHAIN_ID = 31;
+const frontendText = new FrontendText();
+const captchaSolver = new CaptchaSolver();
 
 //Request Handler
 const handleDispense = async (req: NextApiRequest, res: NextApiResponse): Promise<void> => {
@@ -68,25 +71,25 @@ const handleDispense = async (req: NextApiRequest, res: NextApiResponse): Promis
     logger.event('dispensing to ' + dispenseAddress);
     logger.event('captcha ' + JSON.stringify(captchaSolutionRequest));
 
-    const captchaSolutionResponse: CaptchaSolutionResponse = await solveCaptcha(captchaSolutionRequest);
+    const captchaSolutionResponse: CaptchaSolutionResponse = await captchaSolver.solve(captchaSolutionRequest);
 
     //Validations
     //each validation will return an error message, if it success it'll return an empty string (empty error message)
     const existingAlias: ExistingAliasStatus = await rnsUtil.existingAlias(dispenseAddress);
-    const validationStatus = runValidations(captchaSolutionResponse, dispenseAddress, existingAlias, faucetBalance);
+    const validationStatus: ValidationStatus = runValidations(captchaSolutionResponse, dispenseAddress, existingAlias, faucetBalance);
 
-    if (validationStatus.valid()) {
+    if (!validationStatus.valid()) {
       validationStatus.logErrors();
 
       const data: DispenseResponse = {
         titleText: 'Error',
-        text: validationStatus.parsedErrorsForFrontend(),
+        text: frontendText.invalidTransaction(validationStatus.errorMessages),
         type: 'error',
         resetCaptcha: needsCaptchaReset(captchaSolutionResponse)
       };
+
       res.status(409).end(JSON.stringify(data)); //409 Conflict
     } else {
-      //Dispensing
       const txParametersGenerator = new TxParametersGenerator();
       const txParameters: TxParameters = await txParametersGenerator.generate(dispenseAddress, web3);
 
@@ -99,29 +102,39 @@ const handleDispense = async (req: NextApiRequest, res: NextApiResponse): Promis
       const txHash = '0x' + tx.hash(true).toString('hex');
 
       logger.info('encodedTx ' + encodedTx);
-
-      web3.eth.sendSignedTransaction(encodedTx).on('error', error => {
-          logger.error('Error produced after sending a signed transaction. Encoded transaction: ' + encodedTx);
-          logger.error(error);
-      }).on('receipt', receipt => {
-          logger.success('Transaction succesfuly mined!');
-          logger.success('Retrived this receipt');
-          logger.success(JSON.stringify(receipt));
-      });
-
-      faucetHistory[dispenseAddress.toLowerCase()] = new Date().getTime();
-
       logger.dispensed(dispenseAddress, txHash);
 
-      const data: DispenseResponse = {
-        txHash,
-        titleText: 'Sent',
-        type: 'success',
-        text: dispenseTextForFrontend(dispenseAddress, txHash),
-        dispenseComplete: true,
-        checksumed: isValidChecksumAddress(dispenseAddress, TESTNET_CHAIN_ID)
-      };
-      res.status(200).json(JSON.stringify(data)); //200 OK
+      try {
+        const receipt = await web3.eth.sendSignedTransaction(encodedTx);
+        faucetHistory[dispenseAddress.toLowerCase()] = new Date().getTime();
+
+        logger.success('Transaction succesfuly mined!');
+        logger.success('Retrived this receipt');
+        logger.success(JSON.stringify(receipt));
+
+        const data: DispenseResponse = {
+          txHash,
+          titleText: 'Sent',
+          type: 'success',
+          text: frontendText.dispense(dispenseAddress, txHash),
+          dispenseComplete: true,
+          checksumed: isValidChecksumAddress(dispenseAddress, TESTNET_CHAIN_ID)
+        };
+
+        res.status(200).json(JSON.stringify(data)); //200 OK
+      } catch (error) {
+        logger.error('Error produced after sending a signed transaction.');
+        logger.error(error);
+
+        const data: DispenseResponse = {
+          titleText: 'Error',
+          text: await frontendText.failedTransaction(txHash, web3),
+          type: 'error',
+          resetCaptcha: true
+        };
+
+        res.status(500).end(JSON.stringify(data)); //500 Internal Server Error
+      }
     }
   } catch (e) {
     logger.error(e);
@@ -137,27 +150,6 @@ const handleDispense = async (req: NextApiRequest, res: NextApiResponse): Promis
     res.status(500).end(JSON.stringify(data)); //500 Internal Server Error
   }
 };
-
-//Captcha solver
-async function solveCaptcha(captcha: CaptchaSolutionRequest): Promise<CaptchaSolutionResponse> {
-  try {
-    if (captcha.solution == '') captcha.solution = "doesn't matter";
-
-    const url = solveCaptchaUrl() + captcha.id + '/' + captcha.solution;
-
-    logger.event('checking solution against captcha api, POST ' + url);
-
-    const res = await axios.post(url, captcha);
-    const result: CaptchaSolutionResponse = res.data;
-
-    logger.event('captcha solution response ' + JSON.stringify(result));
-
-    return result;
-  } catch (e) {
-    logger.error(e);
-    return { result: <'accepted' | 'rejected'>'rejected', reject_reason: e, trials_left: 0 };
-  }
-}
 
 function runValidations(
   captchaSolutionResponse: CaptchaSolutionResponse,
@@ -177,15 +169,6 @@ function runValidations(
   const errorMessages: string[] = validations.map(validate => validate()).filter(e => e != '' && e != '-');
 
   return new ValidationStatus(errorMessages);
-}
-
-function dispenseTextForFrontend(dispenseAddress: string, txHash: string) {
-  const message = 'Successfully sent some RBTCs to ' + dispenseAddress;
-
-  const withTransactionHash =
-    message + '<br/> <a href="https://explorer.testnet.rsk.co/tx/' + txHash + '" target="_blank">Transaction hash</a>';
-
-  return withTransactionHash;
 }
 
 export default handleDispense;
