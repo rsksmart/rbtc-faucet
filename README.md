@@ -65,6 +65,7 @@ yarn dev
 ```
 
 You'll need a running blockchain in order to run this environment. To do this, you can run a local ganache and point it at _dev-config.json_, **RSK_NODE** variable.
+Notice that you won't be able to get a real [explorer](https://explorer.testnet.rsk.co/) link because you're running a local blockchain instead of an RSK one!
 
 For this environment you can use a test captcha service with this config (at __dev-config.json__).
 
