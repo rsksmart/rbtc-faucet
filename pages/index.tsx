@@ -47,11 +47,11 @@ function App({ isMobile }) {
       };
     };
 
-    setLoading(true);
-
     Swal.fire({
-      title: 'Dispensing RBTCs',
+      title: 'Sending RBTCs',
       text: 'You\'ll need to wait about 30 seconds while the transaction is being mined',
+      padding: '5%',
+      allowOutsideClick: false,
       onBeforeOpen: () => {
         Swal.showLoading()
         axios
@@ -64,14 +64,12 @@ function App({ isMobile }) {
           })
           .then((res: any) => {
             setCaptchaValue('');
-            setLoading(false);
             const data: DispenseResponse = res.data;
             Swal.fire(swalSetup(data));
           })
-          .catch((e: any) => {
+          .catch(async (e: any) => {
             //codes 409 or 500
             setCaptchaValue('');
-            setLoading(false);
             console.error(e);
             console.error(JSON.stringify(e.response));
             const data: DispenseResponse = e.response.data ? e.response.data : e;
