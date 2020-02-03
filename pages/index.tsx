@@ -148,7 +148,7 @@ function App({ isMobile }) {
             </Navbar.Brand>
           </Navbar>
         </Fade>
-        <div className="app-body">
+        <div className="app-body p-2">
           <Container className="m-0 p-0 w-100 container-rsk">
             <Fade bottom>
               <Row className="w-100">
