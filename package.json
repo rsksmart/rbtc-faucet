@@ -12,6 +12,7 @@
     "debug": "NODE_OPTIONS=--inspect next"
   },
   "dependencies": {
+    "@rsksmart/rns": "^1.0.0",
     "@zeit/next-css": "^1.0.1",
     "axios": "^0.19.0",
     "bootstrap": "^4.3.1",

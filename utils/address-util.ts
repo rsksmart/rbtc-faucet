@@ -1,24 +1,23 @@
-import RNSUtil from './rns-util';
 import Web3 from 'web3';
 import logger from './logger';
+import RNS from '@rsksmart/rns';
 
 class AddressUtil {
-  web3: Web3;
-  constructor(web3: Web3) {
-    this.web3 = web3;
+  rns: RNS;
+  constructor(web3: any) {
+    this.rns = new RNS(web3);
   }
   async retriveAddressFromFrontend(frontendAddress: string = 'Undefined address'): Promise<string> {
     const posibleRnsAlias = frontendAddress.includes('.rsk');
 
     if(posibleRnsAlias) {
       try {
-        const rnsUtil = new RNSUtil(this.web3);
-
-        return await rnsUtil.resolveAddr(frontendAddress);
+        return await this.rns.addr(frontendAddress);
       } catch(e) {
-        logger.error('Couldn\'t retrieve address by rns alias: ' + e);
+        logger.error(`Couldn't resolve address for this rnsAlias: ${frontendAddress}`);
+        logger.error(e);
 
-        return e;
+        return 'INVALID RNS';
       }
     } else {
       return frontendAddress

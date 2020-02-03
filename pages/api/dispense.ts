@@ -59,9 +59,9 @@ const addressUtil = new AddressUtil(web3);
 
 //Request Handler
 const handleDispense = async (req: NextApiRequest, res: NextApiResponse): Promise<void> => {
-  const faucetBalance: number = Number(await web3.eth.getBalance(faucetAddress()));
-
   try {
+    const faucetBalance: number = Number(await web3.eth.getBalance(faucetAddress()));
+
     res.setHeader('Content-Type', 'application/json');
 
     const dispenseAddress: string = await addressUtil.retriveAddressFromFrontend(req.body.dispenseAddress);
