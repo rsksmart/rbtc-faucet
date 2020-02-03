@@ -24,7 +24,9 @@ class RNSUtil {
       throw 'No address resolver';
 
     const resolver = new this.web3.eth.Contract(resolverAbiList, resolverAddr);
-    if (!(await resolver.methods.supportsInterface('0x3b3b57de').call())) throw 'No address resolution found';
+
+    if (!(await resolver.methods.supportsInterface('0x3b3b57de').call()))
+      throw 'No address resolution found';
 
     logger.event('resolving namehash...');
 

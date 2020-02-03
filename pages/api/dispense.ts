@@ -9,23 +9,21 @@ import {
   CaptchaSolutionRequest,
   CaptchaSolutionResponse,
   DispenseResponse,
-  ExistingAliasStatus
 } from '../../types/types';
 import { CronJob } from 'cron';
-import RNSUtil from '../../utils/rns-util';
 import { faucetAddress, provider, faucetPrivateKey } from '../../utils/env-util';
 import {
   alreadyDispensed,
   captchaRejected,
   insuficientFunds,
   invalidAddress,
-  needsCaptchaReset,
-  unexistingRNSAlias
+  needsCaptchaReset
 } from '../../utils/validations';
 import ValidationStatus from '../../model/validation-status';
 import TxParametersGenerator from '../../utils/tx-parameters-generator';
 import FrontendText from '../../utils/frontend-text';
 import CaptchaSolver from '../../utils/captcha-solver';
+import AddressUtil from '../../utils/address-util';
 
 let faucetHistory: FaucetHistory = {};
 
@@ -54,10 +52,10 @@ new CronJob(
 //Utils
 const web3: Web3 = new Web3(provider());
 web3.transactionConfirmationBlocks = 1;
-const rnsUtil: RNSUtil = new RNSUtil(web3);
 const TESTNET_CHAIN_ID = 31;
 const frontendText = new FrontendText();
 const captchaSolver = new CaptchaSolver();
+const addressUtil = new AddressUtil(web3);
 
 //Request Handler
 const handleDispense = async (req: NextApiRequest, res: NextApiResponse): Promise<void> => {
@@ -66,7 +64,7 @@ const handleDispense = async (req: NextApiRequest, res: NextApiResponse): Promis
   try {
     res.setHeader('Content-Type', 'application/json');
 
-    let dispenseAddress: string = req.body.dispenseAddress;
+    const dispenseAddress: string = await addressUtil.retriveAddressFromFrontend(req.body.dispenseAddress);
     const captchaSolutionRequest: CaptchaSolutionRequest = req.body.captcha;
 
     logger.event('dispensing to ' + dispenseAddress);
@@ -76,11 +74,9 @@ const handleDispense = async (req: NextApiRequest, res: NextApiResponse): Promis
 
     //Validations
     //each validation will return an error message, if it success it'll return an empty string (empty error message)
-    const existingAlias: ExistingAliasStatus = await rnsUtil.existingAlias(dispenseAddress);
     const validationStatus: ValidationStatus = runValidations(
       captchaSolutionResponse,
       dispenseAddress,
-      existingAlias,
       faucetBalance
     );
 
@@ -160,16 +156,12 @@ const handleDispense = async (req: NextApiRequest, res: NextApiResponse): Promis
 function runValidations(
   captchaSolutionResponse: CaptchaSolutionResponse,
   dispenseAddress: string,
-  existingAlias: ExistingAliasStatus,
   faucetBalance: number
 ): ValidationStatus {
   const validations: (() => string)[] = [
     () => captchaRejected(captchaSolutionResponse.result),
     () => alreadyDispensed(dispenseAddress, faucetHistory),
-    () =>
-      dispenseAddress.includes('rsk')
-        ? unexistingRNSAlias(dispenseAddress, existingAlias)
-        : invalidAddress(dispenseAddress, rnsUtil),
+    () => invalidAddress(dispenseAddress),
     () => insuficientFunds(faucetBalance)
   ];
   const errorMessages: string[] = validations.map(validate => validate()).filter(e => e != '' && e != '-');
