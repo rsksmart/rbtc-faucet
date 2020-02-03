@@ -56,14 +56,11 @@ class RNSUtil {
   async existingAlias(rnsAlias: string): Promise<ExistingAliasStatus> {
     try {
       const realAddr = await this.resolveAddr(rnsAlias);
-      const existing = (
-        this.isRNS(rnsAlias) &&
-        (realAddr != '0x0000000000000000000000000000000000000000') &&
-        rnsAlias != undefined
-      );
-      return {realAddress: realAddr, status: existing}
+      const existing =
+        this.isRNS(rnsAlias) && realAddr != '0x0000000000000000000000000000000000000000' && rnsAlias != undefined;
+      return { realAddress: realAddr, status: existing };
     } catch (e) {
-      return {realAddress: 'NO_ALIAS', status: false};
+      return { realAddress: 'NO_ALIAS', status: false };
     }
   }
 }

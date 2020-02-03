@@ -22,7 +22,7 @@ const emptyAccounts = (size: number): Account[] => {
   let accounts: Account[] = [
     {
       balance: '0x56BC75E2D63100000',
-      secretKey: '0x' + FAUCET_PRIVATE_KEY_DEVELOP_TESTING,
+      secretKey: '0x' + FAUCET_PRIVATE_KEY_DEVELOP_TESTING
     }
   ];
   for (let i = 0; i < size - 1; i++) accounts.push({ balance: '0x0' });

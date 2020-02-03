@@ -8,7 +8,8 @@ import {
   FaucetHistory,
   CaptchaSolutionRequest,
   CaptchaSolutionResponse,
-  DispenseResponse, ExistingAliasStatus
+  DispenseResponse,
+  ExistingAliasStatus
 } from '../../types/types';
 import { CronJob } from 'cron';
 import RNSUtil from '../../utils/rns-util';
@@ -76,7 +77,12 @@ const handleDispense = async (req: NextApiRequest, res: NextApiResponse): Promis
     //Validations
     //each validation will return an error message, if it success it'll return an empty string (empty error message)
     const existingAlias: ExistingAliasStatus = await rnsUtil.existingAlias(dispenseAddress);
-    const validationStatus: ValidationStatus = runValidations(captchaSolutionResponse, dispenseAddress, existingAlias, faucetBalance);
+    const validationStatus: ValidationStatus = runValidations(
+      captchaSolutionResponse,
+      dispenseAddress,
+      existingAlias,
+      faucetBalance
+    );
 
     if (!validationStatus.valid()) {
       validationStatus.logErrors();

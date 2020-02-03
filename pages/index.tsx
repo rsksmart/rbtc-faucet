@@ -50,7 +50,7 @@ function App({ isMobile }) {
 
       Swal.fire({
         title: 'Sending RBTCs',
-        text: 'You\'ll need to wait about 30 seconds while the transaction is being mined',
+        text: "You'll need to wait about 30 seconds while the transaction is being mined",
         padding: '5%',
         allowOutsideClick: false,
         onBeforeOpen: () => {

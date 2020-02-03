@@ -11,7 +11,6 @@ class ValidationStatus {
     this.errorMessages.forEach(e => logger.error(e));
   }
 
-
   valid() {
     return this.errorMessages.length == 0;
   }
