@@ -50,22 +50,6 @@ export function provider(): any {
   return currentProvider;
 }
 
-export function faucetAddress(): string {
-  return productionDevelopmentTest(
-    prodConfig.FAUCET_ADDRESS,
-    devConfig.FAUCET_ADDRESS,
-    '0xF7D1dF4f96A812598d4E398f5539c4f98DA958ab'
-  );
-}
-
-export function faucetPrivateKey(): string {
-  return productionDevelopmentTest(
-    prodConfig.FAUCET_PRIVATE_KEY,
-    devConfig.FAUCET_PRIVATE_KEY,
-    FAUCET_PRIVATE_KEY_DEVELOP_TESTING
-  );
-}
-
 export function apiUrl(): string {
   return productionDevelopmentTest(prodConfig.API_URL, devConfig.API_URL, devConfig.API_URL);
 }

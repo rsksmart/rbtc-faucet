@@ -11,7 +11,12 @@ import {
   DispenseResponse,
 } from '../../types/types';
 import { CronJob } from 'cron';
-import { faucetAddress, provider, faucetPrivateKey } from '../../utils/env-util';
+import { provider,
+  gasPrice,
+  gasLimit,
+  valueToDispense,
+  solveCaptchaUrl
+} from '../../utils/env-util';
 import {
   alreadyDispensed,
   captchaRejected,
@@ -24,6 +29,8 @@ import TxParametersGenerator from '../../utils/tx-parameters-generator';
 import FrontendText from '../../utils/frontend-text';
 import CaptchaSolver from '../../utils/captcha-solver';
 import AddressUtil from '../../utils/address-util';
+  
+import { faucetPrivateKey, faucetAddress } from '../../utils/faucet-sensitive-util';
 
 let faucetHistory: FaucetHistory = {};
 
