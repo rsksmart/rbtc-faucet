@@ -56,7 +56,7 @@ const Faucet = (props: FaucetProps) => {
           )}
         </div>
         <div>
-          { props.loading ? (
+          {props.loading ? (
             <Spinner className="faucet-captcha-spinner" animation="border" role="status" />
           ) : (
             <Row noGutters>

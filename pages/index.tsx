@@ -32,45 +32,55 @@ function App({ isMobile }) {
 
   //Handles
   const handleFaucetButtonClick = async () => {
-    const swalSetup = (data: DispenseResponse): SweetAlertOptions => {
-      return {
-        titleText: data.titleText,
-        html: data.text,
-        type: data.type,
-        onClose: () => {
-          fetchCaptcha();
-          if (data.dispenseComplete) {
-            setDispenseAddress('');
-            setCaptchaValue('');
+    try {
+      const swalSetup = (data: DispenseResponse): SweetAlertOptions => {
+        return {
+          titleText: data.titleText,
+          html: data.text,
+          type: data.type,
+          onClose: () => {
+            fetchCaptcha();
+            if (data.dispenseComplete) {
+              setDispenseAddress('');
+              setCaptchaValue('');
+            }
           }
-        }
+        };
       };
-    };
 
-    setLoading(true);
-    axios
-      .post(apiUrl() + '/dispense', {
-        dispenseAddress,
-        captcha: {
-          solution: captchaValue,
-          id: captcha.id
+      Swal.fire({
+        title: 'Sending RBTCs',
+        text: "You'll need to wait about 30 seconds while the transaction is being mined",
+        padding: '5%',
+        allowOutsideClick: false,
+        onBeforeOpen: () => {
+          Swal.showLoading();
+          axios
+            .post(apiUrl() + '/dispense', {
+              dispenseAddress,
+              captcha: {
+                solution: captchaValue,
+                id: captcha.id
+              }
+            })
+            .then((res: any) => {
+              setCaptchaValue('');
+              const data: DispenseResponse = res.data;
+              Swal.fire(swalSetup(data));
+            })
+            .catch(async (e: any) => {
+              //codes 409 or 500
+              setCaptchaValue('');
+              console.error(e);
+              const data: DispenseResponse = e.response.data ? e.response.data : e;
+              Swal.fire(swalSetup(data));
+            });
         }
-      })
-      .then((res: any) => {
-        setCaptchaValue('');
-        setLoading(false);
-        const data: DispenseResponse = res.data;
-        Swal.fire(swalSetup(data));
-      })
-      .catch((e: any) => {
-        //codes 409 or 500
-        setCaptchaValue('');
-        setLoading(false);
-        console.error(e);
-        console.error(JSON.stringify(e.response));
-        const data: DispenseResponse = e.response.data ? e.response.data : e;
-        Swal.fire(swalSetup(data));
       });
+    } catch (e) {
+      console.error(e);
+      Swal.fire({ title: 'Error', type: 'error', text: 'Unexpected error, please try again later.' });
+    }
   };
   const handleCaptchaValueChange = (event: any) => {
     setCaptchaValue(event.target.value);
@@ -138,7 +148,7 @@ function App({ isMobile }) {
             </Navbar.Brand>
           </Navbar>
         </Fade>
-        <div className="app-body">
+        <div className="app-body p-2">
           <Container className="m-0 p-0 w-100 container-rsk">
             <Fade bottom>
               <Row className="w-100">

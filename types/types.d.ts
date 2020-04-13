@@ -10,7 +10,7 @@ export interface TxParameters {
 }
 
 export interface FaucetHistory {
-  [address: string]: string;
+  [address: string]: number;
 }
 
 export interface CaptchaSolutionRequest {
@@ -32,4 +32,9 @@ export interface DispenseResponse {
   resetCaptcha?: boolean;
   dispenseComplete?: boolean;
   checksumed?: boolean;
+}
+
+export interface ExistingAliasStatus {
+  status: boolean;
+  realAddress: string;
 }
