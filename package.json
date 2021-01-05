@@ -14,7 +14,7 @@
   "dependencies": {
     "@rsksmart/rns": "^1.0.0",
     "@zeit/next-css": "^1.0.1",
-    "axios": "^0.19.0",
+    "axios": "^0.21.1",
     "bootstrap": "^4.3.1",
     "cron": "^1.7.2",
     "eth-ens-namehash": "^2.0.8",
