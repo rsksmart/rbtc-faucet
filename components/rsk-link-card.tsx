@@ -1,8 +1,4 @@
 import React from 'react';
-import Container from 'react-bootstrap/Container';
-import RskCard from './rsk-card';
-import Button from 'react-bootstrap/Button';
-import '../assets/styles/rsk-link-card.css';
 
 interface RskLinkCardProps {
   title: string;
@@ -14,20 +10,23 @@ interface RskLinkCardProps {
 
 const RskLinkCard = (props: RskLinkCardProps) => {
   return (
-    <RskCard padding="p-3" icon={props.icon} title={props.title} backgroundColor={props.backgroundColor}>
-      <Container className="p-0 text-left">
-        <div className="rsk-link-card-description">{props.description} </div>
-        <Button
-          className="button-rsk rounded-rsk"
-          style={{
-            backgroundColor: props.backgroundColor
-          }}
+    <div className='rsk-card'>
+      <div className="card-content">
+        <div className='card-info'>
+          <div className='card-title'>{props.title}</div>
+          <div className="card-description">{props.description} </div>
+        </div>
+        <button
+          className="btn btn-outline"
           onClick={() => window.open(props.link, '__blank')}
         >
           Read More
-        </Button>
-      </Container>
-    </RskCard>
+        </button>
+      </div>
+      <div className="card-icon">
+        <div>{props.icon}</div>
+      </div>
+    </div>
   );
 };
 
