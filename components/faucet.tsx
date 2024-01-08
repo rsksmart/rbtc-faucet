@@ -38,18 +38,18 @@ const Faucet = (props: FaucetProps) => {
             <Spinner className="faucet-captcha-spinner" animation="border" role="status" />
           )}
         </div>
-        {props.loading ? (
-          <Spinner className="faucet-captcha-spinner" animation="border" role="status" />
-        ) : (
+        {
           <div className='content-btn'>
-            <button onClick={() => props.onReloadCaptchaClick()} className="btn btn-outline">
-              Reload captcha
+            <button onClick={() => props.onReloadCaptchaClick()} className="btn btn-outline btn-reload">
+              {
+                props.loading ? <div className="spinner"></div> : 'Reload captcha'
+              }
             </button>
             <button onClick={() => props.onDispenseClick()} className="btn btn-primary">
               Get test RBTC
             </button>
           </div>
-        )}
+        }
       </div>
     </div>
   );

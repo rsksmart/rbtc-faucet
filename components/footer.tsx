@@ -17,9 +17,9 @@ function Footer() {
         <a href="https://dev.rootstock.io" target='_blank'>Documentation</a>
       </div>
       <div className='icons'>
-        <img src={require('../assets/images/x-icon.svg')} alt="" />
-        <img src={require('../assets/images/github-icon.svg')} alt="" />
-        <img src={require('../assets/images/slack-icon.svg')} alt="" />
+        <a href="https://twitter.com/rootstock_io" target='_blank'><img src={require('../assets/images/x-icon.svg')} alt="" /></a>
+        <a href="https://github.com/rsksmart" target='_blank'><img src={require('../assets/images/github-icon.svg')} alt="" /></a>
+        <a href="https://discord.gg/fPerbqcWGE" target='_blank'><img src={require('../assets/images/discord-icon.svg')} alt="" /></a>
       </div>
     </footer>
   )

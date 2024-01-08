@@ -5,7 +5,7 @@ import Row from 'react-bootstrap/Row';
 
 function Carousel() {
   const reactCardCarouselProps = {
-    autoplay: false,
+    autoplay: true,
     autoplay_speed: 5000
   };
   const devportalLinkCardProps = {
