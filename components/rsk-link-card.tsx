@@ -17,10 +17,10 @@ const RskLinkCard = (props: RskLinkCardProps) => {
           <div className="card-description">{props.description} </div>
         </div>
         <button
-          className="btn btn-outline"
+          className="btn btn-outline btn-large"
           onClick={() => window.open(props.link, '__blank')}
         >
-          Read More
+          Learn More
         </button>
       </div>
       <div className="card-icon">

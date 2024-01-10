@@ -45,7 +45,7 @@ const Faucet = (props: FaucetProps) => {
                 props.loading ? <div className="spinner"></div> : 'Reload captcha'
               }
             </button>
-            <button onClick={() => props.onDispenseClick()} className="btn btn-primary">
+            <button onClick={() => props.onDispenseClick()} className="btn btn-primary btn-middle">
               Get test RBTC
             </button>
           </div>

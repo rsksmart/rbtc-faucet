@@ -32,10 +32,10 @@
     }
 
     .btn-reload {
-      width: 110px;
-      &::before {
-        width: 110px;
-      }
+      width: 110px !important;
+    }
+    .btn-reload::before {
+      width: 106px !important;
     }
   }
 } 

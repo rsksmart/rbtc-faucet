@@ -52,6 +52,10 @@ To get more about info the captcha service, please read [this README](https://gi
 
 ## Running development environment
 
+### Node
+
+This project requires node version 16
+
 First install depenecies (use yarn)
 
 ```bash
