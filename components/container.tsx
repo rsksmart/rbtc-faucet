@@ -28,6 +28,9 @@ function Container() {
           titleText: data.titleText,
           html: data.text,
           type: data.type,
+          customClass: {
+            confirmButton: 'btn btn-outline btn-swal',
+          },
           onClose: () => {
             fetchCaptcha();
             if (data.dispenseComplete) {
@@ -44,6 +47,7 @@ function Container() {
         text: "You'll need to wait about 30 seconds while the transaction is being mined",
         padding: '5%',
         allowOutsideClick: false,
+        confirmButtonColor: '#00E482',
         onBeforeOpen: () => {
           Swal.showLoading();
           axios

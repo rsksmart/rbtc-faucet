@@ -71,16 +71,20 @@ body {
   width: 104px;
   height: 38px;
   color: white;
-  border: 1.5px solid white;
+  border: 1.5px solid white !important;
   position: relative;
   text-align: center;
-  border-radius: 100px;
+  border-radius: 100px !important;
   padding: 0 5px;
   text-align: center;
   display: flex;
   justify-content: center;
   align-content: center;
   align-items: center;
+  &:focus {
+    outline: none !important;
+    box-shadow: none !important;
+  }
 }
 .btn::before{
   width: 102px;
@@ -95,13 +99,12 @@ body {
 }
 
 .btn-primary {
-  background-color: white;
-  color: $bg1-color;
+  background-color: white !important;
+  color: $bg1-color !important;
   transition: opacity 0.3s ease;
   &:hover {
-    color: white;
-    background-color: rgb(23, 23, 23);
-    // opacity: 0.7;
+    color: white !important;
+    background-color: rgb(23, 23, 23) !important;
   }
 }
 
@@ -120,15 +123,21 @@ body {
 }
 
 .btn-outline {
-  background-color: $bg1-color;
+  background-color: $bg1-color !important;
   &:hover{
-    background-color: rgb(191, 191, 191);
-    color: black;
+    background-color: rgb(191, 191, 191) !important;
+    color: black !important;
   }
 }
 
 .swal2-content, .swal2-title {
   color: $white2 !important;
+}
+
+.btn-swal {
+  &::before {
+    left: 3px !important;
+  }
 }
 
 .body-faucet {
