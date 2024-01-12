@@ -2,7 +2,7 @@ import { CaptchaSolutionResponse } from '../types/types';
 import {isValidAddress} from 'rskjs-util';
 
 export const insuficientFunds = (faucetBalance: number) =>
-  faucetBalance < 100000000000000000 ? 'Faucet has enough funds.' : '';
+  faucetBalance < 100000000000000000 ? 'Faucet has not enough funds.' : '';
 export const needsCaptchaReset = (captchaSolutionResponse: CaptchaSolutionResponse): boolean =>
   captchaSolutionResponse.trials_left == 0;
 export const captchaRejected = (result: string): string =>

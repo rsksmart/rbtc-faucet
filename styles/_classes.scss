@@ -58,7 +58,13 @@ body {
   height: 226px;
   border-radius: 12px;
 }
-
+.container-empty-captcha {
+  width: 100%;
+  height: 226px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 .content-btn {
   margin-top: 37px;
   display: flex;
@@ -99,12 +105,14 @@ body {
 }
 
 .btn-primary {
-  background-color: white !important;
-  color: $bg1-color !important;
+  border: 1px solid #FF9100;
+  background-color: #FF9100;
+  color: white;
   transition: opacity 0.3s ease;
   &:hover {
-    color: white !important;
-    background-color: rgb(23, 23, 23) !important;
+    color: white;
+    background-color: rgb(234, 130, 4);
+    border: 1px solid rgb(179, 99, 0);
   }
 }
 
