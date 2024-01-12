@@ -75,7 +75,7 @@ body {
 .btn {
   cursor: pointer;
   width: 104px;
-  height: 38px;
+  height: 34px;
   color: white;
   border: 1.5px solid white !important;
   position: relative;
@@ -93,12 +93,12 @@ body {
   }
 }
 .btn::before{
-  width: 102px;
+  width: 104px;
   content:""; 
-  height: 36px; 
+  height: 32px; 
   position: absolute; 
-  top: 2px; 
-  left: 5px;
+  top: 3px; 
+  left: 1px;
   z-index: -1;
   border: 1.5px solid white;
   border-radius: 100px;
@@ -119,14 +119,14 @@ body {
 .btn-large {
   width: 141px !important;
   &::before {
-    width: 137px !important;
+    width: 141px !important;
   }
 }
 
 .btn-middle {
   width: 130px !important;
   &::before {
-    width: 126px !important;
+    width: 130px !important;
   }
 }
 
@@ -144,7 +144,7 @@ body {
 
 .btn-swal {
   &::before {
-    left: 3px !important;
+    left: 1px !important;
   }
 }
 
