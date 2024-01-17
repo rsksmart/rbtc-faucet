@@ -1,0 +1,174 @@
+@font-face {
+  font-family: 'Rootstock Sans Body';
+  src: url('/assets/font/Rootstock-Sans-Body.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: $bg-color;
+  font-family: 'Rootstock Sans Body', sans-serif;
+}
+
+.navigation {
+  width: 100%;
+  height: 60px;
+}
+
+.navigation .logo-rootstock {
+  padding: 24px 0 12px 24px;
+}
+
+.title-faucet {
+  margin-top: 40px;
+  display: flex;
+  justify-content: center;
+  font-size: 46px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 100%; /* 46px */
+  .rootstock {
+    background-color: $title1;
+    padding: 5px;
+    margin-right: 5px;
+  }
+  .faucet {
+    background-color: $title2;
+    padding: 5px;
+  }
+}
+
+.container-faucet {
+  margin-top: 50px;
+  display: flex;
+  justify-content: center;
+}
+
+.faucet-captcha-image {
+  margin-top: 12px;
+  display: flex;
+  flex: 1;
+  width: 100%;
+  height: 226px;
+  border-radius: 12px;
+}
+.container-empty-captcha {
+  width: 100%;
+  height: 226px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.content-btn {
+  margin-top: 37px;
+  display: flex;
+  justify-content: space-between;
+  position: relative;
+}
+
+.btn {
+  cursor: pointer;
+  width: 104px;
+  height: 34px;
+  color: white;
+  border: 1.5px solid white !important;
+  position: relative;
+  text-align: center;
+  border-radius: 100px !important;
+  padding: 0 5px;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  align-items: center;
+  &:focus {
+    outline: none !important;
+    box-shadow: none !important;
+  }
+}
+.btn::before{
+  width: 104px;
+  content:""; 
+  height: 32px; 
+  position: absolute; 
+  top: 3px; 
+  left: 1px;
+  z-index: -1;
+  border: 1.5px solid white;
+  border-radius: 100px;
+}
+
+.btn-primary {
+  border: 1px solid #FF9100;
+  background-color: #FF9100;
+  color: white;
+  transition: opacity 0.3s ease;
+  &:hover {
+    color: white;
+    background-color: rgb(234, 130, 4);
+    border: 1px solid rgb(179, 99, 0);
+  }
+}
+
+.btn-large {
+  width: 141px !important;
+  &::before {
+    width: 141px !important;
+  }
+}
+
+.btn-middle {
+  width: 130px !important;
+  &::before {
+    width: 130px !important;
+  }
+}
+
+.btn-outline {
+  background-color: $bg1-color !important;
+  &:hover{
+    background-color: rgb(191, 191, 191) !important;
+    color: black !important;
+  }
+}
+
+.swal2-content, .swal2-title {
+  color: $white2 !important;
+}
+
+.btn-swal {
+  &::before {
+    left: 1px !important;
+  }
+}
+
+.body-faucet {
+  display: flex;
+  height: 100vh;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.spinner {
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border-left-color: $title1;
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  0% {
+      transform: rotate(0deg);
+  }
+  100% {
+      transform: rotate(360deg);
+  }
+}
