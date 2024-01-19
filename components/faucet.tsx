@@ -33,7 +33,7 @@ const Faucet = (props: FaucetProps) => {
         />
         <div>
           {isLoadingCaptcha(props.captcha.id) ? (
-            <img className="faucet-captcha-image rounded-rsk" src={`data:image/png;base64,${props.captcha.png}`} />
+            <img className="faucet-captcha-image rounded-rsk" src={`data:image/png;base64,${props.captcha.result.png}`} />
           ) : (
             <div className='container-empty-captcha'>
               <div className="spinner"></div> 
