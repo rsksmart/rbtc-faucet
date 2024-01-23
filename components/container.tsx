@@ -87,7 +87,9 @@ function Container() {
   //Methods
   const fetchCaptcha = async () => {
     setLoading(true);
+    console.log('true: ', true);
     const result = await axios.post(newCaptchaUrl());
+    console.log('result: ', result);
     setCaptcha(result.data);
     setLoading(false);
   };
