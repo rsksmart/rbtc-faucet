@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Spinner from 'react-bootstrap/Spinner';
 
 export interface FaucetProps {
@@ -13,12 +13,33 @@ export interface FaucetProps {
 }
 
 const Faucet = (props: FaucetProps) => {
+  const [error, setError] = useState({
+    address: false,
+    captchaValue: false,
+  });
+
+  const handleForm = () => {
+    // validate form
+    setError({ address: false, captchaValue: false });
+    const addressError = !props.dispenseAddress;
+    const captchaError = !props.captchaValue;
+    if (addressError || captchaError) {
+      setTimeout(() => { 
+        setError({ address: addressError, captchaValue: captchaError });
+      }, 100);
+      return;
+    }
+
+    props.onDispenseClick();
+    setError({ address: false, captchaValue: false });
+
+  }
   return (
     <div className='content-form'>
       <div className="title-form">Fill to get your tokens</div>
       <div className='faucet-form'>
         <input
-          className="faucet-control rounded-rsk"
+          className={`faucet-control rounded-rsk ${error.address ? 'error' : '' }`}
           type="text"
           placeholder="Find address or RNS domain to receive tokens ... "
           value={props.dispenseAddress}
@@ -29,11 +50,11 @@ const Faucet = (props: FaucetProps) => {
           placeholder="Captcha"
           value={props.captchaValue}
           onChange={props.onCaptchaValueChange}
-          className="faucet-control rounded-rsk"
+          className={`faucet-control rounded-rsk ${error.captchaValue ? 'error' : '' }`}
         />
         <div>
           {isLoadingCaptcha(props.captcha.id) ? (
-            <img className="faucet-captcha-image rounded-rsk" src={`data:image/png;base64,${props.captcha.result.png}`} />
+            <img className="faucet-captcha-image rounded-rsk" src={`data:image/png;base64,${props.captcha.png}`} />
           ) : (
             <div className='container-empty-captcha'>
               <div className="spinner"></div> 
@@ -47,7 +68,7 @@ const Faucet = (props: FaucetProps) => {
                 props.loading ? <div className="spinner"></div> : 'Reload captcha'
               }
             </button>
-            <button onClick={() => props.onDispenseClick()} className="btn btn-primary btn-middle">
+            <button onClick={handleForm} className="btn btn-primary btn-middle">
               Get test RBTC
             </button>
           </div>

@@ -166,7 +166,7 @@ function runValidations(
   faucetBalance: number
 ): ValidationStatus {
   const validations: (() => string)[] = [
-    () => captchaRejected(captchaSolutionResponse.result),
+    () => captchaRejected(captchaSolutionResponse),
     () => alreadyDispensed(dispenseAddress, faucetHistory),
     () => invalidAddress(dispenseAddress),
     () => insuficientFunds(faucetBalance)

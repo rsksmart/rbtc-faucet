@@ -29,6 +29,26 @@
      border: 1px solid $bg2-color;
      margin-top: 12px;
      padding-left: 12px;
+     outline: none;
+     transition: transform 0.3s;
+     &.error {
+      border: 1px solid $error !important;
+      animation: errorAnimation .6s ease;
+     }
+    }
+    @keyframes errorAnimation {
+      0% {
+        transform: scale(1.0);
+      }
+      50% {
+        transform: scale(1.03);
+      }
+      100% {
+        transform: scale(1.0);
+      }
+    }
+    input:focus-visible.error {
+     border: 1px solid $error !important;
     }
 
     .btn-reload {
