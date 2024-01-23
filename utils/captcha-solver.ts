@@ -20,7 +20,7 @@ class CaptchaSolver {
       return result;
     } catch (e) {
       logger.error(e);
-      return { result: <'accepted' | 'rejected'>'rejected', reject_reason: e, trials_left: 0 };
+      return { result: { solution: <'accepted' | 'rejected'>'rejected', trials_left: 0 }, reject_reason: e };
     }
   }
 }

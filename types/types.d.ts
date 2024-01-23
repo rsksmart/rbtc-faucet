@@ -19,9 +19,11 @@ export interface CaptchaSolutionRequest {
 }
 
 export interface CaptchaSolutionResponse {
-  result: 'accepted' | 'rejected';
   reject_reason: 'too many trials' | 'incorrect solution' | '';
-  trials_left: number;
+  result: {
+    solution: string,
+    trials_left: number;
+  }
 }
 
 export interface DispenseResponse {
