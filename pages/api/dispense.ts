@@ -72,7 +72,6 @@ const handleDispense = async (req: NextApiRequest, res: NextApiResponse): Promis
     logger.event('captcha ' + JSON.stringify(captchaSolutionRequest));
 
     const captchaSolutionResponse: CaptchaSolutionResponse = await captchaSolver.solve(captchaSolutionRequest);
-    console.log('captchaSolutionResponse: ', captchaSolutionResponse);
     
     //Validations
     //each validation will return an error message, if it success it'll return an empty string (empty error message)
@@ -82,9 +81,6 @@ const handleDispense = async (req: NextApiRequest, res: NextApiResponse): Promis
       faucetBalance
     );
       
-    console.log('validationStatus: ', validationStatus);
-    console.log('validationStatus.valid()): ', validationStatus.valid());
-    console.log('!validationStatus.valid()): ', !validationStatus.valid());
     if (!validationStatus.valid()) {
       validationStatus.logErrors();
       

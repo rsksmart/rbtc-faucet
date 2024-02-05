@@ -20,7 +20,6 @@ class CaptchaSolver {
         }
       });
       const result: CaptchaSolutionResponse = res?.data;
-      console.log('captcha solver result: ', result);
 
       logger.event('captcha solution response ' + JSON.stringify(result));
 
