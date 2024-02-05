@@ -43,12 +43,16 @@ const Faucet = (props: FaucetProps) => {
           onChange={props.onAddressChange}
         />
         <div className='captcha-content'>
-          <ReCAPTCHA
-            ref={props.captchaValue}
-            sitekey={props.siteKeyCaptcha}
-            theme='dark'
-            className={`re-captcha ${error.captchaValue ? 'error' : '' }`}
-          />
+          { props.siteKeyCaptcha ?
+            <ReCAPTCHA
+              ref={props.captchaValue}
+              sitekey={props.siteKeyCaptcha}
+              theme='dark'
+              className={`re-captcha ${error.captchaValue ? 'error' : '' }`}
+            />
+            :
+            <span className='spinner'></span>
+          }
         </div>
         <div className='content-btn'>
           <button onClick={handleForm} className="btn btn-primary btn-middle">
