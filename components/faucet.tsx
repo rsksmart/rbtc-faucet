@@ -1,15 +1,12 @@
 import React, { useState } from 'react';
-import Spinner from 'react-bootstrap/Spinner';
+import ReCAPTCHA from "react-google-recaptcha";
 
 export interface FaucetProps {
-  captcha: any;
-  loading: boolean;
+  siteKeyCaptcha: string
   dispenseAddress: string;
-  captchaValue: string;
+  captchaValue: ReCAPTCHA;
   onAddressChange: (event: any) => void;
-  onCaptchaValueChange: (event: any) => void;
   onDispenseClick: () => void;
-  onReloadCaptchaClick: () => void;
 }
 
 const Faucet = (props: FaucetProps) => {
@@ -22,7 +19,8 @@ const Faucet = (props: FaucetProps) => {
     // validate form
     setError({ address: false, captchaValue: false });
     const addressError = !props.dispenseAddress;
-    const captchaError = !props.captchaValue;
+    const captchaError = !props.captchaValue.current.getValue();
+    console.log('captchaError: ', captchaError);
     if (addressError || captchaError) {
       setTimeout(() => { 
         setError({ address: addressError, captchaValue: captchaError });
@@ -32,11 +30,10 @@ const Faucet = (props: FaucetProps) => {
 
     props.onDispenseClick();
     setError({ address: false, captchaValue: false });
-
   }
+
   return (
     <div className='content-form'>
-      <div className="title-form">Fill to get your tokens</div>
       <div className='faucet-form'>
         <input
           className={`faucet-control rounded-rsk ${error.address ? 'error' : '' }`}
@@ -45,39 +42,22 @@ const Faucet = (props: FaucetProps) => {
           value={props.dispenseAddress}
           onChange={props.onAddressChange}
         />
-        <input
-          type="text"
-          placeholder="Captcha"
-          value={props.captchaValue}
-          onChange={props.onCaptchaValueChange}
-          className={`faucet-control rounded-rsk ${error.captchaValue ? 'error' : '' }`}
-        />
-        <div>
-          {isLoadingCaptcha(props.captcha.id) ? (
-            <img className="faucet-captcha-image rounded-rsk" src={`data:image/png;base64,${props.captcha.png}`} />
-          ) : (
-            <div className='container-empty-captcha'>
-              <div className="spinner"></div> 
-            </div>
-          )}
+        <div className='captcha-content'>
+          <ReCAPTCHA
+            ref={props.captchaValue}
+            sitekey={props.siteKeyCaptcha}
+            theme='dark'
+            className={`re-captcha ${error.captchaValue ? 'error' : '' }`}
+          />
         </div>
-        {
-          <div className='content-btn'>
-            <button onClick={() => props.onReloadCaptchaClick()} className="btn btn-outline btn-reload">
-              {
-                props.loading ? <div className="spinner"></div> : 'Reload captcha'
-              }
-            </button>
-            <button onClick={handleForm} className="btn btn-primary btn-middle">
-              Get test RBTC
-            </button>
-          </div>
-        }
+        <div className='content-btn'>
+          <button onClick={handleForm} className="btn btn-primary btn-middle">
+            Get test RBTC
+          </button>
+        </div>
       </div>
     </div>
   );
 };
-
-const isLoadingCaptcha = (id: string) => id != '-1';
 
 export default Faucet;

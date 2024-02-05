@@ -11,18 +11,12 @@ import {
   DispenseResponse,
 } from '../../types/types';
 import { CronJob } from 'cron';
-import { provider,
-  gasPrice,
-  gasLimit,
-  valueToDispense,
-  solveCaptchaUrl
-} from '../../utils/env-util';
+import { provider } from '../../utils/env-util';
 import {
   alreadyDispensed,
   captchaRejected,
   insuficientFunds,
   invalidAddress,
-  needsCaptchaReset
 } from '../../utils/validations';
 import ValidationStatus from '../../model/validation-status';
 import TxParametersGenerator from '../../utils/tx-parameters-generator';
@@ -78,7 +72,8 @@ const handleDispense = async (req: NextApiRequest, res: NextApiResponse): Promis
     logger.event('captcha ' + JSON.stringify(captchaSolutionRequest));
 
     const captchaSolutionResponse: CaptchaSolutionResponse = await captchaSolver.solve(captchaSolutionRequest);
-
+    console.log('captchaSolutionResponse: ', captchaSolutionResponse);
+    
     //Validations
     //each validation will return an error message, if it success it'll return an empty string (empty error message)
     const validationStatus: ValidationStatus = runValidations(
@@ -86,17 +81,19 @@ const handleDispense = async (req: NextApiRequest, res: NextApiResponse): Promis
       dispenseAddress,
       faucetBalance
     );
-
+      
+    console.log('validationStatus: ', validationStatus);
+    console.log('validationStatus.valid()): ', validationStatus.valid());
+    console.log('!validationStatus.valid()): ', !validationStatus.valid());
     if (!validationStatus.valid()) {
       validationStatus.logErrors();
-
+      
       const data: DispenseResponse = {
         titleText: 'Error',
         text: frontendText.invalidTransaction(validationStatus.errorMessages),
         type: 'error',
-        resetCaptcha: needsCaptchaReset(captchaSolutionResponse)
       };
-
+      
       res.status(409).end(JSON.stringify(data)); //409 Conflict
     } else {
       const txParametersGenerator = new TxParametersGenerator();
