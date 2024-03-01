@@ -8,11 +8,6 @@ This is a NextJS app that interacts with the RSK blockchain and uses a captcha s
 
 1. NextJS app
 2. RSK Blockchain
-3. Captcha service 
-
-## Architecture
-
-![diagram](./diagrams/stack.png)
 
 ## Setup -config.json variables
 
@@ -28,8 +23,9 @@ Please check `-config.json` and fill them with right values.
 {
   "RSK_NODE": "NODE_URL", 
   "API_URL": "API_FETCH_URL",
-  "NEW_CAPTCHA_URL": "http://rust-captcha.com/new/easy/5/998",
-  "SOLVE_CAPTCHA_URL": "http://rust-captcha.com:8080/solution/",
+  "SOLVE_CAPTCHA_URL": "https://www.google.com/recaptcha/api/siteverify",
+  "SECRET_VERIFY_CAPTCHA": "",
+  "SITE_KEY_CAPTCHA": "",
   "FAUCET_ADDRESS": "ADDRESS",
   "FAUCET_PRIVATE_KEY": "PRIVATE_KEY",
   "GAS_PRICE": 60000000,
@@ -43,12 +39,12 @@ In order to run a production version, please check if `prod-config.json` exists,
 
 - **RSK_NODE** is the URL where the node is running.
 - **API_URL** where the API is hosted.
-- **NEW_CAPTCHA_URL** is the URL where you're gonna request a new captcha.
 - **SOLVE_CAPTCHA_URL** is for checking the solution.
-- **CAPTCHA_API_URL** is where the captcha-api is hosted. 
+- **SECRET_VERIFY_CAPTCHA** secret for captcha validation.
+- **SITE_KEY_CAPTCHA** verification key from the client.
 - **TAG_MANAGER_ID** id for google service (this one shouldn't be changed).
 
-To get more about info the captcha service, please read [this README](https://github.com/rsksmart/rust-captcha/blob/master/README.md).
+You need to create a [proyect](https://www.google.com/recaptcha/admin) in Google to get the site_key and captcha secret.
 
 ## Running development environment
 
@@ -70,16 +66,6 @@ yarn dev
 
 You'll need a running blockchain in order to run this environment. To do this, you can run a local ganache and point it at _dev-config.json_, **RSK_NODE** variable.
 Notice that you won't be able to get a real [explorer](https://explorer.testnet.rsk.co/) link because you're running a local blockchain instead of an RSK one!
-
-For this environment you can use a test captcha service with this config (at __dev-config.json__).
-
-```json
-  {
-    "NEW_CAPTCHA_URL": "https://rust-captcha.herokuapp.com/new/easy/5/998",
-    "SOLVE_CAPTCHA_URL": "https://rust-captcha.herokuapp.com/solution/",
-    "CAPTCHA_API_URL": "https://rust-captcha.herokuapp.com"
-  }
-```
 
 There is no need to change API_URL, VALUE_TO_DISPENSE, GAS_PRICE, GAS_LIMIT and TAG_MANAGER_ID.
 

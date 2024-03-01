@@ -54,10 +54,6 @@ export function apiUrl(): string {
   return productionDevelopmentTest(prodConfig.API_URL, devConfig.API_URL, devConfig.API_URL);
 }
 
-export function newCaptchaUrl(): string {
-  return productionDevelopmentTest(prodConfig.NEW_CAPTCHA_URL, devConfig.NEW_CAPTCHA_URL, devConfig.NEW_CAPTCHA_URL);
-}
-
 export function solveCaptchaUrl(): string {
   return productionDevelopmentTest(
     prodConfig.SOLVE_CAPTCHA_URL,
@@ -79,6 +75,22 @@ export function valueToDispense(): number {
     prodConfig.VALUE_TO_DISPENSE,
     devConfig.VALUE_TO_DISPENSE,
     devConfig.VALUE_TO_DISPENSE
+  );
+}
+
+export function secretCaptcha(): number {
+  return productionDevelopmentTest(
+    prodConfig.SECRET_VERIFY_CAPTCHA,
+    devConfig.SECRET_VERIFY_CAPTCHA,
+    devConfig.SECRET_VERIFY_CAPTCHA
+  );
+}
+
+export function siteKey(): string {
+  return productionDevelopmentTest(
+    prodConfig.SITE_KEY_CAPTCHA,
+    devConfig.SITE_KEY_CAPTCHA,
+    devConfig.SITE_KEY_CAPTCHA
   );
 }
 

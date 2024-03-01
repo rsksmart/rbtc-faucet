@@ -1,26 +1,32 @@
 import { CaptchaSolutionRequest, CaptchaSolutionResponse } from '../types/types';
-import { solveCaptchaUrl } from './env-util';
+import { secretCaptcha, solveCaptchaUrl } from './env-util';
 import logger from './logger';
 import axios from 'axios';
 
 class CaptchaSolver {
   async solve(captcha: CaptchaSolutionRequest): Promise<CaptchaSolutionResponse> {
     try {
-      if (captcha.solution == '') captcha.solution = "doesn't matter";
+      if (captcha.token == '') captcha.token = "doesn't matter";
+      
+      const postData = `secret=${encodeURIComponent(secretCaptcha())}&response=${encodeURIComponent(captcha.token)}`;
 
-      const url = solveCaptchaUrl() + captcha.id + '/' + captcha.solution;
+      const url = solveCaptchaUrl();
 
       logger.event('checking solution against captcha api, POST ' + url);
 
-      const res = await axios.post(url, captcha);
-      const result: CaptchaSolutionResponse = res.data;
+      const res = await axios.post(url, postData, {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        }
+      });
+      const result: CaptchaSolutionResponse = res?.data;
 
       logger.event('captcha solution response ' + JSON.stringify(result));
 
       return result;
     } catch (e) {
       logger.error(e);
-      return { result: { solution: <'accepted' | 'rejected'>'rejected', trials_left: 0 }, reject_reason: e };
+      throw new Error(`${e}`);
     }
   }
 }

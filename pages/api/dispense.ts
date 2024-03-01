@@ -11,18 +11,12 @@ import {
   DispenseResponse,
 } from '../../types/types';
 import { CronJob } from 'cron';
-import { provider,
-  gasPrice,
-  gasLimit,
-  valueToDispense,
-  solveCaptchaUrl
-} from '../../utils/env-util';
+import { provider } from '../../utils/env-util';
 import {
   alreadyDispensed,
   captchaRejected,
   insuficientFunds,
   invalidAddress,
-  needsCaptchaReset
 } from '../../utils/validations';
 import ValidationStatus from '../../model/validation-status';
 import TxParametersGenerator from '../../utils/tx-parameters-generator';
@@ -94,7 +88,6 @@ const handleDispense = async (req: NextApiRequest, res: NextApiResponse): Promis
         titleText: 'Error',
         text: frontendText.invalidTransaction(validationStatus.errorMessages),
         type: 'error',
-        resetCaptcha: needsCaptchaReset(captchaSolutionResponse)
       };
 
       res.status(409).end(JSON.stringify(data)); //409 Conflict
