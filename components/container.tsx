@@ -90,7 +90,7 @@ function Container() {
     <>
       <div className='container'>
         <Navigation />
-        <div>
+        <div className='content-body'>
           <div className='title-faucet'>
             <div className='rootstock'>Rootstock</div>
             <div className='faucet'>Faucet</div>

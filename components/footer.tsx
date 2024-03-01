@@ -1,6 +1,7 @@
 import React from 'react'
 
 function Footer() {
+  const year = new Date().getFullYear();
   return (
     <footer>
       <div className='copyright'>
@@ -8,7 +9,7 @@ function Footer() {
           <span>Built by</span>
           <img src={require('../assets/images/iov-icon.svg')} alt="" />
         </div>
-        <p>Copyright © 2015 RSK Labs. All rights reserved.</p>
+        <p>Copyright © { year } RSK Labs. All rights reserved.</p>
       </div>
       <div className='links'>
         <a href="https://www.iovlabs.org" target='_blank'>About IOV Labs</a>

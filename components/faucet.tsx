@@ -20,7 +20,6 @@ const Faucet = (props: FaucetProps) => {
     setError({ address: false, captchaValue: false });
     const addressError = !props.dispenseAddress;
     const captchaError = !props.captchaValue.current.getValue();
-    console.log('captchaError: ', captchaError);
     if (addressError || captchaError) {
       setTimeout(() => { 
         setError({ address: addressError, captchaValue: captchaError });
