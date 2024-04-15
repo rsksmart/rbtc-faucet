@@ -14,16 +14,20 @@ export interface FaucetHistory {
 }
 
 export interface CaptchaSolutionRequest {
-  id: string;
-  solution: string;
+  token: string;
+  secret: string;
 }
 
 export interface CaptchaSolutionResponse {
-  reject_reason: 'too many trials' | 'incorrect solution' | '';
-  result: {
-    solution: string,
-    trials_left: number;
-  }
+  success: boolean;
+  'error-codes': [
+    'missing-input-secret',
+    'invalid-input-secret',
+    'missing-input-response',
+    'invalid-input-response',
+    'bad-request',
+    'timeout-or-duplicate'
+  ],
 }
 
 export interface DispenseResponse {
