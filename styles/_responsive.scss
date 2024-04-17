@@ -36,11 +36,6 @@
       }
     }
   }
-
-  footer {
-    margin-top: 50px;
-    margin-bottom: 20px;
-  }
 }
 
 @include laptop {
@@ -56,9 +51,9 @@
       height: 200px;
     }
   }
-  footer {
-    padding: 0 30px;
-  }
+  // footer {
+  //   padding: 0 30px;
+  // }
 }
 
 @include tablet {
@@ -88,7 +83,7 @@
     }
   }
   footer {
-    padding-bottom: 40px;
+    // padding-bottom: 20px;
     flex-direction: column;
     .links {
       margin: 25px 0;

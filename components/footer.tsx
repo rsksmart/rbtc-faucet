@@ -6,13 +6,12 @@ function Footer() {
     <footer>
       <div className='copyright'>
         <div>
-          <span>Built by</span>
-          <img src={require('../assets/images/rootstock-logo.svg')} alt="" />
+          Built by <span className='title'>RootstockLabs</span>
         </div>
-        <p>Copyright © { year } RSK Labs. All rights reserved.</p>
+        <p>Copyright © { year } RootstockLabs. All rights reserved.</p>
       </div>
       <div className='links'>
-        <a href="https://rootstock.io/" target='_blank'>About Rootstock Labs</a>
+        <a href="https://rootstock.io/" target='_blank'>About RootstockLabs</a>
         <a href="https://rootstock.io/community" target='_blank'>Help</a>
         <a href="https://rootstock.io/terms-conditions" target='_blank'>Terms & Conditions</a>
         <a href="https://dev.rootstock.io" target='_blank'>Documentation</a>
