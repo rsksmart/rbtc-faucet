@@ -1,4 +1,4 @@
-import { CaptchaSolutionResponse } from '../types/types';
+import { CaptchaSolutionResponse, FaucetHistory } from '../types/types';
 import {isValidAddress} from 'rskjs-util';
 
 const EROR_CODE = {
@@ -14,6 +14,12 @@ export const insuficientFunds = (faucetBalance: number) =>
   faucetBalance < 100000000000000000 ? 'Faucet has not enough funds.' : '';
 export const captchaRejected = (response: CaptchaSolutionResponse): string =>
   response.success ? '' : EROR_CODE[response['error-codes'][0]] || 'Captcha Error';
-export const alreadyDispensed = (dispenseAddress: string, faucetHistory: any): string =>
-  faucetHistory.hasOwnProperty(dispenseAddress.toLowerCase()) ? 'Address already used today, try again tomorrow.' : '';
+export const alreadyDispensed = (address: string, ip:string, faucetHistory: FaucetHistory[]): string => {
+  const usedAddress = faucetHistory.some((v) => v.address === address)
+  const usedIp = faucetHistory.some((v) => v.ip === ip)
+  if (usedIp) return 'IP already used today, try again tomorrow.'
+  if (usedAddress) return 'Address already used today, try again tomorrow.'
+  faucetHistory.push({ address, ip });
+  return ''
+}
 export const invalidAddress = (dispenseAddress: string): string => !isValidAddress(dispenseAddress) ? 'Invalid address, provide a valid one.' : '';
