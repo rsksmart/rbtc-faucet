@@ -51,9 +51,6 @@
       height: 200px;
     }
   }
-  // footer {
-  //   padding: 0 30px;
-  // }
 }
 
 @include tablet {
@@ -83,7 +80,6 @@
     }
   }
   footer {
-    // padding-bottom: 20px;
     flex-direction: column;
     .links {
       margin: 25px 0;
