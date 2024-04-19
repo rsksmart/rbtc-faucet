@@ -1,4 +1,7 @@
 import React from 'react'
+import DiscorIcon from './icons/DiscorIcon';
+import GithubIcon from './icons/GithubIcon';
+import XIcon from './icons/XIcon';
 
 function Footer() {
   const year = new Date().getFullYear();
@@ -17,9 +20,9 @@ function Footer() {
         <a href="https://dev.rootstock.io" target='_blank'>Documentation</a>
       </div>
       <div className='icons'>
-        <a href="https://twitter.com/rootstock_io" target='_blank'><img src={require('../assets/images/x-icon.svg')} alt="" /></a>
-        <a href="https://github.com/rsksmart" target='_blank'><img src={require('../assets/images/github-icon.svg')} alt="" /></a>
-        <a href="https://discord.gg/fPerbqcWGE" target='_blank'><img src={require('../assets/images/discord-icon.svg')} alt="" /></a>
+        <a href="https://twitter.com/rootstock_io" target='_blank'><XIcon /></a>
+        <a href="https://github.com/rsksmart" target='_blank'><GithubIcon /></a>  
+        <a href="https://discord.gg/fPerbqcWGE" target='_blank'><DiscorIcon /></a>
       </div>
     </footer>
   )

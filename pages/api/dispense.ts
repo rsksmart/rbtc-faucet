@@ -26,7 +26,7 @@ import AddressUtil from '../../utils/address-util';
   
 import { faucetPrivateKey, faucetAddress } from '../../utils/faucet-sensitive-util';
 
-let faucetHistory: FaucetHistory[] = [];
+let faucetHistory: FaucetHistory = {};
 
 //Job
 new CronJob(
@@ -36,7 +36,7 @@ new CronJob(
     //Runs every day at 12:00:00 AM. == 00:00:00 HS
     try {
       logger.event('restarting faucet history...');
-      faucetHistory = [];
+      faucetHistory = {};
       logger.success('faucet history has been restarted succesfuly!');
     } catch (e) {
       logger.error('there was a problem with faucet history restart');
@@ -61,8 +61,7 @@ const addressUtil = new AddressUtil(web3);
 //Request Handler
 const handleDispense = async (req: NextApiRequest, res: NextApiResponse): Promise<void> => {
   let ip:string = (req.headers['x-forwarded-for'] || req.connection.remoteAddress) as string;
-  logger.event('IP' + ip);
-
+  logger.event('IP ' + ip);
   try {
     const faucetBalance: number = Number(await web3.eth.getBalance(faucetAddress()));
 
@@ -112,12 +111,12 @@ const handleDispense = async (req: NextApiRequest, res: NextApiResponse): Promis
       logger.dispensed(dispenseAddress, txHash);
 
       try {
-        const addressIndex = faucetHistory.findIndex((v) => v.address === dispenseAddress.toLowerCase());
-        faucetHistory[addressIndex].loading = true;
+        const currentAddress = faucetHistory[dispenseAddress.toLowerCase()];
+        currentAddress.loading = true;
         const receipt = await web3.eth.sendSignedTransaction(encodedTx);
 
-        faucetHistory[addressIndex].mint = true;
-        faucetHistory[addressIndex].loading = false;
+        currentAddress.mint = true;
+        currentAddress.loading = false;
 
         logger.success('Transaction succesfuly mined!');
         logger.success('Retrived this receipt');
@@ -180,11 +179,14 @@ function runValidations(
   return new ValidationStatus(errorMessages);
 }
 
-function filterAddresses(faucetHistory: FaucetHistory[], dispenseAddress: string, ip:string) {
-  const adddress =  faucetHistory.find((v) => v.address === dispenseAddress.toLowerCase() || v.ip === ip)
-  let newAddress = faucetHistory;
-  if (!adddress?.mint && !adddress?.loading) newAddress = faucetHistory.filter((v) => v.address !== dispenseAddress.toLowerCase())
-  return newAddress;
+function filterAddresses(faucetHistory: FaucetHistory, dispenseAddress: string, ip:string) {
+  const key = Object.keys(faucetHistory).find((key) => {
+    const historyEntry = faucetHistory[key];
+    return historyEntry.ip === ip || historyEntry.address === dispenseAddress.toLowerCase()
+  });
+  const adddress = key ? faucetHistory[key!] : null;
+  if (!adddress?.mint && !adddress?.loading) delete faucetHistory[dispenseAddress.toLowerCase()]
+  return faucetHistory;
 }
 
 export default handleDispense;

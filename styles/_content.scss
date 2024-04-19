@@ -125,7 +125,7 @@
 }
 
 footer {
-  padding: 20px 24px;
+  padding: 20px;
   display: flex;
   justify-content: space-between;
   font-size: 14px;
@@ -139,7 +139,6 @@ footer {
     }
     p {
       font-size: 12px;
-      margin-top: 2px;
       color: #888888;
     }
   }
@@ -147,12 +146,11 @@ footer {
   .links {
     display: flex;
     align-items: center;
+    gap: 20px;
     a {
       font-size: 14px;
       color: white;
       text-decoration: none;
-      margin: 0 20px;
-      font-family: Arial, Helvetica, sans-serif;
       &:hover {
         text-decoration: underline;
       }
@@ -162,8 +160,10 @@ footer {
   .icons {
     display: flex;
     align-items: center;
-    img {
-      margin: 0 13px;
+    gap: 20px;
+    svg {
+      height: 20px;
+      width: 25px;
     }
   }
 }

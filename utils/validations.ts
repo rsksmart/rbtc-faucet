@@ -14,12 +14,16 @@ export const insuficientFunds = (faucetBalance: number) =>
   faucetBalance < 100000000000000000 ? 'Faucet has not enough funds.' : '';
 export const captchaRejected = (response: CaptchaSolutionResponse): string =>
   response.success ? '' : EROR_CODE[response['error-codes'][0]] || 'Captcha Error';
-export const alreadyDispensed = (address: string, ip:string, faucetHistory: FaucetHistory[]): string => {
-  const usedAddress = faucetHistory.some((v) => v.address === address)
-  const usedIp = faucetHistory.some((v) => v.ip === ip)
-  if (usedIp) return 'IP already used today, try again tomorrow.'
+export const alreadyDispensed = (address: string, ip:string, faucetHistory: FaucetHistory): string => {
+  const usedAddress = faucetHistory.hasOwnProperty(address)
+  const key = Object.keys(faucetHistory).find((key) => faucetHistory[key].ip === ip);
+  const usedIp = key ? faucetHistory[key!] : null; 
+  if (usedIp?.ip) return 'IP already used today, try again tomorrow.'
   if (usedAddress) return 'Address already used today, try again tomorrow.'
-  faucetHistory.push({ address, ip });
+  faucetHistory[address] = {
+    address,
+    ip
+  };
   return ''
 }
 export const invalidAddress = (dispenseAddress: string): string => !isValidAddress(dispenseAddress) ? 'Invalid address, provide a valid one.' : '';
