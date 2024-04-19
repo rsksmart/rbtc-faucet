@@ -10,7 +10,8 @@ export interface TxParameters {
 }
 
 export interface FaucetHistory {
-  [address: string]: number;
+  addresses: { address?: { lastTimeUsed: Date } },
+  ips: { ip?: { lastTimeUsed: Date } }
 }
 
 export interface CaptchaSolutionRequest {

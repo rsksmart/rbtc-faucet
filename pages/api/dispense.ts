@@ -17,6 +17,7 @@ import {
   captchaRejected,
   insuficientFunds,
   invalidAddress,
+  is24HoursOld
 } from '../../utils/validations';
 import ValidationStatus from '../../model/validation-status';
 import TxParametersGenerator from '../../utils/tx-parameters-generator';
@@ -26,7 +27,7 @@ import AddressUtil from '../../utils/address-util';
   
 import { faucetPrivateKey, faucetAddress } from '../../utils/faucet-sensitive-util';
 
-let faucetHistory: FaucetHistory = {};
+const faucetHistory: FaucetHistory = { addresses: {}, ips: {} };
 
 //Job
 new CronJob(
@@ -36,7 +37,7 @@ new CronJob(
     //Runs every day at 12:00:00 AM. == 00:00:00 HS
     try {
       logger.event('restarting faucet history...');
-      faucetHistory = {};
+      refreshFaucetHistory(faucetHistory)
       logger.success('faucet history has been restarted succesfuly!');
     } catch (e) {
       logger.error('there was a problem with faucet history restart');
@@ -60,6 +61,9 @@ const addressUtil = new AddressUtil(web3);
 
 //Request Handler
 const handleDispense = async (req: NextApiRequest, res: NextApiResponse): Promise<void> => {
+  let ip:string = (req.headers['x-forwarded-for'] || req.connection.remoteAddress) as string;
+  logger.event('IP' + ip);
+
   try {
     const faucetBalance: number = Number(await web3.eth.getBalance(faucetAddress()));
 
@@ -78,7 +82,8 @@ const handleDispense = async (req: NextApiRequest, res: NextApiResponse): Promis
     const validationStatus: ValidationStatus = runValidations(
       captchaSolutionResponse,
       dispenseAddress,
-      faucetBalance
+      faucetBalance,
+      ip
     );
 
     if (!validationStatus.valid()) {
@@ -89,6 +94,7 @@ const handleDispense = async (req: NextApiRequest, res: NextApiResponse): Promis
         text: frontendText.invalidTransaction(validationStatus.errorMessages),
         type: 'error',
       };
+
 
       res.status(409).end(JSON.stringify(data)); //409 Conflict
     } else {
@@ -107,8 +113,12 @@ const handleDispense = async (req: NextApiRequest, res: NextApiResponse): Promis
       logger.dispensed(dispenseAddress, txHash);
 
       try {
+        const now = new Date()
+
+        faucetHistory.addresses[dispenseAddress.toLowerCase()] = { lastTimeUsed: now }
+        faucetHistory.ips[ip] = { lastTimeUsed: now }
+ 
         const receipt = await web3.eth.sendSignedTransaction(encodedTx);
-        faucetHistory[dispenseAddress.toLowerCase()] = new Date().getTime();
 
         logger.success('Transaction succesfuly mined!');
         logger.success('Retrived this receipt');
@@ -125,6 +135,9 @@ const handleDispense = async (req: NextApiRequest, res: NextApiResponse): Promis
 
         res.status(200).json(JSON.stringify(data)); //200 OK
       } catch (error) {
+        delete faucetHistory.addresses[dispenseAddress.toLowerCase()]
+        delete faucetHistory.ips[ip]
+
         logger.error('Error produced after sending a signed transaction.');
         logger.error(error);
 
@@ -147,7 +160,6 @@ const handleDispense = async (req: NextApiRequest, res: NextApiResponse): Promis
       type: 'error',
       resetCaptcha: true
     };
-
     logger.event('Sending response ' + JSON.stringify(data));
     res.status(500).end(JSON.stringify(data)); //500 Internal Server Error
   }
@@ -156,17 +168,38 @@ const handleDispense = async (req: NextApiRequest, res: NextApiResponse): Promis
 function runValidations(
   captchaSolutionResponse: CaptchaSolutionResponse,
   dispenseAddress: string,
-  faucetBalance: number
+  faucetBalance: number,
+  ip: string
 ): ValidationStatus {
   const validations: (() => string)[] = [
     () => captchaRejected(captchaSolutionResponse),
-    () => alreadyDispensed(dispenseAddress, faucetHistory),
+    () => alreadyDispensed(dispenseAddress.toLowerCase(), ip, faucetHistory),
     () => invalidAddress(dispenseAddress),
     () => insuficientFunds(faucetBalance)
   ];
   const errorMessages: string[] = validations.map(validate => validate()).filter(e => e != '' && e != '-');
 
   return new ValidationStatus(errorMessages);
+}
+
+function refreshFaucetHistory(history: FaucetHistory) {
+  const now = new Date().getMinutes()
+
+  for (const address of Object.keys(history.addresses)) {
+    const { lastTimeUsed } = history.addresses[address]
+
+    if (is24HoursOld(lastTimeUsed)) {
+      delete history.addresses[address]
+    }
+  }
+
+  for (const ip of Object.keys(history.ips)) {
+    const { lastTimeUsed } = history.ips[ip]
+
+    if (is24HoursOld(lastTimeUsed)) {
+      delete history.ips[ip]
+    }
+  }
 }
 
 export default handleDispense;
