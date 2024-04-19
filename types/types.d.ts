@@ -10,7 +10,12 @@ export interface TxParameters {
 }
 
 export interface FaucetHistory {
-  [address: string]: number;
+  [address: string]: {
+    address: string
+    ip?: string
+    mint?: boolean
+    loading?: boolean
+  };
 }
 
 export interface CaptchaSolutionRequest {

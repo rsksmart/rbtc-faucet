@@ -125,22 +125,20 @@
 }
 
 footer {
-  padding: 0 24px;
-  margin-bottom: 30px;
+  padding: 20px;
   display: flex;
   justify-content: space-between;
+  font-size: 14px;
+  margin-top: 50px;
   .copyright {
-    div {
-      font-size: 15px;
-      color: white;
-      img {
-        margin-left: 7px;
-        width: 110px;
-      }
+    font-size: 14px;
+    color: white;
+    .title {
+      font-size: 18px;
+      font-weight: 700;
     }
     p {
-      font-size: 10px;
-      margin-top: 6px;
+      font-size: 12px;
       color: #888888;
     }
   }
@@ -148,12 +146,11 @@ footer {
   .links {
     display: flex;
     align-items: center;
+    gap: 20px;
     a {
-      font-size: 12px;
+      font-size: 14px;
       color: white;
       text-decoration: none;
-      margin: 0 20px;
-      font-family: Arial, Helvetica, sans-serif;
       &:hover {
         text-decoration: underline;
       }
@@ -163,8 +160,10 @@ footer {
   .icons {
     display: flex;
     align-items: center;
-    img {
-      margin: 0 13px;
+    gap: 20px;
+    svg {
+      height: 20px;
+      width: 25px;
     }
   }
 }
