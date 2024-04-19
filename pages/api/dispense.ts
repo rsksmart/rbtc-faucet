@@ -94,6 +94,7 @@ const handleDispense = async (req: NextApiRequest, res: NextApiResponse): Promis
         text: frontendText.invalidTransaction(validationStatus.errorMessages),
         type: 'error',
       };
+      faucetHistory = filterAddresses(faucetHistory, dispenseAddress, ip);
 
 
       res.status(409).end(JSON.stringify(data)); //409 Conflict

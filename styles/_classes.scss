@@ -1,3 +1,9 @@
+@font-face {
+  font-family: 'Rootstock Sans Body';
+  src: url('/font/Rootstock-Sans-Body.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
 * {
   margin: 0;
   padding: 0;
@@ -128,7 +134,14 @@ a {
 .swal2-content, .swal2-title {
   color: $white2 !important;
 }
-
+.swal2-actions {
+  .swal2-styled {
+    padding: .5em 2em !important;
+  }
+  &.swal2-loading .swal2-styled {
+    padding: 0 !important;
+  }
+}
 .btn-swal {
   &::before {
     left: 1px !important;
