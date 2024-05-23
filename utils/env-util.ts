@@ -97,3 +97,11 @@ export function siteKey(): string {
 export function tagManagerId(): string {
   return productionDevelopmentTest(prodConfig.TAG_MANAGER_ID, devConfig.TAG_MANAGER_ID, devConfig.TAG_MANAGER_ID);
 }
+
+export function filterByIP(): string {
+  return productionDevelopmentTest(
+    prodConfig.FILTER_BY_IP,
+    devConfig.FILTER_BY_IP,
+    devConfig.FILTER_BY_IP
+  );
+}
