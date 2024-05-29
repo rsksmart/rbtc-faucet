@@ -11,7 +11,7 @@ import {
   DispenseResponse,
 } from '../../types/types';
 import { CronJob } from 'cron';
-import { provider } from '../../utils/env-util';
+import { filterByIP, provider } from '../../utils/env-util';
 import {
   alreadyDispensed,
   captchaRejected,
@@ -180,9 +180,10 @@ function runValidations(
 }
 
 function filterAddresses(faucetHistory: FaucetHistory, dispenseAddress: string, ip:string) {
+  const isFilterByIP = filterByIP();
   const key = Object.keys(faucetHistory).find((key) => {
     const historyEntry = faucetHistory[key];
-    return historyEntry.ip === ip || historyEntry.address === dispenseAddress.toLowerCase()
+    return (historyEntry.ip === ip && isFilterByIP) || historyEntry.address === dispenseAddress.toLowerCase()
   });
   const adddress = key ? faucetHistory[key!] : null;
   if (!adddress?.mint && !adddress?.loading) delete faucetHistory[dispenseAddress.toLowerCase()]
