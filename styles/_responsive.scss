@@ -69,7 +69,12 @@
       margin-right: unset;
     }
   }
-
+  .container {
+    .content-message {
+      margin: 30px auto 0px auto;
+      width: 70%;
+    }
+  }
   .content-carousel {
     margin-top: 170px;
     margin-bottom: 150px;
@@ -113,7 +118,12 @@
   .container-faucet {
     margin-top: 40px;
   }
-
+  .container {
+    .content-message {
+      padding: 0px 20px;
+      width: 100%;
+    }
+  }
   .content-carousel {
     display: none;
   }

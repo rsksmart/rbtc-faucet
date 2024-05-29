@@ -100,6 +100,9 @@ function Container() {
             <Carousel />
           </div>
         </div>
+        <div className='content-message'>
+          <i>The Rootstock Faucet implements some controls which at times create unintended blockers for obtaining TRBTC.  If you are experiencing any problems, please head into our <a href="https://discord.com/channels/842021106956238848/1123675841369489438" target="_blank">Discord</a>, and our rootstock contributors can help source test RBTC in another way.</i>
+        </div>
       </div>
       <Footer />
     </>
