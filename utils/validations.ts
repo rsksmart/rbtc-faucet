@@ -16,15 +16,26 @@ export const insuficientFunds = (faucetBalance: number) =>
 export const captchaRejected = (response: CaptchaSolutionResponse): string =>
   response.success ? '' : EROR_CODE[response['error-codes'][0]] || 'Captcha Error';
 export const alreadyDispensed = (address: string, ip:string, faucetHistory: FaucetHistory): string => {
-  const usedAddress = faucetHistory.hasOwnProperty(address)
   const key = Object.keys(faucetHistory).find((key) => faucetHistory[key].ip === ip);
-  const usedIp = key ? faucetHistory[key!] : null; 
+  let currentUser = key ? faucetHistory[key!] : null; 
   const isFilterByIP = filterByIP();
-  if (usedIp?.ip && isFilterByIP) return 'IP already used today, try again tomorrow.'
+  const currentTime = new Date();
+
+  const usedUserTime = currentUser?.time ? new Date(currentUser?.time).getTime() : 0;
+  const timer = currentTime.getTime() - usedUserTime;
+
+  if (timer >= 180000 && !currentUser?.mint) {
+    delete faucetHistory[address];
+    currentUser = null;
+  }
+  const usedAddress = faucetHistory.hasOwnProperty(address)
+
+  if (currentUser?.ip && isFilterByIP) return 'IP already used today, try again tomorrow.'
   if (usedAddress) return 'Address already used today, try again tomorrow.'
   faucetHistory[address] = {
     address,
-    ip
+    ip,
+    time: new Date()
   };
   return ''
 }

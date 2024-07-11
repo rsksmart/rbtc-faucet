@@ -15,6 +15,7 @@ export interface FaucetHistory {
     ip?: string
     mint?: boolean
     loading?: boolean
+    time?: Date
   };
 }
 
