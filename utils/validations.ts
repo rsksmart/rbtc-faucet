@@ -1,6 +1,6 @@
 import { CaptchaSolutionResponse, FaucetHistory } from '../types/types';
 import {isValidAddress} from 'rskjs-util';
-import { filterByIP } from './env-util';
+import { filterByIP, getTimerLimit } from './env-util';
 
 const EROR_CODE = {
   'missing-input-secret':	'The secret parameter is missing.',
@@ -19,12 +19,13 @@ export const alreadyDispensed = (address: string, ip:string, faucetHistory: Fauc
   const key = Object.keys(faucetHistory).find((key) => faucetHistory[key].ip === ip);
   let currentUser = key ? faucetHistory[key!] : null; 
   const isFilterByIP = filterByIP();
+  const TIMER_LIMIT = getTimerLimit();
   const currentTime = new Date();
 
   const usedUserTime = currentUser?.time ? new Date(currentUser?.time).getTime() : 0;
   const timer = currentTime.getTime() - usedUserTime;
 
-  if (timer >= 180000 && !currentUser?.mint) {
+  if (timer >= TIMER_LIMIT && !currentUser?.mint) {
     delete faucetHistory[address];
     currentUser = null;
   }

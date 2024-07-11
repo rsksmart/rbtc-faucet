@@ -105,3 +105,11 @@ export function filterByIP(): string {
     devConfig.FILTER_BY_IP
   );
 }
+
+export function getTimerLimit(): number {
+  return productionDevelopmentTest(
+    prodConfig.TIMER_LIMIT,
+    devConfig.TIMER_LIMIT,
+    devConfig.TIMER_LIMIT
+  );
+}
