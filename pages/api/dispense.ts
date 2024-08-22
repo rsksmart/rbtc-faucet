@@ -11,7 +11,7 @@ import {
   DispenseResponse,
 } from '../../types/types';
 import { CronJob } from 'cron';
-import { filterByIP, provider } from '../../utils/env-util';
+import { filterByIP, provider, valueToDispense } from '../../utils/env-util';
 import {
   alreadyDispensed,
   captchaRejected,
@@ -96,8 +96,9 @@ const handleDispense = async (req: NextApiRequest, res: NextApiResponse): Promis
 
       res.status(409).end(JSON.stringify(data)); //409 Conflict
     } else {
+      const fee = await estimationFee(dispenseAddress);
       const txParametersGenerator = new TxParametersGenerator();
-      const txParameters: TxParameters = await txParametersGenerator.generate(dispenseAddress, web3);
+      const txParameters: TxParameters = await txParametersGenerator.generate(dispenseAddress, web3, fee);
 
       logger.txParameters(txParameters);
 
@@ -188,6 +189,21 @@ function filterAddresses(faucetHistory: FaucetHistory, dispenseAddress: string, 
   const adddress = key ? faucetHistory[key!] : null;
   if (!adddress?.mint && !adddress?.loading) delete faucetHistory[dispenseAddress.toLowerCase()]
   return faucetHistory;
+}
+
+async function estimationFee(dispenseAddress:string) {
+  const VALUE_TO_DISPENSE = valueToDispense();
+  const value = web3.utils.toWei(VALUE_TO_DISPENSE.toString(), 'ether');
+  const gasEstimate = await web3.eth.estimateGas({
+    from: faucetAddress(),
+    to: dispenseAddress,
+    data: '',
+    value: value
+  });
+  const gasPrice = await web3.eth.getGasPrice();
+  const estimatedCost = web3.utils.toBN(gasEstimate).mul(web3.utils.toBN(gasPrice));
+  const fee = web3.utils.fromWei(estimatedCost, 'ether');
+  return Number(fee) || 0;
 }
 
 export default handleDispense;
