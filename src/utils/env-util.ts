@@ -1,7 +1,7 @@
 import Web3 from 'web3';
-import prodConfig from '../prod-config.json';
-import devConfig from '../dev-config.json';
-import testConfig from '../test-config.json';
+import prodConfig from '../../prod-config.json';
+import devConfig from '../../dev-config.json';
+import testConfig from '../../test-config.json';
 
 const FAUCET_PRIVATE_KEY_DEVELOP_TESTING = 'c3d40c98585e2c61add9c6a94b66cd7f5c5577e45d900c6c0e3139df1310292f';
 type Account = { balance: string; secretKey?: string };
@@ -19,7 +19,7 @@ const productionDevelopmentTest = (prod: any, dev: any, test: any): any => {
   }
 };
 const emptyAccounts = (size: number): Account[] => {
-  let accounts: Account[] = [
+  const accounts: Account[] = [
     {
       balance: '0x56BC75E2D63100000',
       secretKey: '0x' + FAUCET_PRIVATE_KEY_DEVELOP_TESTING
@@ -31,7 +31,7 @@ const emptyAccounts = (size: number): Account[] => {
 };
 
 //bundling ganache-cli at dev/prod env, produces compiling error (missing dependencies on client side)
-var currentProvider: any;
+let currentProvider: any;
 export function provider(): any {
   if (!currentProvider) {
     let ganache = null;
@@ -48,10 +48,6 @@ export function provider(): any {
     );
   }
   return currentProvider;
-}
-
-export function apiUrl(): string {
-  return productionDevelopmentTest(prodConfig.API_URL, devConfig.API_URL, devConfig.API_URL);
 }
 
 export function solveCaptchaUrl(): string {

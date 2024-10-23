@@ -1,6 +1,5 @@
 {
   "RSK_NODE": "https://public-node.testnet.rsk.co",
-  "API_URL": "NO_API",
   "SOLVE_CAPTCHA_URL": "https://www.google.com/recaptcha/api/siteverify",
   "SECRET_VERIFY_CAPTCHA": "",
   "SITE_KEY_CAPTCHA": "",
