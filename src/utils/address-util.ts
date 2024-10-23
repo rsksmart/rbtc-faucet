@@ -1,6 +1,5 @@
-import Web3 from 'web3';
 import logger from './logger';
-import RNS from '@rsksmart/rns';
+import RNS from '@rsksmart/rns/lib';
 
 class AddressUtil {
   rns: RNS;

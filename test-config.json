@@ -1,6 +1,5 @@
 {
   "RSK_NODE": "http://localhost:7545",
-  "API_URL": "http://localhost:3000/api",
   "SOLVE_CAPTCHA_URL": "https://rust-captcha.herokuapp.com/solution/",
   "SECRET_VERIFY_CAPTCHA": "",
   "SITE_KEY_CAPTCHA": "",

@@ -1,18 +1,19 @@
-import React, { useEffect, useRef, useState } from 'react'
-import axios from 'axios';
+'use client'
 import Swal, { SweetAlertOptions } from 'sweetalert2';
-import { apiUrl, siteKey, tagManagerId } from '../utils/env-util';
-import { DispenseResponse } from '../types/types.d';
+import { siteKey, tagManagerId } from '../utils/env-util';
 import Navigation from './navigation'
-import Carousel from './carousel'
 import Footer from './footer'
 import Faucet, { FaucetProps } from './faucet'
-import TagManager from 'react-gtm-module';
+import TagManager, { TagManagerArgs } from 'react-gtm-module';
 import ReCAPTCHA from "react-google-recaptcha";
+import Carousel from './Carousel';
+import { ChangeEvent, useEffect, useRef, useState } from 'react';
+import { DispenseResponse } from '@/types/types';
+import { dispense } from '@/app/lib/action';
 
 function Container() {
   const captchaValue = useRef<ReCAPTCHA>(null);
-  const [dispenseAddress, setDispenseAddress] = useState('');
+  const [dispenseAddress, setDispenseAddress] = useState<string>('');
   const [siteKeyCaptcha, setSiteKeyCaptcha] = useState('');
 
   useEffect(() => {
@@ -25,13 +26,14 @@ function Container() {
       const swalSetup = (data: DispenseResponse): SweetAlertOptions => {
         return {
           background: '#252525',
-          titleText: data.titleText,
+          title: data.title,
           html: data.text,
-          type: data.type,
+          icon: data.type,
           customClass: {
             confirmButton: 'btn btn-outline btn-swal',
+            loader: '#00E482'
           },
-          onClose: () => {
+          willClose: () => {
             if (data.dispenseComplete) {
               setDispenseAddress('');
             }
@@ -46,34 +48,34 @@ function Container() {
         padding: '5%',
         allowOutsideClick: false,
         confirmButtonColor: '#00E482',
-        onBeforeOpen: () => {
-          Swal.showLoading();
-          axios
-            .post(apiUrl() + '/dispense', {
-              dispenseAddress,
-              captcha: {
-                token: captchaValue.current.getValue(),
-              }
-            })
-            .then((res: any) => {
-              const data: DispenseResponse = res.data;
+        showConfirmButton: false,
+        willOpen: () => {
+          Swal.showLoading(null);
+          dispense({
+            address: dispenseAddress,
+            captcha: {
+              token: captchaValue.current!.getValue()!
+            }
+          })
+            .then((res: DispenseResponse | undefined) => {
+              const data: DispenseResponse = res!;
               Swal.fire(swalSetup(data));
             })
-            .catch(async (e: any) => {
+            .catch(async (e: DispenseResponse | undefined) => {
               //codes 409 or 500
               console.error(e);
-              const data: DispenseResponse = e.response.data ? e.response.data : e;
+              const data: DispenseResponse = e!;
               Swal.fire(swalSetup(data));
             });
         }
       });
     } catch (e) {
       console.error(e);
-      Swal.fire({ title: 'Error', type: 'error', text: 'Unexpected error, please try again later.' });
+      Swal.fire({ title: 'Error', icon: 'error', text: 'Unexpected error, please try again later.' });
     }
   };
   
-  const handleDispenseAddressChange = (event: any) => {
+  const handleDispenseAddressChange = (event: ChangeEvent<HTMLInputElement>) => {
     setDispenseAddress(event.target.value);
   };
 
@@ -110,8 +112,8 @@ function Container() {
 }
 
 Container.getInitialProps = async function() {
-  const tagManagerArgs = {
-    id: tagManagerId()
+  const tagManagerArgs: TagManagerArgs = {
+    gtmId: tagManagerId()
   };
   TagManager.initialize(tagManagerArgs);
 

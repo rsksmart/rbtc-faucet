@@ -1,6 +1,6 @@
-import faucet from '../faucet-sensitive.json';
-import devConfig from '../dev-config.json';
-import testConfig from '../test-config.json';
+import faucet from '../../faucet-sensitive.json';
+import devConfig from '../../dev-config.json';
+import testConfig from '../../test-config.json';
 
 const productionDevelopmentTest = (prod: any, dev: any, test: any): any => {
     switch (process.env.NODE_ENV) {
