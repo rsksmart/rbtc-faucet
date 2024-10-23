@@ -1,10 +1,12 @@
+/* eslint-disable @next/next/no-img-element */
+'use client'
 import React from 'react';
 
 interface RskLinkCardProps {
   title: string;
   description: string;
   link: string;
-  icon: any;
+  img: string;
   backgroundColor: string;
 }
 
@@ -24,7 +26,9 @@ const RskLinkCard = (props: RskLinkCardProps) => {
         </button>
       </div>
       <div className="card-icon">
-        <div>{props.icon}</div>
+        <div>
+          <img src={props.img} alt="" />
+        </div>
       </div>
     </div>
   );

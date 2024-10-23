@@ -1,10 +1,12 @@
+/* eslint-disable @next/next/no-img-element */
 import React from 'react'
+import LogoIcon from '@/assets/images/logo.svg';
 
 function Navigation() {
   return (
     <nav className='navigation'>
       <div className='logo-rootstock'>
-        <img src={require('../assets/images/logo.svg')} alt="" />
+        <img src={LogoIcon.src} alt="" />
       </div>
     </nav>
   )

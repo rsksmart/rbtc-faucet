@@ -1,7 +1,7 @@
 import React from 'react'
-import GithubIcon from './icons/GithubIcon';
-import XIcon from './icons/XIcon';
-import DiscordIcon from './icons/DiscordIcon';
+import GithubIcon from '@/components/icons/GithubIcon';
+import XIcon from '@/components/icons/XIcon';
+import DiscordIcon from '@/components/icons/DiscordIcon';
 
 function Footer() {
   const year = new Date().getFullYear();
