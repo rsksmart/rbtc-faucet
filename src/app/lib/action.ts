@@ -83,7 +83,6 @@ try {
       };
       faucetHistory = await filterAddresses(faucetHistory, dispenseAddress, ip);
 
-      // res.status(409).end(JSON.stringify(data)); //409 Conflict
       return data
     } else {
       const fee = await estimationFee(dispenseAddress);

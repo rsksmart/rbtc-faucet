@@ -3,7 +3,7 @@ RUN mkdir -p /usr/app
 WORKDIR /usr/app
 COPY . /usr/app
 RUN \ 
-    yarn && \
-    yarn build
+    npm i -f && \
+    npm run build
 EXPOSE 3000
-CMD [ "yarn", "start"]
+CMD [ "npm", "start"]
