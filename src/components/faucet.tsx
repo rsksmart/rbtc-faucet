@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, { ChangeEvent, RefObject, useState } from 'react';
 import ReCAPTCHA from "react-google-recaptcha";
 
 export interface FaucetProps {
   siteKeyCaptcha: string
   dispenseAddress: string;
-  captchaValue: ReCAPTCHA;
-  onAddressChange: (event: any) => void;
+  captchaValue: RefObject<ReCAPTCHA>;
+  onAddressChange: (event: ChangeEvent<HTMLInputElement>) => void;
   onDispenseClick: () => void;
 }
 
@@ -19,7 +19,7 @@ const Faucet = (props: FaucetProps) => {
     // validate form
     setError({ address: false, captchaValue: false });
     const addressError = !props.dispenseAddress;
-    const captchaError = !props.captchaValue.current.getValue();
+    const captchaError = !props.captchaValue.current!.getValue();
     if (addressError || captchaError) {
       setTimeout(() => { 
         setError({ address: addressError, captchaValue: captchaError });

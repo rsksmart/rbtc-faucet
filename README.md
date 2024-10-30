@@ -22,7 +22,6 @@ Please check `-config.json` and fill them with right values.
 ```json
 {
   "RSK_NODE": "NODE_URL", 
-  "API_URL": "API_FETCH_URL",
   "SOLVE_CAPTCHA_URL": "https://www.google.com/recaptcha/api/siteverify",
   "SECRET_VERIFY_CAPTCHA": "",
   "SITE_KEY_CAPTCHA": "",
@@ -38,7 +37,6 @@ Please check `-config.json` and fill them with right values.
 In order to run a production version, please check if `prod-config.json` exists, if not create one with the configuration described previously.
 
 - **RSK_NODE** is the URL where the node is running.
-- **API_URL** where the API is hosted.
 - **SOLVE_CAPTCHA_URL** is for checking the solution.
 - **SECRET_VERIFY_CAPTCHA** secret for captcha validation.
 - **SITE_KEY_CAPTCHA** verification key from the client.
@@ -55,19 +53,19 @@ This project requires node version 16
 First install depenecies (use yarn)
 
 ```bash
-yarn
+npm install
 ```
 
 Then run app 
 
 ```bash
-yarn dev
+npm run dev
 ```
 
 You'll need a running blockchain in order to run this environment. To do this, you can run a local ganache and point it at _dev-config.json_, **RSK_NODE** variable.
 Notice that you won't be able to get a real [explorer](https://explorer.testnet.rsk.co/) link because you're running a local blockchain instead of an RSK one!
 
-There is no need to change API_URL, VALUE_TO_DISPENSE, GAS_PRICE, GAS_LIMIT and TAG_MANAGER_ID.
+There is no need to change VALUE_TO_DISPENSE, GAS_PRICE, GAS_LIMIT and TAG_MANAGER_ID.
 
 ## Production deploy
 
@@ -94,7 +92,7 @@ docker run -d --name rbtc-faucet -p 3000:3000 rbtc-faucet
 You can lint the whole project with [prettier](https://prettier.io/), just run
 
 ```bash
-yarn lint
+npm run lint
 ```
 
 Setup linting options at `.prettierrc`

@@ -1,4 +1,3 @@
-import { string } from 'prop-types';
 
 export interface TxParameters {
   from: string;
@@ -21,7 +20,7 @@ export interface FaucetHistory {
 
 export interface CaptchaSolutionRequest {
   token: string;
-  secret: string;
+  secret?: string;
 }
 
 export interface CaptchaSolutionResponse {
@@ -37,7 +36,7 @@ export interface CaptchaSolutionResponse {
 }
 
 export interface DispenseResponse {
-  titleText: string;
+  title: string;
   type: 'warning' | 'info' | 'error' | 'success' | 'question';
   text: string;
   txHash?: string;

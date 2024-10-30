@@ -1,6 +1,6 @@
 @font-face {
   font-family: 'Rootstock Sans Body';
-  src: url('/font/Rootstock-Sans-Body.woff') format('woff');
+  src: url('../app/font/Rootstock-Sans-Body.woff') format('woff');
   font-weight: normal;
   font-style: normal;
 }
@@ -130,7 +130,18 @@ a {
     color: black !important;
   }
 }
-
+.swal2-container {
+  .swal2-popup {
+    color: #B8B8B8 !important;
+  }
+  .swal2-loader {
+    border-color: transparent;
+    border-left: .25em solid $title1;
+    border-right: .25em solid $title1;
+    width: 2.5em;
+    height: 2.5em;
+  }
+}
 .swal2-content, .swal2-title {
   color: $white2 !important;
 }
