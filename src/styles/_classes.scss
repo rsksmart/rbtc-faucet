@@ -27,6 +27,7 @@ body {
 .title-faucet {
   margin-top: 20px;
   display: flex;
+  gap: 8px;
   justify-content: center;
   font-size: 46px;
   font-style: normal;
@@ -35,7 +36,11 @@ body {
   .rootstock {
     background-color: $title1;
     padding: 5px;
-    margin-right: 5px;
+  }
+  .rbtc {
+    background-color: $title3;
+    padding: 5px;
+
   }
   .faucet {
     background-color: $title2;

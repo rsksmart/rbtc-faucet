@@ -95,6 +95,7 @@ function Container() {
         <div className='content-body'>
           <div className='title-faucet'>
             <div className='rootstock'>Rootstock</div>
+            <div className='rbtc'>RBTC</div>
             <div className='faucet'>Faucet</div>
           </div>
           <div className='container-faucet'>
