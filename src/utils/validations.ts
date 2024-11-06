@@ -1,6 +1,7 @@
 import { CaptchaSolutionResponse, FaucetHistory } from '../types/types';
 import {isValidAddress} from 'rskjs-util';
 import { filterByIP, getTimerLimit } from './env-util';
+import { saveFaucetHistory } from '@/app/lib/faucetHistory';
 
 const EROR_CODE = {
   'missing-input-secret':	'The secret parameter is missing.',
@@ -13,12 +14,14 @@ const EROR_CODE = {
 
 export const insuficientFunds = (faucetBalance: number) =>
   faucetBalance < 100000000000000000 ? 'Faucet has not enough funds.' : '';
+
 export const captchaRejected = (response: CaptchaSolutionResponse): string =>
   response.success ? '' : EROR_CODE[response['error-codes'][0]] || 'Captcha Error';
-export const alreadyDispensed = (address: string, ip:string, faucetHistory: FaucetHistory): string => {
-  const key = Object.keys(faucetHistory).find((key) => faucetHistory[key].ip === ip);
+
+export const alreadyDispensed = (address: string, ip:string, faucetHistory: FaucetHistory, promoCode?: string): string => {
+  const key = Object.keys(faucetHistory).find((key) => faucetHistory[key].ip === ip || faucetHistory[key].address === address);
   let currentUser = key ? faucetHistory[key!] : null; 
-  const isFilterByIP = filterByIP();
+  const isFilterByIP = promoCode ? false : filterByIP();
   const TIMER_LIMIT = getTimerLimit();
   const currentTime = new Date();
 
@@ -28,16 +31,18 @@ export const alreadyDispensed = (address: string, ip:string, faucetHistory: Fauc
   if (timer >= TIMER_LIMIT && !currentUser?.mint) {
     delete faucetHistory[address];
     currentUser = null;
+
   }
   const usedAddress = faucetHistory.hasOwnProperty(address)
-
   if (currentUser?.ip && isFilterByIP) return 'IP already used today, try again tomorrow.'
   if (usedAddress) return 'Address already used today, try again tomorrow.'
   faucetHistory[address] = {
     address,
     ip,
-    time: new Date()
+    time: new Date(),
+    promoCode
   };
+  saveFaucetHistory(faucetHistory)
   return ''
 }
 export const invalidAddress = (dispenseAddress: string): string => !isValidAddress(dispenseAddress) ? 'Invalid address, provide a valid one.' : '';

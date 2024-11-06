@@ -4,7 +4,6 @@ import { faucetAddress, faucetPrivateKey } from '@/utils/faucet-sensitive-util';
 import { headers } from 'next/headers';
 import AddressUtil from '../../utils/address-util';
 import Tx from 'ethereumjs-tx';
-
 import Web3 from 'web3';
 import { CaptchaSolutionRequest, CaptchaSolutionResponse, DispenseResponse, FaucetHistory, TxParameters } from '@/types/types';
 import logger from '@/utils/logger';
@@ -15,12 +14,12 @@ import FrontendText from '@/utils/frontend-text';
 import { alreadyDispensed, captchaRejected, insuficientFunds, invalidAddress } from '@/utils/validations';
 import TxParametersGenerator from '@/utils/tx-parameters-generator';
 import { isValidChecksumAddress } from 'rskjs-util';
-
+import { loadFaucetHistory, saveFaucetHistory } from '@/app/lib/faucetHistory';
 interface IData {
   address: string
-  captcha: CaptchaSolutionRequest
+  captcha: CaptchaSolutionRequest,
+  promoCode: string | undefined
 }
-let faucetHistory: FaucetHistory = {};
 
 //Job
 new CronJob(
@@ -30,7 +29,8 @@ new CronJob(
     //Runs every day at 12:00:00 AM. == 00:00:00 HS
     try {
       logger.event('restarting faucet history...');
-      faucetHistory = {};
+      const faucetHistory = {};
+      saveFaucetHistory(faucetHistory);
       logger.success('faucet history has been restarted succesfuly!');
     } catch {
       logger.error('there was a problem with faucet history restart');
@@ -50,17 +50,19 @@ const frontendText = new FrontendText();
 const TESTNET_CHAIN_ID = 31;
 
 export async function dispense(data: IData) {
-const { address, captcha } = data;
+  const faucetHistory: FaucetHistory = loadFaucetHistory();
+  const { address, captcha, promoCode } = data;
 
   const ip: string = headers().get('x-forwarded-for') || headers().get('x-user-ip') as string;
   logger.event('IP ' + ip);
   const faucetBalance: number = Number(await web3.eth.getBalance(faucetAddress()));
-try {
+  try {
 
     const dispenseAddress: string = await addressUtil.retriveAddressFromFrontend(address);
     const captchaSolutionRequest: CaptchaSolutionRequest = captcha;
 
     logger.event('dispensing to ' + dispenseAddress);
+    logger.event('promo code: ' + promoCode);
     logger.event('captcha ' + JSON.stringify(captchaSolutionRequest));
 
     const captchaSolutionResponse: CaptchaSolutionResponse = await captchaSolver.solve(captchaSolutionRequest);
@@ -70,7 +72,9 @@ try {
       captchaSolutionResponse,
       dispenseAddress,
       faucetBalance,
-      ip!
+      ip!,
+      promoCode,
+      faucetHistory
     );
 
     if (!validationStatus.valid()) {
@@ -81,13 +85,13 @@ try {
         text: frontendText.invalidTransaction(validationStatus.errorMessages),
         type: 'error',
       };
-      faucetHistory = await filterAddresses(faucetHistory, dispenseAddress, ip);
+      filterAddresses(dispenseAddress, ip, promoCode);
 
       return data
     } else {
       const fee = await estimationFee(dispenseAddress);
       const txParametersGenerator = new TxParametersGenerator();
-      const txParameters: TxParameters = await txParametersGenerator.generate(dispenseAddress, web3, fee);
+      const txParameters: TxParameters = await txParametersGenerator.generate(dispenseAddress, web3, fee, promoCode);
 
       logger.txParameters(txParameters);
 
@@ -101,12 +105,14 @@ try {
       logger.dispensed(dispenseAddress, txHash);
 
       try {
-        const currentAddress = faucetHistory[dispenseAddress.toLowerCase()];
+        const currentAddress = faucetHistory[dispenseAddress];
         currentAddress.loading = true;
         const receipt = await web3.eth.sendSignedTransaction(encodedTx);
 
         currentAddress.mint = true;
         currentAddress.loading = false;
+        faucetHistory[dispenseAddress] = currentAddress;
+        saveFaucetHistory(faucetHistory);
 
         logger.success('Transaction succesfuly mined!');
         logger.success('Retrived this receipt');
@@ -123,7 +129,7 @@ try {
 
         return data
       } catch (error) {
-        faucetHistory = await filterAddresses(faucetHistory, dispenseAddress, ip);
+        filterAddresses(dispenseAddress, ip, promoCode);
         logger.error('Error produced after sending a signed transaction.');
         logger.error(error);
 
@@ -146,7 +152,7 @@ try {
       type: 'error',
       resetCaptcha: true
     };
-    faucetHistory = await filterAddresses(faucetHistory, address, ip);
+    filterAddresses(address, ip, promoCode);
     logger.event('Sending response ' + JSON.stringify(data));
     return data;
   }
@@ -157,11 +163,13 @@ const runValidations = (
   captchaSolutionResponse: CaptchaSolutionResponse,
   dispenseAddress: string,
   faucetBalance: number,
-  ip: string
+  ip: string,
+  promoCode: string | undefined,
+  faucetHistory: FaucetHistory
 ): ValidationStatus => {
   const validations: (() => string)[] = [
     () => captchaRejected(captchaSolutionResponse),
-    () => alreadyDispensed(dispenseAddress.toLowerCase(), ip, faucetHistory),
+    () => alreadyDispensed(dispenseAddress, ip, faucetHistory, promoCode),
     () => invalidAddress(dispenseAddress),
     () => insuficientFunds(faucetBalance)
   ];
@@ -170,15 +178,16 @@ const runValidations = (
   return new ValidationStatus(errorMessages);
 }
 
-export async function filterAddresses(faucetHistory: FaucetHistory, dispenseAddress: string, ip:string) {
-  const isFilterByIP = filterByIP();
+async function filterAddresses(dispenseAddress: string, ip:string, promoCode: string | undefined) {
+  const faucetHistory = await loadFaucetHistory();
+  const isFilterByIP = promoCode ? false : filterByIP();
   const key = Object.keys(faucetHistory).find((key) => {
     const historyEntry = faucetHistory[key];
-    return (historyEntry.ip === ip && isFilterByIP) || historyEntry.address === dispenseAddress.toLowerCase()
+    return (historyEntry.ip === ip && isFilterByIP) || historyEntry.address === dispenseAddress
   });
   const adddress = key ? faucetHistory[key!] : null;
-  if (!adddress?.mint && !adddress?.loading) delete faucetHistory[dispenseAddress.toLowerCase()]
-  return faucetHistory;
+  if (!adddress?.mint && !adddress?.loading) delete faucetHistory[dispenseAddress]
+  saveFaucetHistory(faucetHistory);
 }
 
 export async function estimationFee(dispenseAddress:string) {

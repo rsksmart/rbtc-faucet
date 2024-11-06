@@ -14,7 +14,8 @@ export interface FaucetHistory {
     ip?: string
     mint?: boolean
     loading?: boolean
-    time?: Date
+    time?: Date,
+    promoCode?: string
   };
 }
 

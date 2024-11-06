@@ -109,3 +109,11 @@ export function getTimerLimit(): number {
     devConfig.TIMER_LIMIT
   );
 }
+
+export function getPromoCode() {
+  return productionDevelopmentTest(
+    prodConfig.PROMO_CODE,
+    devConfig.PROMO_CODE,
+    devConfig.PROMO_CODE
+  );
+}

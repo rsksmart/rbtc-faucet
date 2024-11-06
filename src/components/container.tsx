@@ -21,7 +21,7 @@ function Container() {
   }, []);
 
   //Handles
-  const handleFaucetButtonClick = async () => {
+  const handleFaucetButtonClick = async (code: string | undefined) => {
     try {
       const swalSetup = (data: DispenseResponse): SweetAlertOptions => {
         return {
@@ -52,7 +52,8 @@ function Container() {
         willOpen: () => {
           Swal.showLoading(null);
           dispense({
-            address: dispenseAddress,
+            address: dispenseAddress.toLowerCase(),
+            promoCode: code,
             captcha: {
               token: captchaValue.current!.getValue()!
             }

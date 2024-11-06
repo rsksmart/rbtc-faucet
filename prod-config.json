@@ -3,10 +3,13 @@
   "SOLVE_CAPTCHA_URL": "https://www.google.com/recaptcha/api/siteverify",
   "SECRET_VERIFY_CAPTCHA": "",
   "SITE_KEY_CAPTCHA": "",
+  "FAUCET_ADDRESS": "",
+  "FAUCET_PRIVATE_KEY": "",
   "GAS_PRICE": 60000000,
   "GAS_LIMIT": 100000,
   "VALUE_TO_DISPENSE": 0.0005,
   "TAG_MANAGER_ID": "NO_ID",
   "FILTER_BY_IP": true,
-  "TIMER_LIMIT": 180000
+  "TIMER_LIMIT": 180000,
+  "PROMO_CODE": []
 }
