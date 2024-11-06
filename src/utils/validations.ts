@@ -31,8 +31,8 @@ export const alreadyDispensed = (address: string, ip:string, faucetHistory: Fauc
   if (timer >= TIMER_LIMIT && !currentUser?.mint) {
     delete faucetHistory[address];
     currentUser = null;
-
   }
+
   const usedAddress = faucetHistory.hasOwnProperty(address)
   if (currentUser?.ip && isFilterByIP) return 'IP already used today, try again tomorrow.'
   if (usedAddress) return 'Address already used today, try again tomorrow.'
