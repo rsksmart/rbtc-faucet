@@ -42,7 +42,7 @@ In order to run a production version, please check if `prod-config.json` exists,
 - **SECRET_VERIFY_CAPTCHA** secret for captcha validation.
 - **SITE_KEY_CAPTCHA** verification key from the client.
 - **TAG_MANAGER_ID** id for google service (this one shouldn't be changed).
-- **PROMO_CODE** id for google service (this one shouldn't be changed).
+- **PROMO_CODE** array of codes.
 
 You need to create a [proyect](https://www.google.com/recaptcha/admin) in Google to get the site_key and captcha secret.
 
