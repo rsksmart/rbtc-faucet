@@ -1,13 +1,13 @@
 'use server'
 
 import { getPromoCode } from "./env-util";
-import { formatInTimeZone, toDate, toZonedTime } from 'date-fns-tz';
+import { formatInTimeZone } from 'date-fns-tz';
 
 type Code = {
   code: string;
-  duration: string;
+  expirationDate: string;
   activationDate: string;
-  timeZone: string
+  timeZone: string;
 };
 
 type Response = {
@@ -16,19 +16,22 @@ type Response = {
 }
 
 function parseDateInTimeZone(dateStr: string, timeZone: string): Date {
-  const date = toDate(`${dateStr}T00:00:00Z`);
-  return toZonedTime(date, timeZone);
+  const formattedDateStr = formatInTimeZone(`${dateStr}T00:00:00`, timeZone, 'yyyy-MM-dd HH:mm:ssXXX');
+  return new Date(formattedDateStr);
 }
 
-function calculateExpirationDate(activationDate: Date, duration: string, timeZone: string): Date {
-  const days = parseInt(duration.replace("d", ""), 10);
-  const expirationDate = new Date(activationDate);
-  expirationDate.setDate(expirationDate.getDate() + days);
-  return toZonedTime(expirationDate, timeZone); // Converts the resulting date to the time zone code
+function parseDateInTimeZoneEnd(dateStr: string, timeZone: string): Date {
+  const formattedDateStr = formatInTimeZone(`${dateStr}T23:59:59.999`, timeZone, 'yyyy-MM-dd HH:mm:ssXXX');
+  return new Date(formattedDateStr);
+}
+
+function getCurrentDateInZone(timeZone: string): Date {
+  const formattedDateStr = formatInTimeZone(new Date(), timeZone, 'yyyy-MM-dd HH:mm:ssXXX');
+  return new Date(formattedDateStr);
 }
 
 /**
- * Check if the code is still active based on the days limit
+ * Check if the code is still active based on the start and end dates
  * @param code - The code to check
  * @returns boolean - true if active, false otherwise
  */
@@ -44,9 +47,9 @@ export async function isCodeActive(code: string): Promise<Response> {
   }
 
   const activationDate = parseDateInTimeZone(codeData.activationDate, codeData.timeZone);
-  const expirationDate = calculateExpirationDate(activationDate, codeData.duration, codeData.timeZone);
+  const expirationDate = parseDateInTimeZoneEnd(codeData.expirationDate, codeData.timeZone);
 
-  const currentDateInZone = new Date(formatInTimeZone(new Date(), codeData.timeZone, 'yyyy-MM-dd HH:mm:ssXXX'));
+  const currentDateInZone = getCurrentDateInZone(codeData.timeZone);
 
   if (currentDateInZone < activationDate) {
     return {
@@ -60,5 +63,5 @@ export async function isCodeActive(code: string): Promise<Response> {
   return {
     validCode: validDate,
     msg: validDate ? 'Code is active' : 'Code has expired'
-  }
+  };
 }
