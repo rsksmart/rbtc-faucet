@@ -1,5 +1,5 @@
 import { TxParameters } from '../types/types';
-import { gasLimit, gasPrice, valueToDispense } from './env-util';
+import { gasLimit, gasPrice, getPromoValue, valueToDispense } from './env-util';
 import { faucetAddress } from './faucet-sensitive-util';
 import Web3 from 'web3';
 import BN from 'bn.js';
@@ -8,7 +8,8 @@ class TxParametersGenerator {
   async generate(dispenseAddress: string, web3: Web3, fee: BN, promoCode?: string) {
 
     const VALUE_TO_DISPENSE = valueToDispense();
-    const value = promoCode ? VALUE_TO_DISPENSE * 4 : VALUE_TO_DISPENSE;
+    const PROMO_VALUE_TO_DISPENSE = getPromoValue();
+    const value = promoCode ? PROMO_VALUE_TO_DISPENSE : VALUE_TO_DISPENSE;
 
     const valueInWei = web3.utils.toWei(value.toString(), 'ether');
     const valueToSend = web3.utils.toBN(valueInWei).sub(fee);

@@ -41,8 +41,8 @@ const Faucet = (props: FaucetProps) => {
 
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const debouncedGetCode = useCallback(debounce(async (code: string) => {
-    const data = await isCodeActive(code);
+  const debouncedGetCode = useCallback(debounce((code: string) => {
+    const data = isCodeActive(code);
 
     setLoading(false);
     setValidCode(data.validCode);

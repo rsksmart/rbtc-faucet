@@ -72,10 +72,8 @@ There is no need to change VALUE_TO_DISPENSE, GAS_PRICE, GAS_LIMIT and TAG_MANAG
 ## Promo Code
 In order to use this functionality, you must add an array of objects like this:
 ```
-{ "code": "ESP_01", "duration": "2d", "activationDate": "2024-11-06", "timeZone": "Europe/Madrid" }
+{ "code": "ESP_01",  "activationDate": "2024-11-11", "expirationDate": "2024-11-11" },
 ```
-
-You must search for the correct time zone, you can search [here](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones)
 
 ## Production deploy
 
