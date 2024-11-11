@@ -29,7 +29,8 @@ Please check `-config.json` and fill them with right values.
   "FAUCET_PRIVATE_KEY": "PRIVATE_KEY",
   "GAS_PRICE": 60000000,
   "GAS_LIMIT": 800000,
-  "VALUE_TO_DISPENSE": 0.001,
+  "VALUE_TO_DISPENSE": 0.0005,
+  "PROMO_VALUE_TO_DISPENSE": 0.05,
   "TAG_MANAGER_ID": "GTM-XXXXXXX",
   "PROMO_CODE": []
 }
