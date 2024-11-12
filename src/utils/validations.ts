@@ -34,7 +34,7 @@ export const alreadyDispensed = (address: string, ip:string, faucetHistory: Fauc
   }
 
   const usedAddress = faucetHistory.hasOwnProperty(address)
-  if (currentUser?.ip && isFilterByIP) return 'IP already used today, try again tomorrow.'
+  if (currentUser?.ip === ip && isFilterByIP) return 'IP already used today, try again tomorrow.'
   if (usedAddress) return 'Address already used today, try again tomorrow.'
   faucetHistory[address] = {
     address,
