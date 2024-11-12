@@ -1,64 +1,47 @@
 import { getPromoCode } from "./env-util";
-import { formatInTimeZone } from 'date-fns-tz';
 
 type Code = {
   code: string;
-  expirationDate: string;
-  activationDate: string;
+  expirationDate: string; // Expected in "YYYY-MM-DD" format
+  activationDate: string; // Expected in "YYYY-MM-DD" format
 };
 
 type Response = {
-  validCode: boolean,
-  msg: string
-}
+  validCode: boolean;
+  msg: string;
+};
 
-function parseDateInTimeZone(dateStr: string): Date {
-  const formattedDateStr = formatInTimeZone(`${dateStr}T00:00:00`, 'UTC', 'yyyy-MM-dd HH:mm:ssXXX');
-  return new Date(formattedDateStr);
-}
-
-function parseDateInTimeZoneEnd(dateStr: string): Date {
-  const formattedDateStr = formatInTimeZone(`${dateStr}T23:59:59.999`, 'UTC', 'yyyy-MM-dd HH:mm:ssXXX');
-  return new Date(formattedDateStr);
-}
-
-function getCurrentDateInZone(): Date {
-  const formattedDateStr = formatInTimeZone(new Date(), 'UTC', 'yyyy-MM-dd HH:mm:ssXXX');
-  return new Date(formattedDateStr);
-}
 
 /**
  * Check if the code is still active based on the start and end dates
  * @param code - The code to check
- * @returns boolean - true if active, false otherwise
+ * @returns Response - Object containing the validity of the code and a message
  */
 export function isCodeActive(code: string): Response {
   const codes: Code[] = getPromoCode();
-  const codeData = codes.find(c => c.code === code);
+  const codeData = codes.find((c) => c.code === code);
 
   if (!codeData) {
     return {
       validCode: false,
-      msg: 'Code not found'
+      msg: "Code not found",
     };
   }
 
-  const activationDate = parseDateInTimeZone(codeData.activationDate);
-  const expirationDate = parseDateInTimeZoneEnd(codeData.expirationDate);
+  const today = new Date().toISOString().split("T")[0]; // Format "YYYY-MM-DD"
+  const { activationDate, expirationDate } = codeData;
 
-  const currentDateInZone = getCurrentDateInZone();
-
-  if (currentDateInZone < activationDate) {
+  if (today < activationDate) {
     return {
       validCode: false,
-      msg: 'Code is not active yet',
+      msg: "Code is not active yet",
     };
   }
 
-  const validDate = currentDateInZone <= expirationDate;
+  const validDate = today <= expirationDate;
 
   return {
     validCode: validDate,
-    msg: validDate ? 'Code is active' : 'Code has expired'
+    msg: validDate ? "Code is active" : "Code has expired",
   };
 }
