@@ -29,8 +29,10 @@ Please check `-config.json` and fill them with right values.
   "FAUCET_PRIVATE_KEY": "PRIVATE_KEY",
   "GAS_PRICE": 60000000,
   "GAS_LIMIT": 800000,
-  "VALUE_TO_DISPENSE": 0.001,
-  "TAG_MANAGER_ID": "GTM-XXXXXXX"
+  "VALUE_TO_DISPENSE": 0.0005,
+  "PROMO_VALUE_TO_DISPENSE": 0.05,
+  "TAG_MANAGER_ID": "GTM-XXXXXXX",
+  "PROMO_CODE": []
 }
 ```
 
@@ -41,6 +43,7 @@ In order to run a production version, please check if `prod-config.json` exists,
 - **SECRET_VERIFY_CAPTCHA** secret for captcha validation.
 - **SITE_KEY_CAPTCHA** verification key from the client.
 - **TAG_MANAGER_ID** id for google service (this one shouldn't be changed).
+- **PROMO_CODE** array of codes.
 
 You need to create a [proyect](https://www.google.com/recaptcha/admin) in Google to get the site_key and captcha secret.
 
@@ -66,6 +69,12 @@ You'll need a running blockchain in order to run this environment. To do this, y
 Notice that you won't be able to get a real [explorer](https://explorer.testnet.rsk.co/) link because you're running a local blockchain instead of an RSK one!
 
 There is no need to change VALUE_TO_DISPENSE, GAS_PRICE, GAS_LIMIT and TAG_MANAGER_ID.
+
+## Promo Code
+In order to use this functionality, you must add an array of objects like this:
+```
+{ "code": "ESP_01",  "activationDate": "2024-11-11", "expirationDate": "2024-11-11" },
+```
 
 ## Production deploy
 

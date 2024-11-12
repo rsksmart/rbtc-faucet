@@ -74,6 +74,14 @@ export function valueToDispense(): number {
   );
 }
 
+export function getPromoValue(): number {
+  return productionDevelopmentTest(
+    prodConfig.PROMO_VALUE_TO_DISPENSE,
+    devConfig.PROMO_VALUE_TO_DISPENSE,
+    devConfig.PROMO_VALUE_TO_DISPENSE
+  );
+}
+
 export function secretCaptcha(): number {
   return productionDevelopmentTest(
     prodConfig.SECRET_VERIFY_CAPTCHA,
@@ -107,5 +115,13 @@ export function getTimerLimit(): number {
     prodConfig.TIMER_LIMIT,
     devConfig.TIMER_LIMIT,
     devConfig.TIMER_LIMIT
+  );
+}
+
+export function getPromoCode() {
+  return productionDevelopmentTest(
+    prodConfig.PROMO_CODE,
+    devConfig.PROMO_CODE,
+    devConfig.PROMO_CODE
   );
 }

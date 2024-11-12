@@ -1,12 +1,17 @@
-import React, { ChangeEvent, RefObject, useState } from 'react';
+import React, { ChangeEvent, RefObject, useCallback, useEffect, useState } from 'react';
 import ReCAPTCHA from "react-google-recaptcha";
+import { debounce } from '../utils/debounce';
+import Spinner from './control/Spinner';
+import CheckIcon from './icons/CheckIcon';
+import CloseIcon from './icons/CloseIcon';
+import { isCodeActive } from '@/utils/valid-promo-code';
 
 export interface FaucetProps {
   siteKeyCaptcha: string
   dispenseAddress: string;
   captchaValue: RefObject<ReCAPTCHA>;
   onAddressChange: (event: ChangeEvent<HTMLInputElement>) => void;
-  onDispenseClick: () => void;
+  onDispenseClick: (code: string | undefined) => void;
 }
 
 const Faucet = (props: FaucetProps) => {
@@ -14,33 +19,91 @@ const Faucet = (props: FaucetProps) => {
     address: false,
     captchaValue: false,
   });
+  const [loading, setLoading] = useState<boolean>(false);
+  const [inputCode, setInputCode] = useState<string>('');
+  const [validCode, setValidCode] = useState<boolean>();
+  const [msgError, setMsgError] = useState<string>();
 
   const handleForm = () => {
     // validate form
     setError({ address: false, captchaValue: false });
     const addressError = !props.dispenseAddress;
     const captchaError = !props.captchaValue.current!.getValue();
-    if (addressError || captchaError) {
+    if (addressError || captchaError || (inputCode && !validCode)) {
       setTimeout(() => { 
         setError({ address: addressError, captchaValue: captchaError });
       }, 100);
       return;
     }
-
-    props.onDispenseClick();
+    props.onDispenseClick(inputCode);
     setError({ address: false, captchaValue: false });
+  }
+
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const debouncedGetCode = useCallback(debounce((code: string) => {
+    const data = isCodeActive(code);
+
+    setLoading(false);
+    setValidCode(data.validCode);
+    setMsgError(data.msg);
+  }, 1000), []);
+  
+  const handleInputCode = async (e: React.FormEvent<HTMLInputElement>) => {
+    const code = e.currentTarget.value;
+    setMsgError('');
+    setInputCode(code);
+    setLoading(true);
+    debouncedGetCode(code);
   }
 
   return (
     <div className='content-form'>
       <div className='faucet-form'>
-        <input
-          className={`faucet-control rounded-rsk ${error.address ? 'error' : '' }`}
-          type="text"
-          placeholder="Find address or RNS domain to receive tokens ... "
-          value={props.dispenseAddress}
-          onChange={props.onAddressChange}
-        />
+        <div>
+          <input
+            className={`faucet-control rounded-rsk ${error.address ? 'error' : '' }`}
+            type="text"
+            placeholder="Find address or RNS domain to receive tokens ... "
+            value={props.dispenseAddress}
+            onChange={props.onAddressChange}
+          />
+          <div className='content-code'>
+            <div className='content-input'>
+              <input
+                className={`faucet-control rounded-rsk ${!validCode && inputCode && !loading ? 'error' : '' }`}
+                type="text"
+                placeholder="Promo code"
+                value={inputCode}
+                onChange={handleInputCode}
+              />
+              <div className='content-icon'>
+                {
+                  loading && (
+                    <Spinner
+                      radius='17px'
+                    />
+                  )
+                }
+                {
+                  (validCode && !loading) && (
+                    <CheckIcon />
+                  )
+                }
+                {
+                  (inputCode && !loading && !validCode) && (
+                    <CloseIcon />
+                  )
+                }
+              </div>
+            </div>
+            {
+              (!validCode && inputCode && !loading) && (
+                <div className='error-code'>{ msgError }</div>
+              )
+            }
+          </div>
+        </div>
         <div className='captcha-content'>
           { props.siteKeyCaptcha ?
             <ReCAPTCHA
@@ -50,7 +113,7 @@ const Faucet = (props: FaucetProps) => {
               className={`re-captcha ${error.captchaValue ? 'error' : '' }`}
             />
             :
-            <span className='spinner'></span>
+            <Spinner />
           }
         </div>
         <div className='content-btn'>
