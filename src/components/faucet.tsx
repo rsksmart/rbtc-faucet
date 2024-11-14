@@ -1,4 +1,4 @@
-import React, { ChangeEvent, RefObject, useCallback, useEffect, useState } from 'react';
+import React, { ChangeEvent, RefObject, useCallback, useState } from 'react';
 import ReCAPTCHA from "react-google-recaptcha";
 import { debounce } from '../utils/debounce';
 import Spinner from './control/Spinner';
@@ -41,8 +41,8 @@ const Faucet = (props: FaucetProps) => {
 
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const debouncedGetCode = useCallback(debounce((code: string) => {
-    const data = isCodeActive(code);
+  const debouncedGetCode = useCallback(debounce(async (code: string) => {
+    const data = await isCodeActive(code);
 
     setLoading(false);
     setValidCode(data.validCode);
