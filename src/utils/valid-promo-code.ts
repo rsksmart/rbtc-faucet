@@ -7,7 +7,7 @@ type Code = {
   code: string;
   expirationDate: string; // Expected in "YYYY-MM-DD" format
   activationDate: string; // Expected in "YYYY-MM-DD" format
-  limit: number
+  maxDispensableRBTC: number
 };
 
 type Response = {
@@ -32,8 +32,7 @@ export async function isCodeActive(code: string): Promise<Response> {
     };
   }
 
-  const limitExpired = limitValidation(codeData);
-  if (!limitExpired) {
+  if (!promoCodeHasRemainingRBTCAllowance(codeData)) {
     return {
       validCode: false,
       msg: "Promo code has been completed",
@@ -58,10 +57,10 @@ export async function isCodeActive(code: string): Promise<Response> {
   };
 }
 
-const limitValidation = (code: Code) => {
+const promoCodeHasRemainingRBTCAllowance = (code: Code) => {
   const faucetHistory = loadFaucetHistory();
   const PROMO_VALUE_TO_DISPENSE = getPromoValue();
   const usedCode = Object.keys(faucetHistory).filter((key) => faucetHistory[key].promoCode === code.code);
   const amountDispensed = usedCode.length * PROMO_VALUE_TO_DISPENSE;
-  return amountDispensed < code.limit;
+  return amountDispensed < code.maxDispensableRBTC;
 }
