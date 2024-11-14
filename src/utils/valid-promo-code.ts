@@ -35,7 +35,7 @@ export async function isCodeActive(code: string): Promise<Response> {
   if (!promoCodeHasRemainingRBTCAllowance(codeData)) {
     return {
       validCode: false,
-      msg: "Promo code has been completed",
+      msg: "This promo code has reached its maximum usage limit and is no longer available.",
     };
   }
 
@@ -63,4 +63,4 @@ const promoCodeHasRemainingRBTCAllowance = (code: Code) => {
   const usedCode = Object.keys(faucetHistory).filter((key) => faucetHistory[key].promoCode === code.code);
   const amountDispensed = usedCode.length * PROMO_VALUE_TO_DISPENSE;
   return amountDispensed < code.maxDispensableRBTC;
-}
+};
