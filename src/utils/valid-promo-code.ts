@@ -36,7 +36,7 @@ export async function isCodeActive(code: string): Promise<Response> {
   if (!limitExpired) {
     return {
       validCode: false,
-      msg: "This code has exceeded the sent token limit.",
+      msg: "Promo code has been completed",
     };
   }
 
