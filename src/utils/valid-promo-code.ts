@@ -1,9 +1,13 @@
-import { getPromoCode } from "./env-util";
+'use server'
+
+import { loadFaucetHistory } from "@/app/lib/faucetHistory";
+import { getPromoCode, getPromoValue } from "./env-util";
 
 type Code = {
   code: string;
   expirationDate: string; // Expected in "YYYY-MM-DD" format
   activationDate: string; // Expected in "YYYY-MM-DD" format
+  maxDispensableRBTC: number
 };
 
 type Response = {
@@ -17,7 +21,7 @@ type Response = {
  * @param code - The code to check
  * @returns Response - Object containing the validity of the code and a message
  */
-export function isCodeActive(code: string): Response {
+export async function isCodeActive(code: string): Promise<Response> {
   const codes: Code[] = getPromoCode();
   const codeData = codes.find((c) => c.code === code);
 
@@ -25,6 +29,13 @@ export function isCodeActive(code: string): Response {
     return {
       validCode: false,
       msg: "Code not found",
+    };
+  }
+
+  if (!promoCodeHasRemainingRBTCAllowance(codeData)) {
+    return {
+      validCode: false,
+      msg: "This promo code has reached its maximum usage limit and is no longer available.",
     };
   }
 
@@ -45,3 +56,11 @@ export function isCodeActive(code: string): Response {
     msg: validDate ? "Code is active" : "Code has expired",
   };
 }
+
+const promoCodeHasRemainingRBTCAllowance = (code: Code) => {
+  const faucetHistory = loadFaucetHistory();
+  const PROMO_VALUE_TO_DISPENSE = getPromoValue();
+  const usedCode = Object.keys(faucetHistory).filter((key) => faucetHistory[key].promoCode === code.code);
+  const amountDispensed = usedCode.length * PROMO_VALUE_TO_DISPENSE;
+  return amountDispensed < code.maxDispensableRBTC;
+};
