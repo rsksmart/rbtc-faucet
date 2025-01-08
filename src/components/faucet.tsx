@@ -9,7 +9,7 @@ import { isCodeActive } from '@/utils/valid-promo-code';
 export interface FaucetProps {
   siteKeyCaptcha: string
   dispenseAddress: string;
-  captchaValue: RefObject<ReCAPTCHA | null>;
+  captchaValue: RefObject<ReCAPTCHA>;
   onAddressChange: (event: ChangeEvent<HTMLInputElement>) => void;
   onDispenseClick: (code: string | undefined) => void;
 }
