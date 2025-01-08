@@ -53,7 +53,8 @@ export async function dispense(data: IData) {
   const faucetHistory: FaucetHistory = loadFaucetHistory();
   const { address, captcha, promoCode } = data;
 
-  const ip: string = headers().get('x-forwarded-for') || headers().get('x-user-ip') as string;
+  const headersList = await headers();
+  const ip: string = headersList.get('x-forwarded-for') || headersList.get('x-user-ip') as string;
   logger.event('IP ' + ip);
   const faucetBalance: number = Number(await web3.eth.getBalance(faucetAddress()));
   try {
