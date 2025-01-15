@@ -24,7 +24,7 @@ const Carousel = () => {
       img: WalleIcon.src,
       title: 'Wallets',
       backgroundColor: 'black',
-      description: 'Try RSK with these wallets',
+      description: 'Try Rootstock with these wallets',
     },
     {
       link: 'https://developers.rsk.co/tutorials/',
