@@ -219,8 +219,8 @@ export async function estimationFee(dispenseAddress:string) {
     value: value
   });
   const gasPrice = await web3.eth.getGasPrice();
-  const estimatedCost = web3.utils.toBN(gasEstimate).mul(web3.utils.toBN(gasPrice));
-  return estimatedCost || web3.utils.toBN('0');
+  const estimatedCost = BigInt(gasEstimate) * BigInt(gasPrice);
+  return estimatedCost || BigInt(0);
 }
 
 
