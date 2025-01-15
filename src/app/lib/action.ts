@@ -135,7 +135,6 @@ export async function dispense(data: IData) {
 
         logger.success('Transaction succesfuly mined!');
         logger.success('Retrived this receipt');
-        logger.success(JSON.stringify(receipt));
 
         const data: DispenseResponse = {
           txHash,

@@ -12,7 +12,7 @@ const EROR_CODE = {
   'timeout-or-duplicate':	'The response is no longer valid: either is too old or has been used previously.'
 }
 
-const TESTNET_CHAIN_ID = 31;
+const CHAIN_ID = 30; //We are solving RNS from mainnet, so we need to use mainnet chain id to validate addresses
 
 export const insuficientFunds = (faucetBalance: number) =>
   faucetBalance < 100000000000000000 ? 'Faucet has not enough funds.' : '';
@@ -47,4 +47,4 @@ export const alreadyDispensed = (address: string, ip:string, faucetHistory: Fauc
   saveFaucetHistory(faucetHistory)
   return ''
 }
-export const invalidAddress = (dispenseAddress: string): string => !isValidAddress(dispenseAddress, TESTNET_CHAIN_ID) ? 'Invalid address, provide a valid one.' : '';
+export const invalidAddress = (dispenseAddress: string): string => !isValidAddress(dispenseAddress, CHAIN_ID) ? 'Invalid address, provide a valid one.' : '';
