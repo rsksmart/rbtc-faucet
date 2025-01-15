@@ -12,8 +12,8 @@ import { CronJob } from 'cron';
 import FrontendText from '@/utils/frontend-text';
 import { alreadyDispensed, captchaRejected, insuficientFunds, invalidAddress } from '@/utils/validations';
 import TxParametersGenerator from '@/utils/tx-parameters-generator';
-import { isValidChecksumAddress } from 'rskjs-util';
 import { loadFaucetHistory, saveFaucetHistory } from '@/app/lib/faucetHistory';
+import { isValidChecksumAddress } from '@rsksmart/rsk-utils';
 interface IData {
   address: string
   captcha: CaptchaSolutionRequest,
@@ -43,7 +43,7 @@ new CronJob(
   'America/Los_Angeles' /* Time zone of this job. */
 );
 const web3: Web3 = new Web3(provider());
-const addressUtil = new AddressUtil(web3);
+const addressUtil = new AddressUtil();
 const captchaSolver = new CaptchaSolver();
 const frontendText = new FrontendText();
 const TESTNET_CHAIN_ID = 31;

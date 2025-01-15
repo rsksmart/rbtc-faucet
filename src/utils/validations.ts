@@ -1,5 +1,5 @@
+import { isValidAddress } from '@rsksmart/rsk-utils';
 import { CaptchaSolutionResponse, FaucetHistory } from '../types/types';
-import {isValidAddress} from 'rskjs-util';
 import { filterByIP, getTimerLimit } from './env-util';
 import { saveFaucetHistory } from '@/app/lib/faucetHistory';
 
@@ -11,6 +11,8 @@ const EROR_CODE = {
   'bad-request':	'The request is invalid or malformed.',
   'timeout-or-duplicate':	'The response is no longer valid: either is too old or has been used previously.'
 }
+
+const TESTNET_CHAIN_ID = 31;
 
 export const insuficientFunds = (faucetBalance: number) =>
   faucetBalance < 100000000000000000 ? 'Faucet has not enough funds.' : '';
@@ -45,4 +47,4 @@ export const alreadyDispensed = (address: string, ip:string, faucetHistory: Fauc
   saveFaucetHistory(faucetHistory)
   return ''
 }
-export const invalidAddress = (dispenseAddress: string): string => !isValidAddress(dispenseAddress) ? 'Invalid address, provide a valid one.' : '';
+export const invalidAddress = (dispenseAddress: string): string => !isValidAddress(dispenseAddress, TESTNET_CHAIN_ID) ? 'Invalid address, provide a valid one.' : '';
