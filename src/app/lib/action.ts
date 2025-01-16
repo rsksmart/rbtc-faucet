@@ -127,7 +127,7 @@ export async function dispense(data: IData) {
       try {
         const currentAddress = faucetHistory[dispenseAddress];
         currentAddress.loading = true;
-        const receipt = await web3.eth.sendSignedTransaction(signedTx.rawTransaction);
+        await web3.eth.sendSignedTransaction(signedTx.rawTransaction);
         currentAddress.mint = true;
         currentAddress.loading = false;
         faucetHistory[dispenseAddress] = currentAddress;
