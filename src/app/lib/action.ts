@@ -3,7 +3,6 @@ import { filterByIP, provider, valueToDispense } from '@/utils/env-util';
 import { faucetAddress, faucetPrivateKey } from '@/utils/faucet-sensitive-util';
 import { headers } from 'next/headers';
 import AddressUtil from '../../utils/address-util';
-import Tx from 'ethereumjs-tx';
 import Web3 from 'web3';
 import { CaptchaSolutionRequest, CaptchaSolutionResponse, DispenseResponse, FaucetHistory, TxParameters } from '@/types/types';
 import logger from '@/utils/logger';
@@ -13,8 +12,8 @@ import { CronJob } from 'cron';
 import FrontendText from '@/utils/frontend-text';
 import { alreadyDispensed, captchaRejected, insuficientFunds, invalidAddress } from '@/utils/validations';
 import TxParametersGenerator from '@/utils/tx-parameters-generator';
-import { isValidChecksumAddress } from 'rskjs-util';
 import { loadFaucetHistory, saveFaucetHistory } from '@/app/lib/faucetHistory';
+import { isValidChecksumAddress } from '@rsksmart/rsk-utils';
 interface IData {
   address: string
   captcha: CaptchaSolutionRequest,
@@ -44,7 +43,7 @@ new CronJob(
   'America/Los_Angeles' /* Time zone of this job. */
 );
 const web3: Web3 = new Web3(provider());
-const addressUtil = new AddressUtil(web3);
+const addressUtil = new AddressUtil();
 const captchaSolver = new CaptchaSolver();
 const frontendText = new FrontendText();
 const TESTNET_CHAIN_ID = 31;
@@ -53,7 +52,8 @@ export async function dispense(data: IData) {
   const faucetHistory: FaucetHistory = loadFaucetHistory();
   const { address, captcha, promoCode } = data;
 
-  const ip: string = headers().get('x-forwarded-for') || headers().get('x-user-ip') as string;
+  const headersList = await headers();
+  const ip: string = headersList.get('x-forwarded-for') || headersList.get('x-user-ip') as string;
   logger.event('IP ' + ip);
   const faucetBalance: number = Number(await web3.eth.getBalance(faucetAddress()));
   try {
@@ -95,20 +95,39 @@ export async function dispense(data: IData) {
 
       logger.txParameters(txParameters);
 
-      const tx = new Tx(txParameters);
-      tx.sign(Buffer.from(faucetPrivateKey(), 'hex'));
-
-      const encodedTx = '0x' + tx.serialize().toString('hex');
-      const txHash = '0x' + tx.hash(true).toString('hex');
-
-      logger.info('encodedTx ' + encodedTx);
+      const account = web3.eth.accounts.privateKeyToAccount('0x' + faucetPrivateKey());
+      web3.eth.accounts.wallet.add(account);
+      const signedTx = await web3.eth.accounts.signTransaction(
+        {
+          to: txParameters.to,
+          value: web3.utils.toWei(valueToDispense().toString(), 'ether'),
+          gas: txParameters.gas,
+          gasPrice: txParameters.gasPrice,
+          nonce: await web3.eth.getTransactionCount(faucetAddress(), 'pending'),
+          chainId: TESTNET_CHAIN_ID
+        },
+        account.privateKey
+      );
+      const txHash = signedTx.transactionHash;
+      logger.info('encodedTx ' + signedTx.rawTransaction);
+      if(!txHash || !signedTx.rawTransaction) {
+        logger.error('Error produced after sending a signed transaction.');
+        const data: DispenseResponse = {
+          title: 'Error',
+          text: 'Something went wrong, please try again in a while',
+          type: 'error',
+          resetCaptcha: true
+        };
+        filterAddresses(dispenseAddress, ip, promoCode);
+        logger.event('Sending response ' + JSON.stringify(data));
+        return data;
+      }
       logger.dispensed(dispenseAddress, txHash);
 
       try {
         const currentAddress = faucetHistory[dispenseAddress];
         currentAddress.loading = true;
-        const receipt = await web3.eth.sendSignedTransaction(encodedTx);
-
+        await web3.eth.sendSignedTransaction(signedTx.rawTransaction);
         currentAddress.mint = true;
         currentAddress.loading = false;
         faucetHistory[dispenseAddress] = currentAddress;
@@ -116,7 +135,6 @@ export async function dispense(data: IData) {
 
         logger.success('Transaction succesfuly mined!');
         logger.success('Retrived this receipt');
-        logger.success(JSON.stringify(receipt));
 
         const data: DispenseResponse = {
           txHash,
@@ -200,8 +218,8 @@ export async function estimationFee(dispenseAddress:string) {
     value: value
   });
   const gasPrice = await web3.eth.getGasPrice();
-  const estimatedCost = web3.utils.toBN(gasEstimate).mul(web3.utils.toBN(gasPrice));
-  return estimatedCost || web3.utils.toBN('0');
+  const estimatedCost = BigInt(gasEstimate) * BigInt(gasPrice);
+  return estimatedCost || BigInt(0);
 }
 
 
