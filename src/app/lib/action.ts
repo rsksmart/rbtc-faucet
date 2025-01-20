@@ -18,6 +18,7 @@ interface IData {
   address: string
   captcha: CaptchaSolutionRequest,
   promoCode: string | undefined
+  isMainnetRns: boolean
 }
 
 //Job
@@ -50,7 +51,7 @@ const TESTNET_CHAIN_ID = 31;
 
 export async function dispense(data: IData) {
   const faucetHistory: FaucetHistory = loadFaucetHistory();
-  const { address, captcha, promoCode } = data;
+  const { address, captcha, promoCode, isMainnetRns } = data;
 
   const headersList = await headers();
   const ip: string = headersList.get('x-forwarded-for') || headersList.get('x-user-ip') as string;
@@ -58,7 +59,7 @@ export async function dispense(data: IData) {
   const faucetBalance: number = Number(await web3.eth.getBalance(faucetAddress()));
   try {
 
-    const dispenseAddress: string = await addressUtil.retriveAddressFromFrontend(address);
+    const dispenseAddress: string = await addressUtil.retriveAddressFromFrontend(address, isMainnetRns);
     const captchaSolutionRequest: CaptchaSolutionRequest = captcha;
 
     logger.event('dispensing to ' + dispenseAddress);

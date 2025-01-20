@@ -3,7 +3,7 @@ import { FaucetHistory } from '@/types/types';
 import fs from 'fs';
 import path from 'path';
 
-const filePath = path.join(process.cwd(), 'src/app/lib/faucetHistory.json');
+const filePath = path.join(__dirname, 'faucetHistory.json');
 
 export function saveFaucetHistory(data: FaucetHistory) {
   try {
