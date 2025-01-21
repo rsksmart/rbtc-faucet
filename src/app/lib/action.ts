@@ -75,7 +75,8 @@ export async function dispense(data: IData) {
       faucetBalance,
       ip!,
       promoCode,
-      faucetHistory
+      faucetHistory,
+      isMainnetRns
     );
 
     if (!validationStatus.valid()) {
@@ -184,12 +185,13 @@ const runValidations = (
   faucetBalance: number,
   ip: string,
   promoCode: string | undefined,
-  faucetHistory: FaucetHistory
+  faucetHistory: FaucetHistory,
+  isMainnetRns: boolean
 ): ValidationStatus => {
   const validations: (() => string)[] = [
     () => captchaRejected(captchaSolutionResponse),
     () => alreadyDispensed(dispenseAddress, ip, faucetHistory, promoCode),
-    () => invalidAddress(dispenseAddress),
+    () => invalidAddress(dispenseAddress, isMainnetRns),
     () => insuficientFunds(faucetBalance)
   ];
   const errorMessages: string[] = validations.map(validate => validate()).filter(e => e != '' && e != '-');

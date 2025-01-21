@@ -8,9 +8,9 @@ class AddressUtil {
 
     if(posibleRnsAlias) {
       try {
-        let resolver;
+        let resolver;        
         if(mainnet) {
-          resolver = Resolver.forRskMainnet({})
+          resolver = Resolver.forRskMainnet({})          
         } else {
           resolver = Resolver.forRskTestnet({})
         }
@@ -19,7 +19,6 @@ class AddressUtil {
       } catch(e) {
         logger.error(`Couldn't resolve address for this rnsAlias: ${frontendAddress}`);
         logger.error(e);
-
         return 'INVALID RNS';
       }
     } else {
