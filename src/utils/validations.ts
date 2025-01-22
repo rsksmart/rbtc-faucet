@@ -47,4 +47,4 @@ export const alreadyDispensed = (address: string, ip:string, faucetHistory: Fauc
   saveFaucetHistory(faucetHistory)
   return ''
 }
-export const invalidAddress = (dispenseAddress: string): string => !isValidAddress(dispenseAddress, CHAIN_ID) ? 'Invalid address, provide a valid one.' : '';
+export const invalidAddress = (dispenseAddress: string, isMainnetRns: boolean): string => !isValidAddress(dispenseAddress, isMainnetRns ? 30 : 31) ? 'Invalid address, provide a valid one.' : '';

@@ -1,4 +1,4 @@
-import React, { ChangeEvent, RefObject, useCallback, useState } from 'react';
+import React, { ChangeEvent, RefObject, useCallback, useEffect, useState } from 'react';
 import ReCAPTCHA from "react-google-recaptcha";
 import { debounce } from '../utils/debounce';
 import Spinner from './control/Spinner';
@@ -12,6 +12,8 @@ export interface FaucetProps {
   captchaValue: RefObject<ReCAPTCHA | null>;
   onAddressChange: (event: ChangeEvent<HTMLInputElement>) => void;
   onDispenseClick: (code: string | undefined) => void;
+  isMainnetRns: boolean;
+  setIsMainnetRns: (state: boolean) => void;
 }
 
 const Faucet = (props: FaucetProps) => {
@@ -23,7 +25,7 @@ const Faucet = (props: FaucetProps) => {
   const [inputCode, setInputCode] = useState<string>('');
   const [validCode, setValidCode] = useState<boolean>();
   const [msgError, setMsgError] = useState<string>();
-
+  const [isRNS, setIsRNS] = useState<boolean>(false);
   const handleForm = () => {
     // validate form
     setError({ address: false, captchaValue: false });
@@ -56,6 +58,14 @@ const Faucet = (props: FaucetProps) => {
     setLoading(true);
     debouncedGetCode(code);
   }
+
+  useEffect(() => {
+    if(props.dispenseAddress.includes('.rsk')) {
+      setIsRNS(true);
+    } else {
+      setIsRNS(false);
+    }
+  }, [props.dispenseAddress]);
 
   return (
     <div className='content-form'>
@@ -104,6 +114,26 @@ const Faucet = (props: FaucetProps) => {
             }
           </div>
         </div>
+        {isRNS && 
+          <div 
+            className="toggle-container mt-4 flex items-center justify-between p-2 bg-gray-800 rounded-lg"
+            onClick={() => props.setIsMainnetRns(!props.isMainnetRns)}
+          >
+          <label htmlFor="toggle-feature" className="text-sm font-medium text-white">
+            {'RNS From Mainnet'}
+          </label>
+          <div className="relative">
+            <input
+              id="toggle-feature"
+              type="checkbox"
+              checked={props.isMainnetRns}
+              className="sr-only peer"
+              onChange={() => props.setIsMainnetRns(!props.isMainnetRns)}
+            />
+            <div className="w-11 h-6 bg-gray-400 rounded-full peer-checked:bg-blue-600 peer-focus:ring-2 peer-focus:ring-blue-500 dark:peer-focus:ring-blue-800 transition duration-300"></div>
+            <div className="peer-checked:translate-x-5 absolute top-[2px] left-[2px] w-5 h-5 bg-white rounded-full transition-transform duration-300"></div>
+          </div>
+          </div>}
         <div className='captcha-content'>
           { props.siteKeyCaptcha ?
             <ReCAPTCHA

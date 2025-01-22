@@ -15,6 +15,7 @@ function Container() {
   const captchaValue = useRef<ReCAPTCHA>(null);
   const [dispenseAddress, setDispenseAddress] = useState<string>('');
   const [siteKeyCaptcha, setSiteKeyCaptcha] = useState('');
+  const [isMainnetRns, setIsMainnetRns] = useState<boolean>(true);
 
   useEffect(() => {
     setSiteKeyCaptcha(siteKey());
@@ -56,7 +57,8 @@ function Container() {
             promoCode: code,
             captcha: {
               token: captchaValue.current!.getValue()!
-            }
+            },
+            isMainnetRns: isMainnetRns
           })
             .then((res: DispenseResponse | undefined) => {
               const data: DispenseResponse = res!;
@@ -88,6 +90,8 @@ function Container() {
     onAddressChange: handleDispenseAddressChange,
     onDispenseClick: handleFaucetButtonClick,
     siteKeyCaptcha,
+    isMainnetRns: isMainnetRns,
+    setIsMainnetRns: setIsMainnetRns
   };
   return (
     <>
