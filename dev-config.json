@@ -12,24 +12,5 @@
   "TAG_MANAGER_ID": "NO_ID",
   "FILTER_BY_IP": true,
   "TIMER_LIMIT": 180000,
-  "PROMO_CODE": [
-    {
-      "code": "ESP_01",
-      "activationDate": "2025-01-01",
-      "expirationDate": "2025-12-10",
-      "maxDispensableRBTC": 1
-    },
-    {
-      "code": "ESP_02",
-      "activationDate": "2024-01-01",
-      "expirationDate": "2024-12-10",
-      "maxDispensableRBTC": 1
-    },
-    {
-      "code": "ESP_03",
-      "activationDate": "2025-07-07",
-      "expirationDate": "2025-12-10",
-      "maxDispensableRBTC": 1
-    }
-  ]
+  "PROMO_CODE": []
 }
