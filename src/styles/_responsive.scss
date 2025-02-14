@@ -58,16 +58,19 @@
     font-size: 35px;
   }
   .content-form {
-    margin: 0 auto;
+    width: 90%;
+    max-width: 400px;
   }
   .container-faucet {
-    margin-top: 50px;
-    flex-direction: column;
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: center;
     justify-content: center;
-    align-content: center;
-    .faucet-form {
-      margin-right: unset;
-    }
+    flex-wrap: wrap;
+    gap: 20px;
+    width: 100%;
+    text-align: center;
+    margin-top: 40px;
   }
   .container {
     .content-message {
@@ -76,13 +79,8 @@
     }
   }
   .content-carousel {
-    margin-top: 170px;
-    margin-bottom: 150px;
     width: 100%;
-    .rsk-card {
-      width: 340px;
-      height: 210px;
-    }
+    max-width: 400px;
   }
   footer {
     flex-direction: column;
@@ -111,12 +109,23 @@
     }
   }
   .content-form {
-    width: 400px;
-    margin: 0 auto;
-    padding: 10px;
+    width: 90%;
+    max-width: 350px;
+  }
+  .rsk-card {
+    width: 280px;
+    height: 160px;
   }
   .container-faucet {
-    margin-top: 40px;
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 15px;
+    width: 100%;
+    text-align: center;
+    margin-top: 30px;
   }
   .container {
     .content-message {
@@ -125,6 +134,8 @@
     }
   }
   .content-carousel {
-    display: none;
+    display: block;
+    width: 90%;
+    max-width: 350px;
   }
 }
