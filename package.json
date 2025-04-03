@@ -1,6 +1,6 @@
 {
   "name": "rbtc-faucet",
-  "version": "2.1.3",
+  "version": "2.2.2",
   "private": true,
   "scripts": {
     "prod": "NODE_ENV=production next start",
