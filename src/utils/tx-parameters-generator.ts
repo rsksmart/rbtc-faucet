@@ -11,7 +11,7 @@ class TxParametersGenerator {
     const value = promoCode ? PROMO_VALUE_TO_DISPENSE : VALUE_TO_DISPENSE;
 
     const valueInWei = web3.utils.toWei(value.toString(), 'ether');
-    const valueToSend = BigInt(valueInWei) - fee;
+    const valueToSend = BigInt(valueInWei);
 
     const txParameters: TxParameters = {
       from: faucetAddress(),

@@ -102,7 +102,7 @@ export async function dispense(data: IData) {
       const signedTx = await web3.eth.accounts.signTransaction(
         {
           to: txParameters.to,
-          value: web3.utils.toWei(valueToDispense().toString(), 'ether'),
+          value: parseInt(txParameters.value, 16),
           gas: txParameters.gas,
           gasPrice: txParameters.gasPrice,
           nonce: await web3.eth.getTransactionCount(faucetAddress(), 'pending'),
@@ -110,6 +110,7 @@ export async function dispense(data: IData) {
         },
         account.privateKey
       );
+
       const txHash = signedTx.transactionHash;
       logger.info('encodedTx ' + signedTx.rawTransaction);
       if(!txHash || !signedTx.rawTransaction) {
