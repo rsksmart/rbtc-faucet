@@ -13,6 +13,7 @@
   }
 }
 .content-form {
+  margin-right: 20px;
   .title-form {
     color: $white1;
     font-size: 18px;
@@ -44,7 +45,6 @@
   .faucet-form {
     position: relative;
     z-index: 0;
-    margin-right: 200px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -107,7 +107,11 @@
 
 .content-carousel {
   position: relative;
-  width: 450px;
+  width: 100%;
+  max-width: 600px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   .rsk-card {
     background-color: $bg1-color;
     width: 400px;
