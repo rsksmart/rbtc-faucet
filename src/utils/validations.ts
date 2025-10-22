@@ -17,7 +17,7 @@ const EROR_CODE = {
 const CHAIN_ID = 30; //We are solving RNS from mainnet, so we need to use mainnet chain id to validate addresses
 
 export const insuficientFunds = (faucetBalance: number) =>
-  faucetBalance < 100000 ? 'Faucet has not enough funds.' : '';
+  faucetBalance < 100000000000000000 ? 'Faucet has not enough funds.' : '';
 
 export const captchaRejected = (response: CaptchaSolutionResponse): string =>
   response.success ? '' : EROR_CODE[response['error-codes'][0]] || 'Captcha Error';
