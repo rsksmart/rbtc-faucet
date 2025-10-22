@@ -1,0 +1,26 @@
+{
+  "0x5f1ab1222e197b04659e3a9130f5e5d366376f6b": {
+    "address": "0x5f1ab1222e197b04659e3a9130f5e5d366376f6b",
+    "ip": "::1",
+    "time": "2025-10-22T14:41:30.601Z",
+    "promoCode": "T1",
+    "loading": false,
+    "mint": true
+  },
+  "0xfec90a97eeb211c0b15c4bb617ab24bcad5106cf": {
+    "address": "0xfec90a97eeb211c0b15c4bb617ab24bcad5106cf",
+    "ip": "3.94.45.146",
+    "time": "2025-10-22T14:52:42.686Z",
+    "promoCode": "",
+    "loading": false,
+    "mint": true
+  },
+  "0xcbf42056b12cea2a6cb90c0552ba28e30ea37ae6": {
+    "address": "0xcbf42056b12cea2a6cb90c0552ba28e30ea37ae6",
+    "ip": "3.94.45.146",
+    "time": "2025-10-22T14:56:28.795Z",
+    "promoCode": "T1",
+    "loading": false,
+    "mint": true
+  }
+}

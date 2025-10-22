@@ -5,9 +5,10 @@ import Spinner from './control/Spinner';
 import CheckIcon from './icons/CheckIcon';
 import CloseIcon from './icons/CloseIcon';
 import { isCodeActive } from '@/utils/valid-promo-code';
+import { getPublicEnv } from '@/constants';
 
+const publicEnv = getPublicEnv();
 export interface FaucetProps {
-  siteKeyCaptcha: string
   dispenseAddress: string;
   captchaValue: RefObject<ReCAPTCHA | null>;
   onAddressChange: (event: ChangeEvent<HTMLInputElement>) => void;
@@ -135,10 +136,10 @@ const Faucet = (props: FaucetProps) => {
           </div>
           </div>}
         <div className='captcha-content'>
-          { props.siteKeyCaptcha ?
+          { publicEnv.SITE_KEY_CAPTCHA ?
             <ReCAPTCHA
               ref={props.captchaValue}
-              sitekey={props.siteKeyCaptcha}
+              sitekey={publicEnv.SITE_KEY_CAPTCHA}
               theme='dark'
               className={`re-captcha ${error.captchaValue ? 'error' : '' }`}
             />

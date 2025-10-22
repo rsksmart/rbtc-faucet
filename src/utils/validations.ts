@@ -1,7 +1,9 @@
 import { isValidAddress } from '@rsksmart/rsk-utils';
 import { CaptchaSolutionResponse, FaucetHistory } from '../types/types';
-import { filterByIP, getTimerLimit } from './env-util';
 import { saveFaucetHistory } from '@/app/lib/faucetHistory';
+import { getServerEnv } from '@/constants';
+
+const serverEnv = getServerEnv();
 
 const EROR_CODE = {
   'missing-input-secret':	'The secret parameter is missing.',
@@ -15,7 +17,7 @@ const EROR_CODE = {
 const CHAIN_ID = 30; //We are solving RNS from mainnet, so we need to use mainnet chain id to validate addresses
 
 export const insuficientFunds = (faucetBalance: number) =>
-  faucetBalance < 100000000000000000 ? 'Faucet has not enough funds.' : '';
+  faucetBalance < 100000 ? 'Faucet has not enough funds.' : '';
 
 export const captchaRejected = (response: CaptchaSolutionResponse): string =>
   response.success ? '' : EROR_CODE[response['error-codes'][0]] || 'Captcha Error';
@@ -23,8 +25,8 @@ export const captchaRejected = (response: CaptchaSolutionResponse): string =>
 export const alreadyDispensed = (address: string, ip:string, faucetHistory: FaucetHistory, promoCode?: string): string => {
   const key = Object.keys(faucetHistory).find((key) => faucetHistory[key].ip === ip || faucetHistory[key].address === address);
   let currentUser = key ? faucetHistory[key!] : null; 
-  const isFilterByIP = promoCode ? false : filterByIP();
-  const TIMER_LIMIT = getTimerLimit();
+  const isFilterByIP = promoCode ? false : serverEnv.FILTER_BY_IP;
+  const TIMER_LIMIT = serverEnv.TIMER_LIMIT;
   const currentTime = new Date();
 
   const usedUserTime = currentUser?.time ? new Date(currentUser?.time).getTime() : 0;

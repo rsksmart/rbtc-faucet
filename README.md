@@ -13,34 +13,25 @@ This is a NextJS app that interacts with the RSK blockchain and uses a captcha s
 1. NextJS app
 2. RSK Blockchain
 
-## Setup -config.json variables
+## Setup .env variables
 
-There are 3 differents environments, production, development and testing, each one has a specific -config.json file 
+Please check `.env.example` and fill them with right values.
 
-- Production: `prod-config.json`
-- Development: `dev-config.json`
-- Testing: `test-config.json`
-
-Please check `-config.json` and fill them with right values.
-
-```json
-{
-  "RSK_NODE": "NODE_URL", 
-  "SOLVE_CAPTCHA_URL": "https://www.google.com/recaptcha/api/siteverify",
-  "SECRET_VERIFY_CAPTCHA": "",
-  "SITE_KEY_CAPTCHA": "",
-  "FAUCET_ADDRESS": "ADDRESS",
-  "FAUCET_PRIVATE_KEY": "PRIVATE_KEY",
-  "GAS_PRICE": 60000000,
-  "GAS_LIMIT": 800000,
-  "VALUE_TO_DISPENSE": 0.0005,
-  "PROMO_VALUE_TO_DISPENSE": 0.05,
-  "TAG_MANAGER_ID": "GTM-XXXXXXX",
-  "PROMO_CODE": []
-}
 ```
+"RSK_NODE": "NODE_URL", 
+"SOLVE_CAPTCHA_URL": "https://www.google.com/recaptcha/api/siteverify",
+"SECRET_VERIFY_CAPTCHA": "",
+"SITE_KEY_CAPTCHA": "",
+"FAUCET_ADDRESS": "ADDRESS",
+"FAUCET_PRIVATE_KEY": "PRIVATE_KEY",
+"GAS_PRICE": 60000000,
+"GAS_LIMIT": 800000,
+"VALUE_TO_DISPENSE": 0.0005,
+"PROMO_VALUE_TO_DISPENSE": 0.05,
+"TAG_MANAGER_ID": "GTM-XXXXXXX",
+"PROMO_CODE": []
 
-In order to run a production version, please check if `prod-config.json` exists, if not create one with the configuration described previously.
+```
 
 - **RSK_NODE** is the URL where the node is running.
 - **SOLVE_CAPTCHA_URL** is for checking the solution.
