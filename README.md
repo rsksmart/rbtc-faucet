@@ -4,108 +4,115 @@
 
 # RBTC Faucet
 
-## Description
+A Next.js application that dispenses test RBTC tokens on the Rootstock Testnet. Users can request test tokens through a web interface with reCAPTCHA protection and optional promo code functionality.
 
-Faucet to dispense test RBTC for RSK Testnet.
+## Setup
 
-This is a NextJS app that interacts with the RSK blockchain and uses a captcha service. Therefore we can identify 3 actors
+### Prerequisites
 
-1. NextJS app
-2. RSK Blockchain
+- Node.js 18+ 
+- npm or yarn
 
-## Setup .env variables
+### Environment Configuration
 
-Please check `.env.example` and fill them with right values.
+1. Create a `.env` file in the project root:
 
-```
-"RSK_NODE": "NODE_URL", 
-"GOOGLE_CAPTCHA_URL": "https://www.google.com/recaptcha/api/siteverify",
-"SECRET_VERIFY_CAPTCHA": "",
-"SITE_KEY_CAPTCHA": "",
-"FAUCET_ADDRESS": "ADDRESS",
-"FAUCET_PRIVATE_KEY": "PRIVATE_KEY",
-"GAS_PRICE": 60000000,
-"GAS_LIMIT": 800000,
-"VALUE_TO_DISPENSE": 0.0005,
-"PROMO_VALUE_TO_DISPENSE": 0.05,
-"FILTER_BY_IP": true,
-"TAG_MANAGER_ID": "GTM-XXXXXXX",
-"TIMER_LIMIT": 180000,
-"PROMO_CODE": []
-
+```bash
+cp .env.example .env
 ```
 
-- **RSK_NODE** is the URL where the node is running.
-- **GOOGLE_CAPTCHA_URL** is for checking the solution.
-- **SECRET_VERIFY_CAPTCHA** secret for captcha validation.
-- **SITE_KEY_CAPTCHA** verification key from the client.
-- **FILTER_BY_IP** if true, blocks by IP address (one IP = one use per day). Disabled for promo codes.
-- **TAG_MANAGER_ID** id for google service (this one shouldn't be changed).
-- **TIMER_LIMIT** (e.g., 180000 = 3 minutes). If transaction fails, user can retry after this time.
-- **PROMO_CODE** array of codes. Format: `{ "code":"TEST1","activationDate":"2025-10-21","expirationDate":"2025-10-22","maxDispensableRBTC":1 }`. 
-  - `code`: Name/code that users enter (e.g., "TEST1")
-  - `activationDate`: Start date when code becomes valid (YYYY-MM-DD)
-  - `expirationDate`: End date when code expires (YYYY-MM-DD)  
-  - `maxDispensableRBTC`: Maximum RBTC amount this code can dispense
+2. Configure the following environment variables in your `.env` file:
 
-You need to create a [proyect](https://www.google.com/recaptcha/admin) in Google to get the site_key and captcha secret.
+```env
+# RSK Blockchain Configuration
+RSK_NODE=https://public-node.testnet.rsk.co
+FAUCET_ADDRESS=
+FAUCET_PRIVATE_KEY=your_private_key_here
 
-## Running development environment
+# Gas Configuration
+GAS_PRICE=60000000
+GAS_LIMIT=800000
 
-### Node
+# Dispense Values (in RBTC)
+VALUE_TO_DISPENSE=0.0005
+PROMO_VALUE_TO_DISPENSE=0.05
 
-This project requires node version 16
+# Google reCAPTCHA Configuration
+GOOGLE_CAPTCHA_URL=https://www.google.com/recaptcha/api/siteverify
+SECRET_VERIFY_CAPTCHA=your_recaptcha_secret_key
+NEXT_PUBLIC_SITE_KEY_CAPTCHA=your_recaptcha_site_key
 
-First install depenecies (use yarn)
+# Google Tag Manager
+NEXT_PUBLIC_TAG_MANAGER_ID=GTM-XXXXXXX
 
+# Security & Rate Limiting
+FILTER_BY_IP=true
+TIMER_LIMIT=180000
+
+# Promo Codes (JSON array format)
+PROMO_CODE=[{"code":"TEST1","activationDate":"2025-01-01","expirationDate":"2025-12-31","maxDispensableRBTC":1}]
+```
+
+### Required Setup Steps
+
+1. **RSK Node**: Set `RSK_NODE` to your RSK Testnet node URL
+2. **Faucet Wallet**: Configure `FAUCET_ADDRESS` and `FAUCET_PRIVATE_KEY` with a funded wallet
+3. **reCAPTCHA**: Create a [Google reCAPTCHA project](https://www.google.com/recaptcha/admin) and add your keys
+4. **Promo Codes** (optional): Configure promo codes as JSON array with the following format:
+   ```json
+   [
+     {
+       "code": "PROMO1",
+       "activationDate": "2025-01-01", 
+       "expirationDate": "2025-12-31",
+       "maxDispensableRBTC": 1
+     }
+   ]
+   ```
+
+## Development Mode
+
+1. Install dependencies:
 ```bash
 npm install
 ```
 
-Then run app 
-
+2. Start the development server:
 ```bash
 npm run dev
 ```
 
-You'll need a running blockchain in order to run this environment. To do this, you can run a local ganache and point it at _dev-config.json_, **RSK_NODE** variable.
-Notice that you won't be able to get a real [explorer](https://explorer.testnet.rsk.co/) link because you're running a local blockchain instead of an RSK one!
+The application will be available at `http://localhost:3000`
 
-There is no need to change VALUE_TO_DISPENSE, GAS_PRICE, GAS_LIMIT and TAG_MANAGER_ID.
+## Production Mode
 
-## Promo Code
-In order to use this functionality, you must add an array of objects like this:
+### Using npm
 
+1. Build the application:
+```bash
+npm run build
 ```
-{ "code": "ESP_01",  "activationDate": "2024-11-13", "expirationDate": "2024-11-14", "maxDispensableRBTC": 1 },
+
+2. Start the production server:
+```bash
+npm run prod
 ```
 
-## Production deploy
+### Using Docker
 
-Checkout Next.js [tutorial](https://nextjs.org/learn/basics/deploying-a-nextjs-app/deploying-to-your-own-environment) or [docs](https://nextjs.org/docs#production-deployment)
-
-## Docker 
-
-This project has been dockerized 
-
-First build the image
-
+1. Build the Docker image:
 ```bash
 docker build -t rbtc-faucet .
 ```
 
-Then run
-
+2. Run the container:
 ```bash
-docker run -d --name rbtc-faucet -p 3000:3000 rbtc-faucet
+docker run -d --name rbtc-faucet -p 3000:3000 --env-file .env rbtc-faucet
 ```
 
-## Linting
+The application will be available at `http://localhost:3000`
 
-You can lint the whole project with [prettier](https://prettier.io/), just run
+## Additional Commands
 
-```bash
-npm run lint
-```
-
-Setup linting options at `.prettierrc`
+- **Linting**: `npm run lint`
+- **Start**: `npm start` (for production after build)
