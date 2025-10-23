@@ -1,23 +1,23 @@
 // src/env.ts
 import Joi from 'joi';
-import { isValidChecksumAddress } from '@rsksmart/rsk-utils';
+import { isValidAddress } from '@rsksmart/rsk-utils';
 
 // 1) Server schema
 const serverSchema = Joi.object({
   RSK_NODE: Joi.string()
     .uri()
     .required(),
-  SOLVE_CAPTCHA_URL: Joi.string()
+  GOOGLE_CAPTCHA_URL: Joi.string()
     .uri()
     .required(),
   SECRET_VERIFY_CAPTCHA: Joi.string()
     .required(),
   FAUCET_ADDRESS: Joi.string()
     .custom((v, h) => {
-    if (!isValidChecksumAddress(v, 'rsk')) return h.error('any.invalid');
+    if (!isValidAddress(v, 'rsk')) return h.error('any.invalid');
       return v;
     }).required()
-    .messages({ 'any.invalid': 'FAUCET_ADDRESS must be a valid RSK checksum address' }),
+    .messages({ 'any.invalid': 'FAUCET_ADDRESS must be a valid address' }),
 
   FAUCET_PRIVATE_KEY: Joi.string()
     .required(),
@@ -69,7 +69,7 @@ export function getServerEnv() {
   }
   return validateEnv<{
     RSK_NODE: string;
-    SOLVE_CAPTCHA_URL: string;
+    GOOGLE_CAPTCHA_URL: string;
     SECRET_VERIFY_CAPTCHA: string;
     FAUCET_ADDRESS: string;
     FAUCET_PRIVATE_KEY: string;

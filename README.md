@@ -19,7 +19,7 @@ Please check `.env.example` and fill them with right values.
 
 ```
 "RSK_NODE": "NODE_URL", 
-"SOLVE_CAPTCHA_URL": "https://www.google.com/recaptcha/api/siteverify",
+"GOOGLE_CAPTCHA_URL": "https://www.google.com/recaptcha/api/siteverify",
 "SECRET_VERIFY_CAPTCHA": "",
 "SITE_KEY_CAPTCHA": "",
 "FAUCET_ADDRESS": "ADDRESS",
@@ -28,17 +28,25 @@ Please check `.env.example` and fill them with right values.
 "GAS_LIMIT": 800000,
 "VALUE_TO_DISPENSE": 0.0005,
 "PROMO_VALUE_TO_DISPENSE": 0.05,
+"FILTER_BY_IP": true,
 "TAG_MANAGER_ID": "GTM-XXXXXXX",
+"TIMER_LIMIT": 180000,
 "PROMO_CODE": []
 
 ```
 
 - **RSK_NODE** is the URL where the node is running.
-- **SOLVE_CAPTCHA_URL** is for checking the solution.
+- **GOOGLE_CAPTCHA_URL** is for checking the solution.
 - **SECRET_VERIFY_CAPTCHA** secret for captcha validation.
 - **SITE_KEY_CAPTCHA** verification key from the client.
+- **FILTER_BY_IP** if true, blocks by IP address (one IP = one use per day). Disabled for promo codes.
 - **TAG_MANAGER_ID** id for google service (this one shouldn't be changed).
-- **PROMO_CODE** array of codes.
+- **TIMER_LIMIT** (e.g., 180000 = 3 minutes). If transaction fails, user can retry after this time.
+- **PROMO_CODE** array of codes. Format: `{ "code":"TEST1","activationDate":"2025-10-21","expirationDate":"2025-10-22","maxDispensableRBTC":1 }`. 
+  - `code`: Name/code that users enter (e.g., "TEST1")
+  - `activationDate`: Start date when code becomes valid (YYYY-MM-DD)
+  - `expirationDate`: End date when code expires (YYYY-MM-DD)  
+  - `maxDispensableRBTC`: Maximum RBTC amount this code can dispense
 
 You need to create a [proyect](https://www.google.com/recaptcha/admin) in Google to get the site_key and captcha secret.
 

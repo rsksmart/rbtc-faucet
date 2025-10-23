@@ -11,7 +11,7 @@ class CaptchaSolver {
       
       const postData = `secret=${encodeURIComponent(serverEnv.SECRET_VERIFY_CAPTCHA)}&response=${encodeURIComponent(captcha.token)}`;
 
-      const url = serverEnv.SOLVE_CAPTCHA_URL;
+      const url = serverEnv.GOOGLE_CAPTCHA_URL;
 
       logger.event('checking solution against captcha api, POST ' + url);
 

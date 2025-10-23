@@ -4,8 +4,7 @@
   "private": true,
   "scripts": {
     "prod": "NODE_ENV=production next start",
-    "dev": "cross-env DOTENV_CONFIG_PATH=.env.development NODE_ENV=development next dev --turbopack",
-    "test": "cross-env DOTENV_CONFIG_PATH=.env.test NODE_ENV=test next dev --turbopack",
+    "dev": "NODE_ENV=development next dev --turbopack",
     "build": "NODE_ENV=production next build",
     "start": "next start",
     "lint": "next lint"
@@ -15,7 +14,6 @@
     "@rsksmart/rsk-utils": "^2.0.5",
     "axios": "^1.7.9",
     "cron": "^3.3.2",
-    "dotenv": "^17.2.3",
     "joi": "^18.0.1",
     "next": "15.1.3",
     "react": "19.0.0",
@@ -31,7 +29,6 @@
     "@types/react": "19.0.3",
     "@types/react-google-recaptcha": "^2.1.9",
     "@types/react-gtm-module": "^2.0.4",
-    "cross-env": "^7.0.3",
     "eslint": "^8",
     "eslint-config-next": "15.1.3",
     "tailwindcss": "^3.4.17"
