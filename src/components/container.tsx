@@ -1,26 +1,21 @@
 'use client'
 import Swal, { SweetAlertOptions } from 'sweetalert2';
-import { siteKey, tagManagerId } from '../utils/env-util';
 import Navigation from './navigation'
 import Footer from './footer'
 import Faucet, { FaucetProps } from './faucet'
 import TagManager, { TagManagerArgs } from 'react-gtm-module';
 import ReCAPTCHA from "react-google-recaptcha";
 import Carousel from './Carousel';
-import { ChangeEvent, useEffect, useRef, useState } from 'react';
+import { ChangeEvent, useRef, useState } from 'react';
 import { DispenseResponse } from '@/types/types';
 import { dispense } from '@/app/lib/action';
+import { getPublicEnv } from '@/constants';
 
+const publicEnv = getPublicEnv();
 function Container() {
   const captchaValue = useRef<ReCAPTCHA>(null);
   const [dispenseAddress, setDispenseAddress] = useState<string>('');
-  const [siteKeyCaptcha, setSiteKeyCaptcha] = useState('');
-  const [isMainnetRns, setIsMainnetRns] = useState<boolean>(true);
-
-  useEffect(() => {
-    setSiteKeyCaptcha(siteKey());
-  }, []);
-
+  const [isMainnetRns, setIsMainnetRns] = useState<boolean>(false);
   //Handles
   const handleFaucetButtonClick = async (code: string | undefined) => {
     try {
@@ -89,7 +84,6 @@ function Container() {
     captchaValue,
     onAddressChange: handleDispenseAddressChange,
     onDispenseClick: handleFaucetButtonClick,
-    siteKeyCaptcha,
     isMainnetRns: isMainnetRns,
     setIsMainnetRns: setIsMainnetRns
   };
@@ -119,7 +113,7 @@ function Container() {
 
 Container.getInitialProps = async function() {
   const tagManagerArgs: TagManagerArgs = {
-    gtmId: tagManagerId()
+    gtmId: publicEnv.TAG_MANAGER_ID
   };
   TagManager.initialize(tagManagerArgs);
 

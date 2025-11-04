@@ -7,6 +7,8 @@ export function middleware(req: NextRequest) {
   if (
     pathname.startsWith('/_next/') ||
     pathname.startsWith('/static/') ||
+    pathname === '/health' ||
+    pathname === '/ready' ||
     pathname === '/'
   ) {
     return NextResponse.next();
