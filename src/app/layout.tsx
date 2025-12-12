@@ -2,8 +2,33 @@ import type { Metadata } from "next";
 import '../styles/index.scss';
 
 export const metadata: Metadata = {
-  title: "RSK Testnet Faucet",
-  description: "https://faucet.rootstock.io/",
+  title: "Rootstock Faucet - Get Free tRBTC Testnet Tokens",
+  description: "Access the Rootstock Testnet Faucet to get free tRBTC tokens for testing and development on the Rootstock blockchain.",
+  keywords: ["Rootstock Faucet", "tRBTC", "RBTC", "Rootstock Testnet", "blockchain", "free tokens", "Testnet Faucet", "Rootstock Testnet tokens", "crypto faucet"],
+  icons: {
+    icon: '/favicon.ico',
+  },
+  openGraph: {
+    title: "Rootstock Faucet - Get Free tRBTC Testnet Tokens",
+    description: "Use the Rootstock Testnet Faucet to claim free tRBTC tokens for testing and development on the Rootstock blockchain.",
+    url: "https://faucet.rootstock.io",
+    siteName: "Rootstock Faucet",
+    images: [
+      {
+        url: "https://x.com/rootstock_io/photo",
+        width: 467,
+        height: 245,
+      },
+    ],
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Rootstock Faucet - Get Free tRBTC Testnet Tokens",
+    description: "Claim free tRBTC tokens on the Rootstock Testnet using the Faucet for testing and development.",
+    images: ["https://x.com/rootstock_io/photo"],
+    site: "@rootstock_io",
+  },
 };
 
 export default function RootLayout({
@@ -13,25 +38,6 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <link href="/favico.png" rel='icon'/>
-      <title>Rootstock Faucet - Get Free tRBTC Testnet Tokens</title>
-      <meta name="description" content="Access the Rootstock Testnet Faucet to get free tRBTC tokens for testing and development on the Rootstock blockchain." />
-      <meta name="keywords" content="Rootstock Faucet, tRBTC, RBTC, Rootstock Testnet, blockchain, free tokens, Testnet Faucet, Rootstock Testnet tokens, crypto faucet" />
-
-      <meta property="og:title" content="Rootstock Faucet - Get Free tRBTC Testnet Tokens" />
-      <meta property="og:description" content="Use the Rootstock Testnet Faucet to claim free tRBTC tokens for testing and development on the Rootstock blockchain." />
-      <meta property="og:image" content="https://x.com/rootstock_io/photo" />
-      <meta property="og:image:width" content="467px" />
-      <meta property="og:image:height" content="245px" />
-      <meta property="og:url" content="https://faucet.rootstock.io" />
-      <meta property="og:type" content="website" />
-
-      <meta name="x:card" content="https://x.com/rootstock_io/photo" />
-      <meta name="x:title" content="Rootstock Faucet - Get Free tRBTC Testnet Tokens" />
-      <meta name="x:description" content="Claim free tRBTC tokens on the Rootstock Testnet using the Faucet for testing and development." />
-      <meta name="x:image" content="https://x.com/rootstock_io/photo" />
-      <meta name="x:site" content="@rootstock_io" />
-      <meta name="x:url" content="https://faucet.rootstock.io" />
       <body>
         {children}
       </body>
