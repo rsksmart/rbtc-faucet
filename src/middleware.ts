@@ -7,7 +7,9 @@ export function middleware(req: NextRequest) {
   if (
     pathname.startsWith('/_next/') ||
     pathname.startsWith('/static/') ||
-    pathname === '/'
+    pathname === '/' ||
+    pathname.startsWith('/favicon') ||
+    pathname.match(/\.(ico|png|jpg|jpeg|svg|woff|woff2|ttf|eot)$/)
   ) {
     return NextResponse.next();
   }
