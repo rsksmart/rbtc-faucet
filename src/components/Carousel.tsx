@@ -45,11 +45,36 @@ const Carousel = () => {
   return (
     <div className="content-carousel">
       <Swiper
-        modules={[Autoplay, Pagination]} // Carga los módulos aquí
-        spaceBetween={30}
-        slidesPerView={1}
+        modules={[Autoplay, Pagination]} 
         autoplay={{ delay: 5000, disableOnInteraction: false }}
         pagination={{ clickable: true }}
+
+        breakpoints={{
+          480: {
+            slidesPerView: 1.1,
+            spaceBetween: 5,
+          },
+          768: {
+            slidesPerView: 1.15,
+            spaceBetween: 10,
+          },
+          1024: {
+            slidesPerView: 1.3,
+            spaceBetween: 15, 
+          },
+          1440: { 
+            slidesPerView: 1.5,
+            spaceBetween: 20, 
+          },
+          1920: { 
+            slidesPerView: 1.8,
+            spaceBetween: 20,
+          },
+          2560: { 
+            slidesPerView: 2,
+            spaceBetween: 40,
+          }
+        }}
       >
         {items.map((item, i) => (
           <SwiperSlide key={i}>

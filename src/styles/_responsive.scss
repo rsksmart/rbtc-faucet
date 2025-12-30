@@ -9,11 +9,9 @@
     }
   }
   .content-form {
+    margin-right: 20px;
     .title-form {
       font-size: 14px;
-    }
-    .faucet-form {
-      margin-right: 180px;
     }
   }
   .content-carousel {
@@ -40,9 +38,7 @@
 
 @include laptop {
   .content-form {
-    .faucet-form {
-      margin-right: 90px;
-    }
+    margin-right: 20px;
   }
   .content-carousel {
     width: 450px;
@@ -58,30 +54,40 @@
     font-size: 35px;
   }
   .content-form {
-    margin: 0 auto;
+    width: 100%;
+    max-width: 400px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-right: 0px;
   }
   .container-faucet {
-    margin-top: 50px;
+    display: flex;
     flex-direction: column;
+    align-items: center;
     justify-content: center;
-    align-content: center;
-    .faucet-form {
-      margin-right: unset;
-    }
+    width: 100%;
+    max-width: 400px; 
+    margin: 40px auto;
+    gap: 20px;
+  }
+  .content-carousel {
+    width: 100%;
+    margin-left: 0px;
+    max-width: 400px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .swiper {
+    width: 100% !important;
+    max-width: 400px !important;
   }
   .container {
     .content-message {
       margin: 30px auto 0px auto;
       width: 70%;
-    }
-  }
-  .content-carousel {
-    margin-top: 170px;
-    margin-bottom: 150px;
-    width: 100%;
-    .rsk-card {
-      width: 340px;
-      height: 210px;
     }
   }
   footer {
@@ -111,12 +117,27 @@
     }
   }
   .content-form {
-    width: 400px;
-    margin: 0 auto;
-    padding: 10px;
+    width: 100%;
+    max-width: 400px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-right: 0px;
+  }
+  .rsk-card {
+    width: 280px;
+    height: 160px;
   }
   .container-faucet {
-    margin-top: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 350px; 
+    margin: 30px auto;
+    gap: 15px;
   }
   .container {
     .content-message {
@@ -125,6 +146,15 @@
     }
   }
   .content-carousel {
-    display: none;
+    width: 100%;
+    max-width: 450px;
+    margin-left: 0px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .swiper {
+    width: 100% !important;
+    max-width: 450px !important;
   }
 }
