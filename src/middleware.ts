@@ -9,7 +9,9 @@ export function middleware(req: NextRequest) {
     pathname.startsWith('/static/') ||
     pathname === '/health' ||
     pathname === '/ready' ||
-    pathname === '/'
+    pathname === '/' ||
+    pathname.startsWith('/favicon') ||
+    pathname.match(/\.(ico|png|jpg|jpeg|svg|woff|woff2|ttf|eot)$/)
   ) {
     return NextResponse.next();
   }
