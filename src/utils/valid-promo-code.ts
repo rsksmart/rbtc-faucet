@@ -1,9 +1,9 @@
 'use server'
 
 import { loadFaucetHistory } from "@/app/lib/faucetHistory";
-import { getPromoCode, getPromoValue } from "./env-util";
-
-type Code = {
+import { getServerEnv } from "@/constants";
+const serverEnv = getServerEnv();
+export type Code = {
   code: string;
   expirationDate: string; // Expected in "YYYY-MM-DD" format
   activationDate: string; // Expected in "YYYY-MM-DD" format
@@ -22,7 +22,7 @@ type Response = {
  * @returns Response - Object containing the validity of the code and a message
  */
 export async function isCodeActive(code: string): Promise<Response> {
-  const codes: Code[] = getPromoCode();
+  const codes: Code[] = serverEnv.PROMO_CODE;
   const codeData = codes.find((c) => c.code === code);
 
   if (!codeData) {
@@ -59,7 +59,7 @@ export async function isCodeActive(code: string): Promise<Response> {
 
 const promoCodeHasRemainingRBTCAllowance = (code: Code) => {
   const faucetHistory = loadFaucetHistory();
-  const PROMO_VALUE_TO_DISPENSE = getPromoValue();
+  const PROMO_VALUE_TO_DISPENSE = serverEnv.PROMO_VALUE_TO_DISPENSE;
   const usedCode = Object.keys(faucetHistory).filter((key) => faucetHistory[key].promoCode === code.code);
   const amountDispensed = usedCode.length * PROMO_VALUE_TO_DISPENSE;
   return amountDispensed < code.maxDispensableRBTC;

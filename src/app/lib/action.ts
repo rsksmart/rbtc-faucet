@@ -1,6 +1,4 @@
 'use server'
-import { filterByIP, provider, valueToDispense } from '@/utils/env-util';
-import { faucetAddress, faucetPrivateKey } from '@/utils/faucet-sensitive-util';
 import { headers } from 'next/headers';
 import AddressUtil from '../../utils/address-util';
 import Web3 from 'web3';
@@ -14,6 +12,10 @@ import { alreadyDispensed, captchaRejected, insuficientFunds, invalidAddress } f
 import TxParametersGenerator from '@/utils/tx-parameters-generator';
 import { loadFaucetHistory, saveFaucetHistory } from '@/app/lib/faucetHistory';
 import { isValidChecksumAddress } from '@rsksmart/rsk-utils';
+import { getServerEnv } from '@/constants';
+
+const serverEnv = getServerEnv();
+
 interface IData {
   address: string
   captcha: CaptchaSolutionRequest,
@@ -43,7 +45,7 @@ new CronJob(
   true /* Start the job right now */,
   'America/Los_Angeles' /* Time zone of this job. */
 );
-const web3: Web3 = new Web3(provider());
+const web3: Web3 = new Web3(new Web3.providers.HttpProvider(serverEnv.RSK_NODE));
 const addressUtil = new AddressUtil();
 const captchaSolver = new CaptchaSolver();
 const frontendText = new FrontendText();
@@ -56,7 +58,7 @@ export async function dispense(data: IData) {
   const headersList = await headers();
   const ip: string = headersList.get('x-forwarded-for') || headersList.get('x-user-ip') as string;
   logger.event('IP ' + ip);
-  const faucetBalance: number = Number(await web3.eth.getBalance(faucetAddress()));
+  const faucetBalance: number = Number(await web3.eth.getBalance(serverEnv.FAUCET_ADDRESS));
   try {
 
     const dispenseAddress: string = await addressUtil.retriveAddressFromFrontend(address, isMainnetRns);
@@ -97,7 +99,7 @@ export async function dispense(data: IData) {
 
       logger.txParameters(txParameters);
 
-      const account = web3.eth.accounts.privateKeyToAccount('0x' + faucetPrivateKey());
+      const account = web3.eth.accounts.privateKeyToAccount('0x' + serverEnv.FAUCET_PRIVATE_KEY);
       web3.eth.accounts.wallet.add(account);
       const signedTx = await web3.eth.accounts.signTransaction(
         {
@@ -105,7 +107,7 @@ export async function dispense(data: IData) {
           value: parseInt(txParameters.value, 16),
           gas: txParameters.gas,
           gasPrice: txParameters.gasPrice,
-          nonce: await web3.eth.getTransactionCount(faucetAddress(), 'pending'),
+          nonce: await web3.eth.getTransactionCount(serverEnv.FAUCET_ADDRESS, 'pending'),
           chainId: TESTNET_CHAIN_ID
         },
         account.privateKey
@@ -202,7 +204,7 @@ const runValidations = (
 
 async function filterAddresses(dispenseAddress: string, ip:string, promoCode: string | undefined) {
   const faucetHistory = await loadFaucetHistory();
-  const isFilterByIP = promoCode ? false : filterByIP();
+  const isFilterByIP = promoCode ? false : serverEnv.FILTER_BY_IP;
   const key = Object.keys(faucetHistory).find((key) => {
     const historyEntry = faucetHistory[key];
     return (historyEntry.ip === ip && isFilterByIP) || historyEntry.address === dispenseAddress
@@ -213,10 +215,10 @@ async function filterAddresses(dispenseAddress: string, ip:string, promoCode: st
 }
 
 export async function estimationFee(dispenseAddress:string) {
-  const VALUE_TO_DISPENSE = valueToDispense();
+  const VALUE_TO_DISPENSE = serverEnv.VALUE_TO_DISPENSE;
   const value = web3.utils.toWei(VALUE_TO_DISPENSE.toString(), 'ether');
   const gasEstimate = await web3.eth.estimateGas({
-    from: faucetAddress(),
+    from: serverEnv.FAUCET_ADDRESS,
     to: dispenseAddress,
     data: '',
     value: value
