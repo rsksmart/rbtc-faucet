@@ -1,5 +1,5 @@
 # Use a lighter Node.js Alpine image
-FROM node:18-alpine AS base
+FROM node:25-alpine AS base
 
 # Install dependencies only when needed
 FROM base AS deps
@@ -31,6 +31,9 @@ RUN adduser --system --uid 1001 nextjs
 # Copy built application
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+
+# Create tmp directory for temporary storage with proper permissions
+RUN mkdir -p /app/tmp && chown -R nextjs:nodejs /app/tmp
 
 USER nextjs
 

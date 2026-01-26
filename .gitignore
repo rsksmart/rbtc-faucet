@@ -40,3 +40,7 @@ yarn-error.log*
 *.htm
 
 *.env
+
+# Temporary faucet history
+tmp/
+faucetHistory.json
