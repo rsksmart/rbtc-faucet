@@ -1,14 +1,14 @@
 {{/*
 Expand the name of the chart.
 */}}
-{{- define "rbtc-faucet.name" -}}
+{{- define "rbtcfaucet.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{/*
 Create a default fully qualified app name.
 */}}
-{{- define "rbtc-faucet.fullname" -}}
+{{- define "rbtcfaucet.fullname" -}}
 {{- if .Values.fullnameOverride }}
 {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
 {{- else }}
@@ -24,37 +24,30 @@ Create a default fully qualified app name.
 {{/*
 Create chart name and version as used by the chart label.
 */}}
-{{- define "rbtc-faucet.chart" -}}
+{{- define "rbtcfaucet.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{/*
 Common labels
 */}}
-{{- define "rbtc-faucet.labels" -}}
-helm.sh/chart: {{ include "rbtc-faucet.chart" . }}
-{{ include "rbtc-faucet.selectorLabels" . }}
+{{- define "rbtcfaucet.labels" -}}
+helm.sh/chart: {{ include "rbtcfaucet.chart" . }}
+{{ include "rbtcfaucet.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- with .Values.labels }}
+{{ toYaml . }}
+{{- end }}
 {{- end }}
 
 {{/*
 Selector labels
 */}}
-{{- define "rbtc-faucet.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "rbtc-faucet.name" . }}
+{{- define "rbtcfaucet.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "rbtcfaucet.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
-{{- end }}
-
-{{/*
-Create the name of the service account to use
-*/}}
-{{- define "rbtc-faucet.serviceAccountName" -}}
-{{- if .Values.serviceAccount.create }}
-{{- default (include "rbtc-faucet.fullname" .) .Values.serviceAccount.name }}
-{{- else }}
-{{- default "default" .Values.serviceAccount.name }}
-{{- end }}
+app.kubernetes.io/component: service
 {{- end }}

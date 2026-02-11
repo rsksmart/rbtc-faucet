@@ -14,6 +14,7 @@ RUN npm ci --only=production
 FROM base AS builder
 WORKDIR /app
 COPY package.json package-lock.json ./
+COPY .env.example ./.env
 RUN npm ci
 COPY . .
 RUN npm run build

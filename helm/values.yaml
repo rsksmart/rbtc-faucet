@@ -1,123 +1,89 @@
-# Default values for rbtc-faucet (Production)
-replicaCount: 2
+nameOverride: ""
+fullnameOverride: "rbtcfaucet"
+
+namespace: rbtcfaucet-dev
 
 image:
-  repository: rbtc-faucet
-  pullPolicy: IfNotPresent
-  tag: "2.3.1"
+  # repository is set in values-dev.yaml for dev
+  tag: latest
+  pullPolicy: Always
 
-imagePullSecrets: []
-nameOverride: ""
-fullnameOverride: ""
+redis:
+  image:
+    repository: redis
+    tag: latest
+  port: 6379
 
-serviceAccount:
-  create: true
-  annotations: {}
-  name: ""
+replicaCount: 1
 
-podAnnotations: {}
+resources:
+  requests:
+    cpu: "250m"
+  limits:
+    cpu: "500m"
 
-podSecurityContext:
-  runAsNonRoot: true
-  runAsUser: 1001
-  fsGroup: 1001
-
-securityContext:
-  allowPrivilegeEscalation: false
-  capabilities:
-    drop:
-    - ALL
-  readOnlyRootFilesystem: false
+redisResources:
+  requests:
+    cpu: "250m"
+  limits:
+    cpu: "500m"
 
 service:
-  type: ClusterIP
+  type: LoadBalancer
   port: 80
+  httpsPort: 443
   targetPort: 3000
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443"
 
 ingress:
   enabled: true
-  className: "nginx"
+  className: alb
   annotations:
-    cert-manager.io/cluster-issuer: "letsencrypt-prod"
-    nginx.ingress.kubernetes.io/ssl-redirect: "true"
-  hosts:
-    - host: faucet.rsk.co
-      paths:
-        - path: /
-          pathType: Prefix
-  tls:
-    - secretName: rbtc-faucet-tls
-      hosts:
-        - faucet.rsk.co
-
-resources:
-  limits:
-    cpu: 500m
-    memory: 512Mi
-  requests:
-    cpu: 250m
-    memory: 256Mi
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: instance
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS":443}]'
 
 autoscaling:
-  enabled: false
-  minReplicas: 2
-  maxReplicas: 10
-  targetCPUUtilizationPercentage: 80
-  targetMemoryUtilizationPercentage: 80
+  enabled: true
+  minReplicas: 1
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 70
 
-nodeSelector: {}
+externalSecrets:
+  enabled: false  # Set to true after installing External Secrets Operator
+  secretStoreName: aws-secrets-manager
+  secretKey: "rbtcfaucet-dev"
+  serviceAccountName: "external-secrets-sa"
+  region: us-east-1
+  refreshInterval: 5m
 
-tolerations: []
+externalDns:
+  enabled: true
+  serviceAccountName: external-dns
+  # txtOwnerId and domainFilters are set in values-dev.yaml for dev
 
-affinity: {}
+securityContext:
+  runAsNonRoot: true
+  fsGroup: 1000
 
-# Application environment variables
-env:
-  # Node / RPC
-  RSK_NODE: "https://public-node.rsk.co"
+containerSecurityContext:
+  readOnlyRootFilesystem: false
+  runAsNonRoot: true
+  runAsUser: 1000
+  runAsGroup: 1000
 
-  # Captcha
-  GOOGLE_CAPTCHA_URL: "https://www.google.com/recaptcha/api/siteverify"
+redisSecurityContext:
+  readOnlyRootFilesystem: false
+  runAsNonRoot: true
+  runAsUser: 999
+  runAsGroup: 999
 
-  # Analytics
-  NEXT_PUBLIC_TAG_MANAGER_ID: "NO_ID"
+labels:
+  app.kubernetes.io/created-by: platform-eng
+  app.kubernetes.io/type: app
 
-  # Gas & amounts
-  GAS_PRICE: "60000000"
-  GAS_LIMIT: "100000"
-  VALUE_TO_DISPENSE: "0.000001"
-  PROMO_VALUE_TO_DISPENSE: "0.00005"
-
-  # App behavior
-  FILTER_BY_IP: "true"
-  TIMER_LIMIT: "180000"
-
-  # Promo codes (JSON string)
-  PROMO_CODE: '[{"code":"MAINNET","activationDate":"2025-01-01","expirationDate":"2025-12-31","maxDispensableRBTC":1}]'
-
-# Secrets - these should be provided via sealed-secrets or external secrets operator
-secrets:
-  # SECRET_VERIFY_CAPTCHA: ""
-  # NEXT_PUBLIC_SITE_KEY_CAPTCHA: ""
-  # FAUCET_ADDRESS: ""
-  # FAUCET_PRIVATE_KEY: ""
-  existingSecret: "rbtc-faucet-secrets"
-
-# Liveness and readiness probes
-livenessProbe:
-  httpGet:
-    path: /
-    port: 3000
-  initialDelaySeconds: 30
-  periodSeconds: 10
-  timeoutSeconds: 5
-  failureThreshold: 3
-
-readinessProbe:
-  httpGet:
-    path: /
-    port: 3000
-  initialDelaySeconds: 15
-  periodSeconds: 5
-  timeoutSeconds: 3
-  failureThreshold: 3
+serviceAccount:
+  create: false
+  annotations: {}
+  name: ""

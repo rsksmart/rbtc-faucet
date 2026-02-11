@@ -1,176 +1,222 @@
 # RBTC Faucet Helm Chart
 
-This Helm chart deploys the RBTC Faucet application on a Kubernetes cluster.
+This Helm chart deploys the RBTC Faucet application to Kubernetes.
 
 ## Prerequisites
 
-- Kubernetes 1.19+
-- Helm 3.0+
-- PV provisioner support in the underlying infrastructure (if using persistent volumes)
+- Kubernetes cluster (EKS)
+- Helm 3.x
+- kubectl configured
+- AWS credentials (via aws-vault)
 
-## Installing the Chart
+## Chart Structure
 
-### Production Deployment
-
-```bash
-# Create secrets first
-kubectl create secret generic rbtc-faucet-secrets \
-  --from-literal=SECRET_VERIFY_CAPTCHA='your-captcha-secret' \
-  --from-literal=NEXT_PUBLIC_SITE_KEY_CAPTCHA='your-site-key' \
-  --from-literal=FAUCET_ADDRESS='your-faucet-address' \
-  --from-literal=FAUCET_PRIVATE_KEY='your-private-key'
-
-# Install the chart
-helm install rbtc-faucet ./helm
+```
+helm-chart/
+├── Chart.yaml                          # Chart metadata
+├── values.yaml                         # Default values
+├── values-dev.yaml                     # Environment-specific overrides
+└── templates/
+    ├── _helpers.tpl                    # Template helpers
+    ├── deployment.yaml                 # Main application deployment
+    ├── service.yaml                    # Service definition
+    ├── ingress.yaml                    # ALB Ingress configuration
+    ├── hpa.yaml                        # Horizontal Pod Autoscaler
+    ├── external-secret.yaml            # External Secrets configuration
+    ├── external-dns-rbac.yaml          # External DNS RBAC
+    └── external-dns-deployment.yaml    # External DNS deployment
 ```
 
-### Development Deployment
+## Installation
+
+### First-time installation
 
 ```bash
-# Create development secrets
-kubectl create secret generic rbtc-faucet-dev-secrets \
-  --from-literal=SECRET_VERIFY_CAPTCHA='dev-captcha-secret' \
-  --from-literal=NEXT_PUBLIC_SITE_KEY_CAPTCHA='dev-site-key' \
-  --from-literal=FAUCET_ADDRESS='dev-faucet-address' \
-  --from-literal=FAUCET_PRIVATE_KEY='dev-private-key'
+# Using the access-cluster.sh script
+./access-cluster.sh install
 
-# Install with development values
-helm install rbtc-faucet-dev ./helm -f ./helm/values-dev.yaml
+# Or directly with Helm
+aws-vault exec as-demos -- helm install rbtcfaucet ./helm-chart/ \
+  --namespace rbtcfaucet-dev \
+  --create-namespace \
+  --wait
 ```
 
-## Uninstalling the Chart
+### Upgrade existing deployment
 
 ```bash
-helm uninstall rbtc-faucet
+# Using the access-cluster.sh script
+./access-cluster.sh update
+
+# Or directly with Helm
+aws-vault exec as-demos -- helm upgrade rbtcfaucet ./helm-chart/ \
+  --namespace rbtcfaucet-dev \
+  --wait
+```
+
+### Uninstall
+
+```bash
+# Using the access-cluster.sh script
+./access-cluster.sh uninstall
+
+# Or directly with Helm
+aws-vault exec as-demos -- helm uninstall rbtcfaucet \
+  --namespace rbtcfaucet-dev
 ```
 
 ## Configuration
 
-The following table lists the configurable parameters and their default values.
-
-### Common Parameters
+### Key Values
 
 | Parameter | Description | Default |
 |-----------|-------------|---------|
-| `replicaCount` | Number of replicas | `2` (prod), `1` (dev) |
-| `image.repository` | Image repository | `rbtc-faucet` |
-| `image.tag` | Image tag | `2.3.1` (prod), `dev` (dev) |
-| `image.pullPolicy` | Image pull policy | `IfNotPresent` (prod), `Always` (dev) |
-
-### Service Parameters
-
-| Parameter | Description | Default |
-|-----------|-------------|---------|
-| `service.type` | Kubernetes service type | `ClusterIP` (prod), `NodePort` (dev) |
-| `service.port` | Service port | `80` |
-| `service.targetPort` | Container port | `3000` |
-
-### Ingress Parameters
-
-| Parameter | Description | Default |
-|-----------|-------------|---------|
+| `namespace` | Kubernetes namespace | `rbtcfaucet-dev` |
+| `image.repository` | Container image repository | `666927241564.dkr.ecr.us-east-1.amazonaws.com/rbtcfaucet-dev` |
+| `image.tag` | Container image tag | `latest` |
+| `replicaCount` | Number of replicas | `1` |
+| `service.type` | Service type | `LoadBalancer` |
 | `ingress.enabled` | Enable ingress | `true` |
-| `ingress.className` | Ingress class name | `nginx` |
-| `ingress.hosts` | Ingress hosts | See values files |
-| `ingress.tls` | Ingress TLS configuration | See values files |
+| `autoscaling.enabled` | Enable HPA | `true` |
+| `autoscaling.minReplicas` | Minimum replicas | `1` |
+| `autoscaling.maxReplicas` | Maximum replicas | `5` |
+| `externalSecrets.enabled` | Enable External Secrets | `true` |
+| `externalDns.enabled` | Enable External DNS | `true` |
 
-### Environment Variables
+### Environment-specific Values
 
-| Parameter | Description | Default (Prod) | Default (Dev) |
-|-----------|-------------|----------------|---------------|
-| `env.RSK_NODE` | RSK node URL | mainnet | testnet |
-| `env.VALUE_TO_DISPENSE` | Amount to dispense | `0.000001` | `0.001` |
-| `env.FILTER_BY_IP` | Filter by IP | `true` | `false` |
-| `env.TIMER_LIMIT` | Timer limit (ms) | `180000` | `60000` |
-
-### Resources
-
-| Parameter | Description | Default (Prod) | Default (Dev) |
-|-----------|-------------|----------------|---------------|
-| `resources.requests.cpu` | CPU request | `250m` | `100m` |
-| `resources.requests.memory` | Memory request | `256Mi` | `128Mi` |
-| `resources.limits.cpu` | CPU limit | `500m` | `300m` |
-| `resources.limits.memory` | Memory limit | `512Mi` | `384Mi` |
-
-## Secrets Management
-
-The chart expects secrets to be created separately. You can either:
-
-1. Create a Kubernetes secret manually (as shown above)
-2. Use Sealed Secrets
-3. Use External Secrets Operator
-4. Use your cloud provider's secret management (AWS Secrets Manager, Azure Key Vault, etc.)
-
-Required secret keys:
-- `SECRET_VERIFY_CAPTCHA`: Google reCAPTCHA secret
-- `NEXT_PUBLIC_SITE_KEY_CAPTCHA`: Google reCAPTCHA site key
-- `FAUCET_ADDRESS`: Ethereum/RSK address of the faucet wallet
-- `FAUCET_PRIVATE_KEY`: Private key of the faucet wallet
-
-## Upgrading
+You can override values using environment-specific files:
 
 ```bash
-# Production
-helm upgrade rbtc-faucet ./helm
+# Install with dev values
+helm install rbtcfaucet ./helm-chart/ \
+  -f helm-chart/values-dev.yaml \
+  --namespace rbtcfaucet-dev
 
-# Development
-helm upgrade rbtc-faucet-dev ./helm -f ./helm/values-dev.yaml
+# Or set individual values
+helm install rbtcfaucet ./helm-chart/ \
+  --set image.tag=v1.2.3 \
+  --set replicaCount=3 \
+  --namespace rbtcfaucet-dev
 ```
 
-## Testing the Deployment
+## Checking Status
 
 ```bash
-# Check the deployment status
-helm status rbtc-faucet
+# Check Helm release
+helm list -n rbtcfaucet-dev
 
-# Get pods
-kubectl get pods -l app.kubernetes.io/name=rbtc-faucet
+# Get release status
+helm status rbtcfaucet -n rbtcfaucet-dev
 
-# View logs
-kubectl logs -l app.kubernetes.io/name=rbtc-faucet --tail=100
+# View deployed manifests
+helm get manifest rbtcfaucet -n rbtcfaucet-dev
 
-# Port forward for local testing
-kubectl port-forward svc/rbtc-faucet 8080:80
+# Check all resources
+./access-cluster.sh check
 ```
 
-## Autoscaling
+## Rollback
 
-To enable autoscaling in production:
+```bash
+# View release history
+helm history rbtcfaucet -n rbtcfaucet-dev
 
-```yaml
-autoscaling:
-  enabled: true
-  minReplicas: 2
-  maxReplicas: 10
-  targetCPUUtilizationPercentage: 80
+# Rollback to previous version
+helm rollback rbtcfaucet -n rbtcfaucet-dev
+
+# Rollback to specific revision
+helm rollback rbtcfaucet 1 -n rbtcfaucet-dev
 ```
+
+## Template Validation
+
+```bash
+# Validate templates locally
+helm template rbtcfaucet ./helm-chart/ \
+  --namespace rbtcfaucet-dev \
+  --debug
+
+# Dry-run installation
+helm install rbtcfaucet ./helm-chart/ \
+  --namespace rbtcfaucet-dev \
+  --dry-run \
+  --debug
+```
+
+## Components
+
+### Main Application
+- **Container**: RBTC Faucet application (port 3000)
+- **Redis**: Redis sidecar container (port 6379)
+- **Resources**: CPU requests/limits configured
+- **Security**: Non-root user, security contexts applied
+
+### Networking
+- **Service**: LoadBalancer with SSL termination
+- **Ingress**: ALB Ingress with WAF rules
+- **External DNS**: Automatic DNS management
+
+### Secrets Management
+- **External Secrets**: AWS Secrets Manager integration
+- **Secrets**: REDIS_PASSWORD, API_KEY
+
+### Autoscaling
+- **HPA**: CPU-based autoscaling (70% threshold)
+- **Min/Max**: 1-5 replicas
 
 ## Troubleshooting
 
-### Pods are not starting
-
-Check the logs:
+### View logs
 ```bash
-kubectl logs -l app.kubernetes.io/name=rbtc-faucet
-kubectl describe pod -l app.kubernetes.io/name=rbtc-faucet
+./access-cluster.sh logs <pod-name>
 ```
 
-### Secrets not found
-
-Make sure the secret exists:
+### Describe resources
 ```bash
-kubectl get secret rbtc-faucet-secrets
-kubectl describe secret rbtc-faucet-secrets
+./access-cluster.sh describe <pod-name>
 ```
 
-### Ingress not working
-
-Check ingress status:
+### Check External Secrets
 ```bash
-kubectl get ingress
-kubectl describe ingress rbtc-faucet
+./access-cluster.sh secrets
 ```
 
-## Support
+### Debug Helm issues
+```bash
+# Check rendered templates
+helm template rbtcfaucet ./helm-chart/ --debug
 
-For issues and questions, please visit the [GitHub repository](https://github.com/rsksmart/rbtc-faucet).
+# Verify values
+helm get values rbtcfaucet -n rbtcfaucet-dev
+
+# Check all resources created by this release
+helm get manifest rbtcfaucet -n rbtcfaucet-dev
+```
+
+## Migration from kubectl to Helm
+
+If you're migrating from the previous kubectl-based deployment:
+
+1. **Backup current deployment** (optional):
+   ```bash
+   kubectl get all -n rbtcfaucet-dev -o yaml > backup.yaml
+   ```
+
+2. **Uninstall old resources** (optional, Helm can manage existing resources):
+   ```bash
+   kubectl delete deployment rbtcfaucet -n rbtcfaucet-dev
+   kubectl delete service rbtcfaucet -n rbtcfaucet-dev
+   # etc...
+   ```
+
+3. **Install with Helm**:
+   ```bash
+   ./access-cluster.sh install
+   ```
+
+Note: Helm will manage all resources going forward. External Secrets and other existing resources will be adopted by Helm.
+
+## secrets
+🔍 To view secret keys (without values):
+kubectl get secret rbtcfaucet-env-secrets -n rbtcfaucet-dev -o jsonpath='{.data}' | jq 'keys'

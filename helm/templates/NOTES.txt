@@ -1,45 +1,64 @@
 Thank you for installing {{ .Chart.Name }}!
 
-Your release is named {{ .Release.Name }}.
+Your release is named {{ .Release.Name }} in namespace {{ .Values.namespace }}.
 
 To learn more about the release, try:
 
-  $ helm status {{ .Release.Name }}
-  $ helm get all {{ .Release.Name }}
+  $ helm status {{ .Release.Name }} -n {{ .Values.namespace }}
+  $ helm get all {{ .Release.Name }} -n {{ .Values.namespace }}
 
 {{- if .Values.ingress.enabled }}
-{{- range $host := .Values.ingress.hosts }}
-  {{- range .paths }}
+
+Application is accessible via AWS ALB Ingress.
+
+{{- if .Values.service.annotations }}
+{{- if index .Values.service.annotations "external-dns.alpha.kubernetes.io/hostname" }}
 
 Application URL:
-  http{{ if $.Values.ingress.tls }}s{{ end }}://{{ $host.host }}{{ .path }}
-  {{- end }}
+  https://{{ index .Values.service.annotations "external-dns.alpha.kubernetes.io/hostname" }}
 {{- end }}
+{{- end }}
+
+Check ingress status:
+  $ kubectl get ingress -n {{ .Values.namespace }}
+{{- end }}
+
+{{- if contains "LoadBalancer" .Values.service.type }}
+
+Get the LoadBalancer URL:
+  $ kubectl get svc {{ include "rbtcfaucet.fullname" . }} -n {{ .Values.namespace }}
+
+NOTE: It may take a few minutes for the LoadBalancer to be available.
+{{- end }}
+
+Check deployment status:
+  $ kubectl get pods -n {{ .Values.namespace }}
+  $ kubectl logs -l app.kubernetes.io/name={{ include "rbtcfaucet.name" . }} -n {{ .Values.namespace }}
+
+{{- if .Values.externalSecrets.enabled }}
+
+External Secrets are enabled. Secrets will be synced from AWS Secrets Manager.
+Check external secrets status:
+  $ kubectl get externalsecret -n {{ .Values.namespace }}
+  $ kubectl get secret {{ include "rbtcfaucet.fullname" . }}-env-secrets -n {{ .Values.namespace }}
 {{- else }}
 
-Get the application URL by running these commands:
-{{- if contains "NodePort" .Values.service.type }}
-  export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ include "rbtc-faucet.fullname" . }})
-  export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
-  echo http://$NODE_IP:$NODE_PORT
-{{- else if contains "LoadBalancer" .Values.service.type }}
-     NOTE: It may take a few minutes for the LoadBalancer IP to be available.
-           You can watch the status of by running 'kubectl get --namespace {{ .Release.Namespace }} svc -w {{ include "rbtc-faucet.fullname" . }}'
-  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ include "rbtc-faucet.fullname" . }} --template "{{"{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}"}}")
-  echo http://$SERVICE_IP:{{ .Values.service.port }}
-{{- else if contains "ClusterIP" .Values.service.type }}
-  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app.kubernetes.io/name={{ include "rbtc-faucet.name" . }},app.kubernetes.io/instance={{ .Release.Name }}" -o jsonpath="{.items[0].metadata.name}")
-  export CONTAINER_PORT=$(kubectl get pod --namespace {{ .Release.Namespace }} $POD_NAME -o jsonpath="{.spec.containers[0].ports[0].containerPort}")
-  echo "Visit http://127.0.0.1:8080 to use your application"
-  kubectl --namespace {{ .Release.Namespace }} port-forward $POD_NAME 8080:$CONTAINER_PORT
-{{- end }}
-{{- end }}
-
-IMPORTANT: Make sure you have created the required secrets:
-  - {{ .Values.secrets.existingSecret | default (printf "%s-secrets" (include "rbtc-faucet.fullname" .)) }}
+IMPORTANT: Make sure you have created the required secret:
+  $ kubectl get secret {{ include "rbtcfaucet.fullname" . }}-env-secrets -n {{ .Values.namespace }}
 
 The secret should contain:
-  - SECRET_VERIFY_CAPTCHA
-  - NEXT_PUBLIC_SITE_KEY_CAPTCHA
-  - FAUCET_ADDRESS
-  - FAUCET_PRIVATE_KEY
+  - REDIS_PASSWORD
+  - API_KEY
+  - And other application-specific secrets
+{{- end }}
+
+{{- if .Values.autoscaling.enabled }}
+
+Horizontal Pod Autoscaler is enabled:
+  Min replicas: {{ .Values.autoscaling.minReplicas }}
+  Max replicas: {{ .Values.autoscaling.maxReplicas }}
+  Target CPU: {{ .Values.autoscaling.targetCPUUtilizationPercentage }}%
+
+Check HPA status:
+  $ kubectl get hpa -n {{ .Values.namespace }}
+{{- end }}

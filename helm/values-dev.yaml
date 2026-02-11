@@ -1,86 +1,33 @@
-# Development values for rbtc-faucet
-replicaCount: 1
+# Environment-specific values for development
+namespace: rbtcfaucet-dev
 
 image:
-  repository: rbtc-faucet
-  pullPolicy: Always
-  tag: "dev"
+  tag: latest
 
-service:
-  type: NodePort
-  port: 80
-  targetPort: 3000
-
+# You can override specific values for dev environment here
+# Ingress annotations and certificate for dev environment
 ingress:
-  enabled: true
-  className: "nginx"
   annotations:
-    cert-manager.io/cluster-issuer: "letsencrypt-staging"
-    nginx.ingress.kubernetes.io/ssl-redirect: "false"
-  hosts:
-    - host: faucet-dev.rsk.co
-      paths:
-        - path: /
-          pathType: Prefix
-  tls:
-    - secretName: rbtc-faucet-dev-tls
-      hosts:
-        - faucet-dev.rsk.co
-
-resources:
-  limits:
-    cpu: 300m
-    memory: 384Mi
-  requests:
-    cpu: 100m
-    memory: 128Mi
-
-autoscaling:
-  enabled: false
-
-# Development environment variables
-env:
-  # Node / RPC - Testnet
-  RSK_NODE: "https://public-node.testnet.rsk.co"
-
-  # Captcha
-  GOOGLE_CAPTCHA_URL: "https://www.google.com/recaptcha/api/siteverify"
-
-  # Analytics
-  NEXT_PUBLIC_TAG_MANAGER_ID: "NO_ID"
-
-  # Gas & amounts (more generous for testing)
-  GAS_PRICE: "60000000"
-  GAS_LIMIT: "100000"
-  VALUE_TO_DISPENSE: "0.001"
-  PROMO_VALUE_TO_DISPENSE: "0.005"
-
-  # App behavior (less restrictive for dev)
-  FILTER_BY_IP: "false"
-  TIMER_LIMIT: "60000"
-
-  # Promo codes for testing
-  PROMO_CODE: '[{"code":"TEST1","activationDate":"2025-01-01","expirationDate":"2025-12-31","maxDispensableRBTC":10},{"code":"DEV2","activationDate":"2025-01-01","expirationDate":"2025-12-31","maxDispensableRBTC":5}]'
-
-# Secrets for development
+    alb.ingress.kubernetes.io/subnets: subnet-0df5894efda092469,subnet-0429963f680ce39e1
+    alb.ingress.kubernetes.io/wafv2-acl-arn: arn:aws:wafv2:us-east-1:666927241564:regional/webacl/WAF-FOR-FAUCET/4deed37e-e099-4352-bf93-cf8834c46d2d
+  certificateArn: arn:aws:acm:us-east-2:192930478100:certificate/25f971d4-bace-4dd8-b403-c631032a6670
+# Service annotations for dev environment
+service:
+  annotations:
+    external-dns.alpha.kubernetes.io/hostname: "faucet-dev.flyover.iovlabs.net"
+    service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:us-east-1:666927241564:certificate/8c7ee0aa-de4c-4c19-9d1f-bd12e0054553
+# For example:
+# Dev-specific image repository and externalDns values
+image:
+  repository: 666927241564.dkr.ecr.us-east-1.amazonaws.com/rbtcfaucet-dev
+externalDns:
+  txtOwnerId: "faucet-dev"
+  domainFilters:
+    - faucet-dev.rootstock.io
+# replicaCount: 1
+# autoscaling:
+# Required secrets for dev environment
 secrets:
-  existingSecret: "rbtc-faucet-dev-secrets"
-
-# More relaxed probes for development
-livenessProbe:
-  httpGet:
-    path: /
-    port: 3000
-  initialDelaySeconds: 60
-  periodSeconds: 30
-  timeoutSeconds: 10
-  failureThreshold: 5
-
-readinessProbe:
-  httpGet:
-    path: /
-    port: 3000
-  initialDelaySeconds: 30
-  periodSeconds: 10
-  timeoutSeconds: 5
-  failureThreshold: 5
+  SITE_KEY_CAPTCHA: "${SITE_KEY_CAPTCHA}"
+  TAG_MANAGER_ID: "${TAG_MANAGER_ID}"
+#   enabled: false
