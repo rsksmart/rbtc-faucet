@@ -1,0 +1,86 @@
+# Development values for rbtc-faucet
+replicaCount: 1
+
+image:
+  repository: rbtc-faucet
+  pullPolicy: Always
+  tag: "dev"
+
+service:
+  type: NodePort
+  port: 80
+  targetPort: 3000
+
+ingress:
+  enabled: true
+  className: "nginx"
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-staging"
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+  hosts:
+    - host: faucet-dev.rsk.co
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - secretName: rbtc-faucet-dev-tls
+      hosts:
+        - faucet-dev.rsk.co
+
+resources:
+  limits:
+    cpu: 300m
+    memory: 384Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+autoscaling:
+  enabled: false
+
+# Development environment variables
+env:
+  # Node / RPC - Testnet
+  RSK_NODE: "https://public-node.testnet.rsk.co"
+
+  # Captcha
+  GOOGLE_CAPTCHA_URL: "https://www.google.com/recaptcha/api/siteverify"
+
+  # Analytics
+  NEXT_PUBLIC_TAG_MANAGER_ID: "NO_ID"
+
+  # Gas & amounts (more generous for testing)
+  GAS_PRICE: "60000000"
+  GAS_LIMIT: "100000"
+  VALUE_TO_DISPENSE: "0.001"
+  PROMO_VALUE_TO_DISPENSE: "0.005"
+
+  # App behavior (less restrictive for dev)
+  FILTER_BY_IP: "false"
+  TIMER_LIMIT: "60000"
+
+  # Promo codes for testing
+  PROMO_CODE: '[{"code":"TEST1","activationDate":"2025-01-01","expirationDate":"2025-12-31","maxDispensableRBTC":10},{"code":"DEV2","activationDate":"2025-01-01","expirationDate":"2025-12-31","maxDispensableRBTC":5}]'
+
+# Secrets for development
+secrets:
+  existingSecret: "rbtc-faucet-dev-secrets"
+
+# More relaxed probes for development
+livenessProbe:
+  httpGet:
+    path: /
+    port: 3000
+  initialDelaySeconds: 60
+  periodSeconds: 30
+  timeoutSeconds: 10
+  failureThreshold: 5
+
+readinessProbe:
+  httpGet:
+    path: /
+    port: 3000
+  initialDelaySeconds: 30
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 5
