@@ -12,11 +12,7 @@ To learn more about the release, try:
 Application is accessible via AWS ALB Ingress.
 
 {{- if .Values.service.annotations }}
-{{- if index .Values.service.annotations "external-dns.alpha.kubernetes.io/hostname" }}
-
-Application URL:
-  https://{{ index .Values.service.annotations "external-dns.alpha.kubernetes.io/hostname" }}
-{{- end }}
+{{- /* external-dns hostname output removed */ -}}
 {{- end }}
 
 Check ingress status:

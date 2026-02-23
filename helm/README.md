@@ -23,8 +23,7 @@ helm-chart/
     ├── ingress.yaml                    # ALB Ingress configuration
     ├── hpa.yaml                        # Horizontal Pod Autoscaler
     ├── external-secret.yaml            # External Secrets configuration
-    ├── external-dns-rbac.yaml          # External DNS RBAC
-    └── external-dns-deployment.yaml    # External DNS deployment
+    # (external-dns files removed)
 ```
 
 ## Installation
@@ -81,7 +80,7 @@ aws-vault exec as-demos -- helm uninstall rbtcfaucet \
 | `autoscaling.minReplicas` | Minimum replicas | `1` |
 | `autoscaling.maxReplicas` | Maximum replicas | `5` |
 | `externalSecrets.enabled` | Enable External Secrets | `true` |
-| `externalDns.enabled` | Enable External DNS | `true` |
+| (externalDns.enabled removed) |  |  |
 
 ### Environment-specific Values
 

@@ -11,14 +11,7 @@
 - ✅ Configured proper startup delays (60s for liveness, 30s for readiness)
 
 ### 2. External DNS Deployment Issues
-**Problem**: External DNS deployment was timing out due to missing health checks and resource limits.
-
-**Fixed**:
-- ✅ Added resource limits (CPU: 100m/50m, Memory: 128Mi/64Mi)
-- ✅ Added liveness and readiness probes on port 7979
-- ✅ Added security context (non-root user, read-only filesystem)
-- ✅ Added domain filters configuration
-- ✅ Added configurable txt-owner-id
+**Removed: External DNS is no longer managed by this chart.**
 
 ### 3. External Secrets Configuration
 **Problem**: External Secrets templates were missing entirely.
@@ -60,8 +53,7 @@ Before deploying, ensure:
    ```
 
 3. **IAM Roles for Service Accounts (IRSA) Configured**
-   - The `external-secrets-sa` service account needs IAM permissions to read from Secrets Manager
-   - The `external-dns` service account needs IAM permissions to modify Route53
+  - The `external-secrets-sa` service account needs IAM permissions to read from Secrets Manager
 
 4. **ECR Image is Available**
    ```bash
@@ -131,23 +123,7 @@ kubectl get sa external-secrets-sa -n rbtcfaucet-dev -o yaml
 ```
 
 ### Issue: External DNS Not Creating Records
-**Cause**: External DNS cannot access Route53
-
-**Solutions**:
-1. Check external-dns pod logs
-2. Verify IRSA configuration for external-dns
-3. Verify domain filters match your domain
-
-```bash
-# Check external-dns logs
-kubectl logs -l app.kubernetes.io/name=external-dns -n rbtcfaucet-dev
-
-# Verify service account
-kubectl get sa external-dns -n rbtcfaucet-dev -o yaml
-
-# Check if external-dns is running
-kubectl get pods -n rbtcfaucet-dev -l app.kubernetes.io/name=external-dns
-```
+**Removed: External DNS is no longer managed by this chart.**
 
 ### Issue: Health Check Failures
 **Cause**: Application is not responding to health check probes
@@ -225,7 +201,7 @@ watch kubectl get all -n rbtcfaucet-dev
 
 # Check deployment rollout status
 kubectl rollout status deployment/rbtcfaucet -n rbtcfaucet-dev
-kubectl rollout status deployment/external-dns -n rbtcfaucet-dev
+  # (external-dns rollout command removed)
 
 # Check HPA status
 kubectl get hpa -n rbtcfaucet-dev
@@ -251,7 +227,7 @@ replicaCount: 1
 externalSecrets:
   enabled: false  # Use manual secret instead
 
-externalDns:
+  # (externalDns: removed)
   enabled: false  # Skip DNS management for testing
 ```
 
@@ -266,6 +242,6 @@ helm upgrade rbtcfaucet ./helm \
 ## Additional Resources
 
 - [External Secrets Operator Docs](https://external-secrets.io/)
-- [External DNS Documentation](https://github.com/kubernetes-sigs/external-dns)
+  # (External DNS Documentation removed)
 - [Helm Documentation](https://helm.sh/docs/)
 - [AWS EKS Best Practices](https://aws.github.io/aws-eks-best-practices/)

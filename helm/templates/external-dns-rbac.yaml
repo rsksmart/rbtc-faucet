@@ -1,17 +1,30 @@
-{{- if .Values.externalDns.enabled }}
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: {{ .Values.externalDns.serviceAccountName }}
+  name: external-dns
   namespace: {{ .Values.namespace }}
+  labels:
+    app.kubernetes.io/name: external-dns
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: dns
+    app.kubernetes.io/managed-by: Helm
+  annotations:
+    {{- with .Values.externalDns.serviceAccountAnnotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   name: external-dns
+  labels:
+    app.kubernetes.io/name: external-dns
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: dns
+    app.kubernetes.io/managed-by: Helm
 rules:
   - apiGroups: [""]
-    resources: ["services","endpoints","pods","nodes"]
+    resources: ["services","endpoints","pods"]
     verbs: ["get","watch","list"]
   - apiGroups: ["extensions","networking.k8s.io"]
     resources: ["ingresses"]
@@ -19,20 +32,21 @@ rules:
   - apiGroups: [""]
     resources: ["nodes"]
     verbs: ["list","watch"]
-  - apiGroups: ["networking.k8s.io"]
-    resources: ["ingressclasses"]
-    verbs: ["get","list","watch"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
   name: external-dns-viewer
+  labels:
+    app.kubernetes.io/name: external-dns
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: dns
+    app.kubernetes.io/managed-by: Helm
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
   name: external-dns
 subjects:
   - kind: ServiceAccount
-    name: {{ .Values.externalDns.serviceAccountName }}
+    name: external-dns
     namespace: {{ .Values.namespace }}
-{{- end }}

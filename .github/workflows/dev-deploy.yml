@@ -119,17 +119,17 @@ jobs:
         NEXT_PUBLIC_SITE_KEY_CAPTCHA: ${{ secrets.NEXT_PUBLIC_SITE_KEY_CAPTCHA }}
         NEXT_PUBLIC_TAG_MANAGER_ID: ${{ secrets.NEXT_PUBLIC_TAG_MANAGER_ID }}
       run: |
-        envsubst < ./helm/values-dev.yaml > ./helm/values-dev.subst.yaml}
-        export KUBECONFIG=$KUBECONFIG
         helm upgrade --install ${{ env.HELM_RELEASE }} ./helm \
           --kubeconfig /home/runner/.kube/config \
           --namespace ${{ env.NAMESPACE }} \
-          --values ./helm/values-dev.subst.yaml \
+          --values ./helm/values-dev.yaml \
           --set image.tag=$IMAGE_TAG \
           --wait \
-          --timeout 5m
+          --timeout 5m \
+          --debug \
+          --atomic
 
     - name: Verify deployment
       run: |
-        kubectl rollout status deployment/rbtcfaucet-dev -n ${{ env.NAMESPACE }}
+        kubectl rollout status deployment/rbtcfaucet -n ${{ env.NAMESPACE }}
         kubectl get pods -n ${{ env.NAMESPACE }}

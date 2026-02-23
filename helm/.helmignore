@@ -10,6 +10,7 @@
 .hg/
 .hgignore
 .svn/
+templates/NOTES.txt
 # Common backup files
 *.swp
 *.bak

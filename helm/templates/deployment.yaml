@@ -44,9 +44,6 @@ spec:
               value: "production"
             - name: PORT
               value: "{{ .Values.service.targetPort }}"
-          envFrom:
-            - secretRef:
-                name: rbtcfaucet-env-secrets
           livenessProbe:
             httpGet:
               path: /
@@ -76,11 +73,11 @@ spec:
               value: "redis"
             - name: REDIS_PORT
               value: "{{ .Values.redis.port }}"
-            - name: REDIS_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: rbtcfaucet-env-secrets
-                  key: REDIS_PASSWORD
+            # - name: REDIS_PASSWORD
+            #   valueFrom:
+            #     secretKeyRef:
+            #       name: rbtcfaucet-env-secrets
+            #       key: REDIS_PASSWORD
           volumeMounts:
             - mountPath: /data
               name: redis-data

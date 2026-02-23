@@ -8,26 +8,25 @@ image:
 # Ingress annotations and certificate for dev environment
 ingress:
   annotations:
-    alb.ingress.kubernetes.io/subnets: subnet-0df5894efda092469,subnet-0429963f680ce39e1
-    alb.ingress.kubernetes.io/wafv2-acl-arn: arn:aws:wafv2:us-east-1:666927241564:regional/webacl/WAF-FOR-FAUCET/4deed37e-e099-4352-bf93-cf8834c46d2d
-  certificateArn: arn:aws:acm:us-east-2:192930478100:certificate/25f971d4-bace-4dd8-b403-c631032a6670
+    alb.ingress.kubernetes.io/subnets: subnet-0c2188515c8d14ee6 , subnet-0b46bff247c54f4cb , subnet-04f35bd4b9d870aed 
+    #alb.ingress.kubernetes.io/wafv2-acl-arn: arn:aws:wafv2:us-east-1:666927241564:regional/webacl/WAF-FOR-FAUCET/4deed37e-e099-4352-bf93-cf8834c46d2d
+  #certificateArn: arn:aws:acm:us-east-2:339713048882:certificate/cb814123-00f7-4652-8559-02864b8df125
 # Service annotations for dev environment
-service:
-  annotations:
-    external-dns.alpha.kubernetes.io/hostname: "faucet-dev.flyover.iovlabs.net"
-    service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:us-east-1:666927241564:certificate/8c7ee0aa-de4c-4c19-9d1f-bd12e0054553
+#service:
+#  annotations:
+    #external-dns.alpha.kubernetes.io/hostname: "faucet-dev.rootstock.io"
+    #service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:us-east-2:339713048882:certificate/cb814123-00f7-4652-8559-02864b8df125
 # For example:
 # Dev-specific image repository and externalDns values
 image:
-  repository: 666927241564.dkr.ecr.us-east-1.amazonaws.com/rbtcfaucet-dev
+  repository: 192930478100.dkr.ecr.us-east-2.amazonaws.com/rbtcfaucet-dev
 externalDns:
+  enabled: true
+  createServiceAccount: false
   txtOwnerId: "faucet-dev"
   domainFilters:
     - faucet-dev.rootstock.io
+  awsRegion: us-east-2
 # replicaCount: 1
 # autoscaling:
 # Required secrets for dev environment
-secrets:
-  SITE_KEY_CAPTCHA: "${SITE_KEY_CAPTCHA}"
-  TAG_MANAGER_ID: "${TAG_MANAGER_ID}"
-#   enabled: false
