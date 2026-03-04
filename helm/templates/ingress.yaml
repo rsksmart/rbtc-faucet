@@ -2,25 +2,38 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: faucet-ingress
+  name: {{ include "rbtc-faucet.fullname" . }}
   namespace: {{ .Values.namespace }}
+  labels:
+    {{- include "rbtc-faucet.labels" . | nindent 4 }}
   annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: instance
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}]'
+    alb.ingress.kubernetes.io/healthcheck-path: /health
+    alb.ingress.kubernetes.io/healthcheck-protocol: HTTP
+    alb.ingress.kubernetes.io/success-codes: '200'
+    alb.ingress.kubernetes.io/load-balancer-attributes: idle_timeout.timeout_seconds=3600
+    alb.ingress.kubernetes.io/target-group-attributes: stickiness.enabled=true,stickiness.lb_cookie.duration_seconds=86400,deregistration_delay.timeout_seconds=30
+    external-dns.alpha.kubernetes.io/hostname: {{ (index .Values.ingress.hosts 0).host }}
     {{- with .Values.ingress.annotations }}
     {{- toYaml . | nindent 4 }}
-    {{- end }}
-    {{- if .Values.ingress.certificateArn }}
-    alb.ingress.kubernetes.io/certificate-arn: {{ .Values.ingress.certificateArn }}
     {{- end }}
 spec:
   ingressClassName: {{ .Values.ingress.className }}
   rules:
-    - http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: {{ include "rbtcfaucet.fullname" . }}
-                port:
-                  number: {{ .Values.service.port }}
+  {{- range .Values.ingress.hosts }}
+  - host: {{ .host | quote }}
+    http:
+      paths:
+      {{- range .paths }}
+      - path: {{ .path }}
+        pathType: {{ .pathType }}
+        backend:
+          service:
+            name: {{ include "rbtc-faucet.fullname" $ }}
+            port:
+              number: {{ $.Values.service.port }}
+      {{- end }}
+  {{- end }}
 {{- end }}

@@ -1,92 +1,43 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "rbtcfaucet.fullname" . }}
+  name: {{ include "rbtc-faucet.fullname" . }}
   namespace: {{ .Values.namespace }}
   labels:
-    {{- include "rbtcfaucet.labels" . | nindent 4 }}
+    {{- include "rbtc-faucet.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      {{- include "rbtcfaucet.selectorLabels" . | nindent 6 }}
+      {{- include "rbtc-faucet.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
-        {{- include "rbtcfaucet.selectorLabels" . | nindent 8 }}
-        {{- with .Values.labels }}
-        {{- toYaml . | nindent 8 }}
-        {{- end }}
+        {{- include "rbtc-faucet.selectorLabels" . | nindent 8 }}
     spec:
-      securityContext:
-        {{- toYaml .Values.securityContext | nindent 8 }}
       containers:
-        - name: rbtcfaucet
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
-          resources:
-            {{- toYaml .Values.resources | nindent 12 }}
-          ports:
-            - name: http
-              containerPort: {{ .Values.service.targetPort }}
-              protocol: TCP
-          securityContext:
-            {{- toYaml .Values.containerSecurityContext | nindent 12 }}
-          volumeMounts:
-            - mountPath: /tmp
-              name: app-tmp
-            - mountPath: /var/tmp
-              name: app-var-tmp
-          env:
-            - name: ARCH
-              value: "amd64"
-            - name: NODE_ENV
-              value: "production"
-            - name: PORT
-              value: "{{ .Values.service.targetPort }}"
-          livenessProbe:
-            httpGet:
-              path: /
-              port: {{ .Values.service.targetPort }}
-            initialDelaySeconds: 60
-            periodSeconds: 10
-            timeoutSeconds: 5
-            failureThreshold: 3
-          readinessProbe:
-            httpGet:
-              path: /
-              port: {{ .Values.service.targetPort }}
-            initialDelaySeconds: 30
-            periodSeconds: 5
-            timeoutSeconds: 3
-            failureThreshold: 3
-        - name: redis
-          image: "{{ .Values.redis.image.repository }}:{{ .Values.redis.image.tag }}"
-          resources:
-            {{- toYaml .Values.redisResources | nindent 12 }}
-          ports:
-            - name: redis
-              containerPort: {{ .Values.redis.port }}
-              protocol: TCP
-          env:
-            - name: REDIS_HOST
-              value: "redis"
-            - name: REDIS_PORT
-              value: "{{ .Values.redis.port }}"
-            # - name: REDIS_PASSWORD
-            #   valueFrom:
-            #     secretKeyRef:
-            #       name: rbtcfaucet-env-secrets
-            #       key: REDIS_PASSWORD
-          volumeMounts:
-            - mountPath: /data
-              name: redis-data
-          securityContext:
-            {{- toYaml .Values.redisSecurityContext | nindent 12 }}
-      volumes:
-        - name: redis-data
-          emptyDir: {}
-        - name: app-tmp
-          emptyDir: {}
-        - name: app-var-tmp
-          emptyDir: {}
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        ports:
+        - name: http
+          containerPort: {{ .Values.service.targetPort }}
+          protocol: TCP
+        env:
+        - name: PORT
+          value: "{{ .Values.service.targetPort }}"
+        - name: NODE_ENV
+          value: "development"
+        {{- if and .Values.externalSecrets .Values.externalSecrets.enabled }}
+        - name: WS_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: {{ include "rbtc-faucet.fullname" . }}-secrets
+              key: ws-secret
+        {{- end }}
+        livenessProbe:
+          {{- toYaml .Values.livenessProbe | nindent 10 }}
+        readinessProbe:
+          {{- toYaml .Values.readinessProbe | nindent 10 }}
+        resources:
+          {{- toYaml .Values.resources | nindent 10 }}

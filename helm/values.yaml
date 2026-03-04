@@ -1,12 +1,14 @@
-nameOverride: ""
-fullnameOverride: "rbtcfaucet"
-
-namespace: rbtcfaucet-dev
+replicaCount: 2
 
 image:
-  # repository is set in values-dev.yaml for dev
-  tag: latest
   pullPolicy: Always
+
+namespace: rbtc-faucet
+
+service:
+  type: NodePort
+  port: 3000
+  targetPort: 3000
 
 redis:
   image:
@@ -16,68 +18,36 @@ redis:
 
 replicaCount: 1
 
+ingress:
+  enabled: false
+  className: alb
+  annotations: {}
+  hosts:
+    - host: faucet.rootstock.io
+      paths:
+        - path: /
+          pathType: Prefix
+
 resources:
   requests:
-    cpu: "250m"
+    cpu: 100m
+    memory: 256Mi
   limits:
-    cpu: "500m"
+    cpu: 500m
+    memory: 512Mi
 
-redisResources:
-  requests:
-    cpu: "250m"
-  limits:
-    cpu: "500m"
+livenessProbe:
+  httpGet:
+    path: /health
+    port: 3000
+  initialDelaySeconds: 30
+  periodSeconds: 10
 
-service:
-  type: NodePort
-  port: 3000
-  targetPort: 3000
+readinessProbe:
+  httpGet:
+    path: /health
+    port: 3000
+  initialDelaySeconds: 10
+  periodSeconds: 5
 
-ingress:
-  enabled: true
-  className: alb
-  annotations:
-    alb.ingress.kubernetes.io/scheme: internet-facing
-    alb.ingress.kubernetes.io/target-type: instance
-    alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS":443}]'
-    
-autoscaling:
-  enabled: true
-  minReplicas: 1
-  maxReplicas: 5
-  targetCPUUtilizationPercentage: 70
 
- # externalSecrets block removed
-
-securityContext:
-  runAsNonRoot: true
-  fsGroup: 1000
-
-containerSecurityContext:
-  readOnlyRootFilesystem: false
-  runAsNonRoot: true
-  runAsUser: 1000
-  runAsGroup: 1000
-
-redisSecurityContext:
-  readOnlyRootFilesystem: false
-  runAsNonRoot: true
-  runAsUser: 999
-  runAsGroup: 999
-
-labels:
-  app.kubernetes.io/created-by: platform-eng
-  app.kubernetes.io/type: app
-
-serviceAccount:
-  create: false
-  annotations: {}
-  name: ""
-
-externalDns:
-  enabled: true
-  createServiceAccount: true
-  txtOwnerId: "rbtcfaucet"
-  domainFilters:
-    - rootstock.io
-  awsRegion: us-east-2
