@@ -7,6 +7,7 @@ metadata:
   labels:
     {{- include "rbtc-faucet.labels" . | nindent 4 }}
   annotations:
+    alb.ingress.kubernetes.io/group.name: {{ include "rbtc-faucet.fullname" . }}
     alb.ingress.kubernetes.io/scheme: internet-facing
     alb.ingress.kubernetes.io/target-type: instance
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}]'
