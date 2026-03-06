@@ -21,6 +21,7 @@ replicaCount: 1
 ingress:
   enabled: false
   className: alb
+  certificateArn: ""
   annotations: {}
   hosts:
     - host: faucet.rootstock.io

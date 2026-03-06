@@ -7,6 +7,7 @@ namespace: rbtcfaucet-dev
 ingress:
   enabled: true
   className: alb
+  certificateArn: "arn:aws:acm:us-east-2:192930478100:certificate/38b14b15-102e-470b-aae3-67cbe4458f30"
   hosts:
     - host: faucet-dev.rootstock.io
       paths:
