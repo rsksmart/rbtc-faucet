@@ -24,8 +24,6 @@ env:
   IMAGE_TAG: ${{ github.sha }}
   NAMESPACE: rbtcfaucet-dev
   HELM_RELEASE: rbtcfaucet-dev
-  SITE_KEY_CAPTCHA: ${{ secrets.SITE_KEY_CAPTCHA }}
-  TAG_MANAGER_ID: ${{ secrets.TAG_MANAGER_ID }}
 
 jobs:
   build-and-push:
@@ -62,26 +60,26 @@ jobs:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
         IMAGE_TAG: ${{ env.IMAGE_TAG }}
-        SITE_KEY_CAPTCHA: ${{ env.SITE_KEY_CAPTCHA }}
-        TAG_MANAGER_ID: ${{ env.TAG_MANAGER_ID }}
+        NEXT_PUBLIC_SITE_KEY_CAPTCHA: ${{ secrets.NEXT_PUBLIC_SITE_KEY_CAPTCHA }}
+        NEXT_PUBLIC_TAG_MANAGER_ID: ${{ secrets.NEXT_PUBLIC_TAG_MANAGER_ID }}
       run: |
         # Determine branch name for tagging
         BRANCH_NAME=$(echo ${GITHUB_REF#refs/heads/} | sed 's/[^a-zA-Z0-9]/-/g' | tr '[:upper:]' '[:lower:]')
-        
+
         # Build tags array
         TAGS="-t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -t $ECR_REGISTRY/$ECR_REPOSITORY:latest"
-        
+
         # Add latest tag for main branch
         if [ "${{ github.ref }}" = "refs/heads/main" ]; then
           TAGS="$TAGS -t $ECR_REGISTRY/$ECR_REPOSITORY:latest"
         fi
-        
+
         # Build and push image with all tags using buildx
         docker buildx build --platform linux/amd64 \
-          --build-arg SITE_KEY_CAPTCHA="$SITE_KEY_CAPTCHA" \
-          --build-arg TAG_MANAGER_ID="$TAG_MANAGER_ID" \
+          --build-arg NEXT_PUBLIC_SITE_KEY_CAPTCHA="$NEXT_PUBLIC_SITE_KEY_CAPTCHA" \
+          --build-arg NEXT_PUBLIC_TAG_MANAGER_ID="$NEXT_PUBLIC_TAG_MANAGER_ID" \
           --push $TAGS .
-        
+
         echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
 
   deploy:
@@ -113,17 +111,44 @@ jobs:
         aws eks update-kubeconfig --region ${{ env.AWS_REGION }} --name ${{ secrets.EKS_CLUSTER_NAME }}
         echo $KUBECONFIG # Debug: Print kubeconfig path
 
-    - name: Deploy to EKS using Helm
+    - name: Generate environment values file
       env:
-        IMAGE_TAG: ${{ github.sha }}
+        RSK_NODE: ${{ secrets.RSK_NODE }}
+        GOOGLE_CAPTCHA_URL: ${{ secrets.GOOGLE_CAPTCHA_URL }}
         NEXT_PUBLIC_SITE_KEY_CAPTCHA: ${{ secrets.NEXT_PUBLIC_SITE_KEY_CAPTCHA }}
+        SECRET_VERIFY_CAPTCHA: ${{ secrets.SECRET_VERIFY_CAPTCHA }}
         NEXT_PUBLIC_TAG_MANAGER_ID: ${{ secrets.NEXT_PUBLIC_TAG_MANAGER_ID }}
+        FAUCET_ADDRESS: ${{ secrets.FAUCET_ADDRESS }}
+        FAUCET_PRIVATE_KEY: ${{ secrets.FAUCET_PRIVATE_KEY }}
+        GAS_PRICE: ${{ secrets.GAS_PRICE }}
+        GAS_LIMIT: ${{ secrets.GAS_LIMIT }}
+        VALUE_TO_DISPENSE: ${{ secrets.VALUE_TO_DISPENSE }}
+        PROMO_VALUE_TO_DISPENSE: ${{ secrets.PROMO_VALUE_TO_DISPENSE }}
+        FILTER_BY_IP: ${{ secrets.FILTER_BY_IP }}
+        TIMER_LIMIT: ${{ secrets.TIMER_LIMIT }}
+        PROMO_CODE: ${{ secrets.PROMO_CODE }}
+      run: |
+        python3 -c "
+        import json, os
+        keys = [
+          'RSK_NODE', 'GOOGLE_CAPTCHA_URL', 'NEXT_PUBLIC_SITE_KEY_CAPTCHA',
+          'SECRET_VERIFY_CAPTCHA', 'NEXT_PUBLIC_TAG_MANAGER_ID', 'FAUCET_ADDRESS',
+          'FAUCET_PRIVATE_KEY', 'GAS_PRICE', 'GAS_LIMIT', 'VALUE_TO_DISPENSE',
+          'PROMO_VALUE_TO_DISPENSE', 'FILTER_BY_IP', 'TIMER_LIMIT', 'PROMO_CODE'
+        ]
+        env = {k: os.environ.get(k, '') for k in keys}
+        with open('/tmp/env-values.json', 'w') as f:
+            json.dump({'env': env}, f)
+        "
+
+    - name: Deploy to EKS using Helm
       run: |
         helm upgrade --install ${{ env.HELM_RELEASE }} ./helm \
           --kubeconfig /home/runner/.kube/config \
           --namespace ${{ env.NAMESPACE }} \
           --values ./helm/values-dev.yaml \
-          --set image.tag=$IMAGE_TAG \
+          -f /tmp/env-values.json \
+          --set image.tag=${{ github.sha }} \
           --wait \
           --timeout 5m \
           --debug \

@@ -13,6 +13,15 @@ RUN npm ci --only=production
 # Rebuild the source code only when needed
 FROM base AS builder
 WORKDIR /app
+
+# Declare build args for NEXT_PUBLIC_* vars (inlined at build time by Next.js)
+ARG NEXT_PUBLIC_SITE_KEY_CAPTCHA
+ARG NEXT_PUBLIC_TAG_MANAGER_ID
+
+# Set them as env vars so Next.js picks them up during build
+ENV NEXT_PUBLIC_SITE_KEY_CAPTCHA=$NEXT_PUBLIC_SITE_KEY_CAPTCHA
+ENV NEXT_PUBLIC_TAG_MANAGER_ID=$NEXT_PUBLIC_TAG_MANAGER_ID
+
 COPY package.json package-lock.json ./
 COPY .env.example ./.env
 RUN npm ci

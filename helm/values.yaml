@@ -5,6 +5,8 @@ image:
 
 namespace: rbtc-faucet
 
+env: {}
+
 service:
   type: NodePort
   port: 3000

@@ -27,7 +27,11 @@ spec:
         - name: PORT
           value: "{{ .Values.service.targetPort }}"
         - name: NODE_ENV
-          value: "development"
+          value: "production"
+        {{- range $key, $value := .Values.env }}
+        - name: {{ $key }}
+          value: {{ $value | quote }}
+        {{- end }}
         {{- if and .Values.externalSecrets .Values.externalSecrets.enabled }}
         - name: WS_SECRET
           valueFrom:
