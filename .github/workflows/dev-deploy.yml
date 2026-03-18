@@ -6,7 +6,7 @@ on:
       - main
   pull_request:
     branches:
-      - features/helm
+      - main
   workflow_dispatch:
     inputs:
       environment:
