@@ -1,0 +1,6 @@
+apiVersion: v2
+name: rbtcfaucet
+description: A Helm chart for RBTC Faucet application
+type: application
+version: 0.1.0
+appVersion: "latest"

@@ -1,0 +1,60 @@
+replicaCount: 2
+
+image:
+  pullPolicy: Always
+
+namespace: rbtc-faucet
+
+env: {}
+
+service:
+  type: NodePort
+  port: 3000
+  targetPort: 3000
+
+redis:
+  replicaCount: 1
+  image:
+    repository: redis
+    tag: latest
+  port: 6379
+
+ingress:
+  enabled: false
+  className: alb
+  certificateArn: ""
+  annotations: {}
+  hosts:
+    - host: faucet.rootstock.io
+      paths:
+        - path: /
+          pathType: Prefix
+
+targetGroupBinding:
+  enabled: false
+  targetGroupArn: ""
+  targetType: instance
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 256Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi
+
+livenessProbe:
+  httpGet:
+    path: /health
+    port: 3000
+  initialDelaySeconds: 30
+  periodSeconds: 10
+
+readinessProbe:
+  httpGet:
+    path: /health
+    port: 3000
+  initialDelaySeconds: 10
+  periodSeconds: 5
+
+
