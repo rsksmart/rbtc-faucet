@@ -66,12 +66,14 @@ jobs:
         # Determine branch name for tagging
         BRANCH_NAME=$(echo ${GITHUB_REF#refs/heads/} | sed 's/[^a-zA-Z0-9]/-/g' | tr '[:upper:]' '[:lower:]')
 
-        # Build tags array
-        TAGS="-t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -t $ECR_REGISTRY/$ECR_REPOSITORY:latest"
+        # Build tags array: always tag with the commit SHA
+        TAGS="-t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
 
-        # Add latest tag for main branch
+        # Tag as latest only for main; otherwise use a branch-based tag
         if [ "${{ github.ref }}" = "refs/heads/main" ]; then
           TAGS="$TAGS -t $ECR_REGISTRY/$ECR_REPOSITORY:latest"
+        else
+          TAGS="$TAGS -t $ECR_REGISTRY/$ECR_REPOSITORY:$BRANCH_NAME"
         fi
 
         # Build and push image with all tags using buildx
