@@ -3,7 +3,7 @@ name: Build and Deploy to k8s with helm
 on:
   push:
     branches:
-      - features/helm
+      - main
   pull_request:
     branches:
       - features/helm
