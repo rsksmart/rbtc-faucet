@@ -136,7 +136,10 @@ jobs:
           'FAUCET_PRIVATE_KEY', 'GAS_PRICE', 'GAS_LIMIT', 'VALUE_TO_DISPENSE',
           'PROMO_VALUE_TO_DISPENSE', 'FILTER_BY_IP', 'TIMER_LIMIT', 'PROMO_CODE'
         ]
-        env = {k: os.environ.get(k, '') for k in keys}
+        missing = [k for k in keys if not os.environ.get(k)]
+        if missing:
+            raise SystemExit(f'Missing required environment variables for env-values.json: {\", \".join(missing)}')
+        env = {k: os.environ[k] for k in keys}
         with open('/tmp/env-values.json', 'w') as f:
             json.dump({'env': env}, f)
         "
