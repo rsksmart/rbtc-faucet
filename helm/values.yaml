@@ -13,12 +13,11 @@ service:
   targetPort: 3000
 
 redis:
+  replicaCount: 1
   image:
     repository: redis
     tag: latest
   port: 6379
-
-replicaCount: 1
 
 ingress:
   enabled: false
