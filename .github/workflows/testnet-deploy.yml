@@ -10,7 +10,7 @@ on:
       environment:
         description: 'Environment to deploy to'
         required: true
-        default: 'testnet'
+        default: 'production'
         type: choice
         options:
           - testnet
