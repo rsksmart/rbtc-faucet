@@ -30,7 +30,7 @@ jobs:
       contents: read
     name: Build and Push Docker Image
     runs-on: ubuntu-latest
-    environment: testnet
+    environment: production
     outputs:
       image-uri: ${{ steps.build-image.outputs.image }}
 
