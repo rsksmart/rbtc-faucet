@@ -149,7 +149,7 @@ jobs:
         helm upgrade --install ${{ env.HELM_RELEASE }} ./helm \
           --kubeconfig /home/runner/.kube/config \
           --namespace ${{ env.NAMESPACE }} \
-          --values ./helm/values-testnet.yaml \
+          --values ./helm/values-production.yaml \
           -f /tmp/env-values.json \
           --set image.tag=${{ github.sha }} \
           --wait \
