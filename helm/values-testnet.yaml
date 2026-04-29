@@ -2,7 +2,7 @@ image:
   repository: 192930478100.dkr.ecr.us-east-2.amazonaws.com/rbtcfaucet
   tag: latest
 
-namespace: rbtcfaucet-testnet
+namespace: rbtcfaucet-production
 
 ingress:
   enabled: false
