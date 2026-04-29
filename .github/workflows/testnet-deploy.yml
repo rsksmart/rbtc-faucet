@@ -21,7 +21,7 @@ env:
   ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
   IMAGE_TAG: ${{ github.sha }}
   NAMESPACE: rbtcfaucet-production
-  HELM_RELEASE: rbtcfaucet-testnet
+  HELM_RELEASE: rbtcfaucet-production
 
 jobs:
   build-and-push:
