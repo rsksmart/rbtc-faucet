@@ -10,10 +10,10 @@ on:
       environment:
         description: 'Environment to deploy to'
         required: true
-        default: 'production'
+        default: 'prod'
         type: choice
         options:
-          - production
+          - prod
 
 env:
   AWS_REGION: us-east-2
@@ -85,7 +85,7 @@ jobs:
     name: Deploy to Kubernetes
     runs-on: ubuntu-latest
     needs: build-and-push
-    environment: production
+    environment: prod
 
     steps:
     - name: Checkout code
