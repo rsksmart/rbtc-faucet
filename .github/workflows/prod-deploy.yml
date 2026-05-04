@@ -8,7 +8,6 @@ on:
       - testnet
       - features/testnet-deploy
       - features/prod-deploy
-      - main
   workflow_dispatch:
     inputs:
       environment:
@@ -23,7 +22,7 @@ env:
   AWS_REGION: us-east-2
   ECR_REGISTRY: ${{ secrets.ECR_REGISTRY }}
   ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
-  IMAGE_TAG: ${{ github.ref_type == 'tag' && github.ref_name || github.sha }}
+  IMAGE_TAG: ${{ github.sha }}
   NAMESPACE: rbtcfaucet-production
   HELM_RELEASE: rbtcfaucet-production
 
@@ -65,12 +64,13 @@ jobs:
         NEXT_PUBLIC_SITE_KEY_CAPTCHA: ${{ secrets.NEXT_PUBLIC_SITE_KEY_CAPTCHA }}
         NEXT_PUBLIC_TAG_MANAGER_ID: ${{ secrets.NEXT_PUBLIC_TAG_MANAGER_ID }}
       run: |
+        BRANCH_NAME=$(echo ${GITHUB_REF#refs/heads/} | sed 's/[^a-zA-Z0-9]/-/g' | tr '[:upper:]' '[:lower:]')
+
         TAGS="-t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
 
-        if [ "${{ github.ref_type }}" = "tag" ]; then
+        if [ "${{ github.ref }}" = "refs/heads/testnet" ]; then
           TAGS="$TAGS -t $ECR_REGISTRY/$ECR_REPOSITORY:latest"
         else
-          BRANCH_NAME=$(echo ${GITHUB_REF#refs/heads/} | sed 's/[^a-zA-Z0-9]/-/g' | tr '[:upper:]' '[:lower:]')
           TAGS="$TAGS -t $ECR_REGISTRY/$ECR_REPOSITORY:$BRANCH_NAME"
         fi
 
@@ -154,7 +154,7 @@ jobs:
           --namespace ${{ env.NAMESPACE }} \
           --values ./helm/values-production.yaml \
           -f /tmp/env-values.json \
-          --set image.tag=${{ env.IMAGE_TAG }} \
+          --set image.tag=${{ github.sha }} \
           --wait \
           --timeout 5m \
           --debug \
