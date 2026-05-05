@@ -6,6 +6,7 @@ namespace: rbtcfaucet-production
 
 ingress:
   enabled: false
+  wafAclArn: "arn:aws:wafv2:us-east-2:192930478100:regional/webacl/k8sfaucet-waf-prod-blocking/48d39d33-3f3b-431b-947e-f6e252b0e70b"
 
 targetGroupBinding:
   enabled: true
