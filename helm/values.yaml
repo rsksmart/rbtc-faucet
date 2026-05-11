@@ -23,6 +23,7 @@ ingress:
   enabled: false
   className: alb
   certificateArn: ""
+  wafAclArn: ""
   annotations: {}
   hosts:
     - host: faucet.rootstock.io
