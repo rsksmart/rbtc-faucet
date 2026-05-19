@@ -69,7 +69,7 @@ function Container() {
       });
     } catch (e) {
       console.error(e);
-      Swal.fire({ title: 'Error', icon: 'error', text: 'Unexpected error, please try again later.' });
+      Swal.fire({ title: 'Error', icon: 'error', text: 'An unexpected error occurred. Please try again in a few minutes.' });
     }
   };
   

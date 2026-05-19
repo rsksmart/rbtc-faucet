@@ -1,6 +1,6 @@
 import { getServerEnv } from '@/constants';
 import { CaptchaSolutionRequest, CaptchaSolutionResponse } from '../types/types';
-import logger from './logger';
+import { logFaucetError } from './logger';
 import axios from 'axios';
 
 const serverEnv = getServerEnv();
@@ -13,8 +13,6 @@ class CaptchaSolver {
 
       const url = serverEnv.GOOGLE_CAPTCHA_URL;
 
-      logger.event('checking solution against captcha api, POST ' + url);
-
       const res = await axios.post(url, postData, {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
@@ -22,11 +20,9 @@ class CaptchaSolver {
       });
       const result: CaptchaSolutionResponse = res?.data;
 
-      logger.event('captcha solution response ' + JSON.stringify(result));
-
       return result;
     } catch (e) {
-      logger.error(e);
+      logFaucetError('captcha.verify_request_failed', e);
       throw new Error(`${e}`);
     }
   }

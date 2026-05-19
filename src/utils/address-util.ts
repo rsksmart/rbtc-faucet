@@ -1,5 +1,6 @@
-import logger from './logger';
 import Resolver from '@rsksmart/rns-resolver.js'
+
+export const INVALID_RNS = 'INVALID RNS';
 
 class AddressUtil {
   constructor() {}
@@ -16,10 +17,8 @@ class AddressUtil {
         }
         const address = await resolver.addr(frontendAddress);
         return address
-      } catch(e) {
-        logger.error(`Couldn't resolve address for this rnsAlias: ${frontendAddress}`);
-        logger.error(e);
-        return 'INVALID RNS';
+      } catch {
+        return INVALID_RNS;
       }
     } else {
       return frontendAddress

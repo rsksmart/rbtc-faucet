@@ -20,21 +20,21 @@ interface ICarousel {
 const Carousel = () => {
   const items: ICarousel[] = [
     {
-      link: 'https://developers.rsk.co/develop/apps/wallets/',
+      link: 'https://dev.rootstock.io/dev-tools/wallets/',
       img: WalleIcon.src,
       title: 'Wallets',
       backgroundColor: 'black',
       description: 'Try Rootstock with these wallets',
     },
     {
-      link: 'https://developers.rsk.co/tutorials/',
+      link: 'https://dev.rootstock.io/resources/tutorials/',
       img: TutorialIcon.src,
       title: 'Tutorials',
       backgroundColor: '#f26122',
       description: 'Read and learn about how to develop Dapps on Rootstock',
     },
     {
-      link: 'https://developers.rsk.co/',
+      link: 'https://dev.rootstock.io/',
       img: DevportalIcon.src,
       title: 'DevPortal',
       backgroundColor: '#00b41f',
