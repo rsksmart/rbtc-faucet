@@ -21,8 +21,6 @@ on:
 
 env:
   AWS_REGION: us-east-2
-  ECR_REGISTRY: ${{ secrets.ECR_REGISTRY }}
-  ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
   IMAGE_TAG: ${{ github.ref_type == 'tag' && github.ref_name || github.sha }}
   NAMESPACE: rbtcfaucet-production
   HELM_RELEASE: rbtcfaucet-production
@@ -108,12 +106,7 @@ jobs:
     - name: Update kubeconfig for EKS
       run: |
         aws eks update-kubeconfig --region ${{ env.AWS_REGION }} --name ${{ secrets.EKS_CLUSTER_NAME }}
-    
-    - name: Debug - check caller identity                                                                                                                                                 
-      run: |        
-        aws sts get-caller-identity
-        kubectl auth can-i get pods -n rbtcfaucet-production     
-
+      
     - name: Generate environment values file
       env:
         RSK_NODE: ${{ secrets.RSK_NODE }}
@@ -147,6 +140,22 @@ jobs:
             json.dump({'env': env}, f)
         "
 
+    - name: Debug - verify env values are environment-specific
+      run: |
+        echo "GitHub environment: ${{ vars.GITHUB_ENVIRONMENT || 'prod' }}"
+        echo "Workflow: ${{ github.workflow }}"
+        echo "env-values.json hash:"
+        sha256sum /tmp/env-values.json
+        echo "Keys present:"
+        python3 -c "
+        import json, hashlib
+        with open('/tmp/env-values.json') as f:
+            data = json.load(f)
+        for k, v in data['env'].items():
+            h = hashlib.sha256(v.encode()).hexdigest()[:8]
+            print(f'  {k}: len={len(v)}, hash_prefix={h}')
+        "
+
     - name: Deploy to EKS using Helm
       run: |
         helm upgrade --install ${{ env.HELM_RELEASE }} ./helm \
@@ -157,7 +166,6 @@ jobs:
           --set image.tag=${{ env.IMAGE_TAG }} \
           --wait \
           --timeout 5m \
-          --debug \
           --atomic
 
     - name: Verify deployment
