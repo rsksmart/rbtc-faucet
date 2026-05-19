@@ -3,7 +3,7 @@ import { headers } from 'next/headers';
 import AddressUtil from '../../utils/address-util';
 import Web3 from 'web3';
 import { CaptchaSolutionRequest, CaptchaSolutionResponse, DispenseResponse, FaucetHistory, TxParameters } from '@/types/types';
-import logger from '@/utils/logger';
+import { DispenseLogFields, hexValueToRbtc, logDispense, logFaucetError, logFaucetEvent } from '@/utils/logger';
 import CaptchaSolver from '@/utils/captcha-solver';
 import ValidationStatus from '@/model/validation-status';
 import { CronJob } from 'cron';
@@ -30,17 +30,15 @@ new CronJob(
     //This job will begin when the first user calls dispense api
     //Runs every day at 12:00:00 AM. == 00:00:00 HS
     try {
-      logger.event('restarting faucet history...');
       const faucetHistory = {};
       saveFaucetHistory(faucetHistory);
-      logger.success('faucet history has been restarted succesfuly!');
-    } catch {
-      logger.error('there was a problem with faucet history restart');
+      logFaucetEvent('faucet_history.reset', { status: 'success' });
+    } catch (err) {
+      logFaucetError('faucet_history.reset', err, { status: 'failure' });
     }
   },
   () => {
-    //This function is executed when the job stops
-    logger.event('faucet history restart job has been stopped');
+    logFaucetEvent('faucet_history.reset_job_stopped');
   },
   true /* Start the job right now */,
   'America/Los_Angeles' /* Time zone of this job. */
@@ -52,37 +50,59 @@ const frontendText = new FrontendText();
 const TESTNET_CHAIN_ID = 31;
 
 export async function dispense(data: IData) {
+  const startedAt = Date.now();
   const faucetHistory: FaucetHistory = loadFaucetHistory();
   const { address, captcha, promoCode, isMainnetRns } = data;
 
   const headersList = await headers();
-  const ip: string = headersList.get('x-forwarded-for') || headersList.get('x-user-ip') as string;
-  logger.event('IP ' + ip);
+  const ip: string = headersList.get('x-forwarded-for') || headersList.get('x-user-ip') as string || 'unknown';
   const faucetBalance: number = Number(await web3.eth.getBalance(serverEnv.FAUCET_ADDRESS));
+  const rnsDomain = address.includes('.rsk') ? address : undefined;
+
+  const logOutcome = (
+    fields: Omit<DispenseLogFields, 'event' | 'ip' | 'promoCode' | 'isMainnetRns' | 'rnsDomain' | 'to' | 'durationMs'> & { to?: string }
+  ) => {
+    const { to: toAddress, ...rest } = fields;
+    logDispense({
+      event: 'dispense',
+      ip,
+      promoCode: promoCode || undefined,
+      isMainnetRns,
+      rnsDomain,
+      durationMs: Date.now() - startedAt,
+      to: toAddress ?? address,
+      ...rest,
+    });
+  };
+
   try {
 
     const dispenseAddress: string = await addressUtil.retriveAddressFromFrontend(address, isMainnetRns);
     const captchaSolutionRequest: CaptchaSolutionRequest = captcha;
 
-    logger.event('dispensing to ' + dispenseAddress);
-    logger.event('promo code: ' + promoCode);
-    logger.event('captcha ' + JSON.stringify(captchaSolutionRequest));
-
     const captchaSolutionResponse: CaptchaSolutionResponse = await captchaSolver.solve(captchaSolutionRequest);
+    const captchaVerified = captchaSolutionResponse.success;
+
     //Validations
     //each validation will return an error message, if it success it'll return an empty string (empty error message)
     const validationStatus: ValidationStatus = runValidations(
       captchaSolutionResponse,
       dispenseAddress,
+      address,
       faucetBalance,
-      ip!,
+      ip,
       promoCode,
       faucetHistory,
       isMainnetRns
     );
 
     if (!validationStatus.valid()) {
-      validationStatus.logErrors();
+      logOutcome({
+        status: 'validation_failed',
+        to: dispenseAddress,
+        captchaVerified,
+        errorMessages: validationStatus.errorMessages,
+      });
 
       const data: DispenseResponse = {
         title: 'Error',
@@ -96,8 +116,7 @@ export async function dispense(data: IData) {
       const fee = await estimationFee(dispenseAddress);
       const txParametersGenerator = new TxParametersGenerator();
       const txParameters: TxParameters = await txParametersGenerator.generate(dispenseAddress, web3, fee, promoCode);
-
-      logger.txParameters(txParameters);
+      const valueRbtc = hexValueToRbtc(txParameters.value);
 
       const account = web3.eth.accounts.privateKeyToAccount('0x' + serverEnv.FAUCET_PRIVATE_KEY);
       web3.eth.accounts.wallet.add(account);
@@ -114,20 +133,24 @@ export async function dispense(data: IData) {
       );
 
       const txHash = signedTx.transactionHash;
-      logger.info('encodedTx ' + signedTx.rawTransaction);
       if(!txHash || !signedTx.rawTransaction) {
-        logger.error('Error produced after sending a signed transaction.');
+        logOutcome({
+          status: 'failure',
+          to: dispenseAddress,
+          from: txParameters.from,
+          valueRbtc,
+          captchaVerified,
+          errorMessages: ['transaction_signing_failed'],
+        });
         const data: DispenseResponse = {
           title: 'Error',
-          text: 'Something went wrong, please try again in a while',
+          text: 'We could not prepare your transaction. Please try again in a few minutes.',
           type: 'error',
           resetCaptcha: true
         };
         filterAddresses(dispenseAddress, ip, promoCode);
-        logger.event('Sending response ' + JSON.stringify(data));
         return data;
       }
-      logger.dispensed(dispenseAddress, txHash);
 
       try {
         const currentAddress = faucetHistory[dispenseAddress];
@@ -138,8 +161,14 @@ export async function dispense(data: IData) {
         faucetHistory[dispenseAddress] = currentAddress;
         saveFaucetHistory(faucetHistory);
 
-        logger.success('Transaction succesfuly mined!');
-        logger.success('Retrived this receipt');
+        logOutcome({
+          status: 'success',
+          to: dispenseAddress,
+          from: txParameters.from,
+          valueRbtc,
+          txHash,
+          captchaVerified,
+        });
 
         const data: DispenseResponse = {
           txHash,
@@ -153,8 +182,16 @@ export async function dispense(data: IData) {
         return data
       } catch (error) {
         filterAddresses(dispenseAddress, ip, promoCode);
-        logger.error('Error produced after sending a signed transaction.');
-        logger.error(error);
+        logOutcome({
+          status: 'failure',
+          to: dispenseAddress,
+          from: txParameters.from,
+          valueRbtc,
+          txHash,
+          captchaVerified,
+          err: error,
+          errorMessages: ['transaction_broadcast_failed'],
+        });
 
         const data: DispenseResponse = {
           title: 'Error',
@@ -167,16 +204,18 @@ export async function dispense(data: IData) {
       }
     }
   } catch (e) {
-    logger.error(e);
+    logOutcome({
+      status: 'error',
+      err: e,
+    });
 
     const data: DispenseResponse = {
       title: 'Error',
-      text: 'Something went wrong, please try again in a while',
+      text: 'An unexpected error occurred. Please try again in a few minutes.',
       type: 'error',
       resetCaptcha: true
     };
     filterAddresses(address, ip, promoCode);
-    logger.event('Sending response ' + JSON.stringify(data));
     return data;
   }
 
@@ -185,6 +224,7 @@ export async function dispense(data: IData) {
 const runValidations = (
   captchaSolutionResponse: CaptchaSolutionResponse,
   dispenseAddress: string,
+  inputAddress: string,
   faucetBalance: number,
   ip: string,
   promoCode: string | undefined,
@@ -194,7 +234,7 @@ const runValidations = (
   const validations: (() => string)[] = [
     () => captchaRejected(captchaSolutionResponse),
     () => alreadyDispensed(dispenseAddress, ip, faucetHistory, promoCode),
-    () => invalidAddress(dispenseAddress, isMainnetRns),
+    () => invalidAddress(dispenseAddress, inputAddress, isMainnetRns),
     () => insuficientFunds(faucetBalance)
   ];
   const errorMessages: string[] = validations.map(validate => validate()).filter(e => e != '' && e != '-');
@@ -227,5 +267,4 @@ export async function estimationFee(dispenseAddress:string) {
   const estimatedCost = BigInt(gasEstimate) * BigInt(gasPrice);
   return estimatedCost || BigInt(0);
 }
-
 

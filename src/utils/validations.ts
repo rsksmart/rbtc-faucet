@@ -2,29 +2,43 @@ import { isValidAddress } from '@rsksmart/rsk-utils';
 import { CaptchaSolutionResponse, FaucetHistory } from '../types/types';
 import { saveFaucetHistory } from '@/app/lib/faucetHistory';
 import { getServerEnv } from '@/constants';
+import { INVALID_RNS } from './address-util';
 
 const serverEnv = getServerEnv();
 
-const EROR_CODE = {
-  'missing-input-secret':	'The secret parameter is missing.',
-  'invalid-input-secret':	'The secret parameter is invalid or malformed.',
-  'missing-input-response':	'The response parameter is missing.',
-  'invalid-input-response':	'The response parameter is invalid or malformed.',
-  'bad-request':	'The request is invalid or malformed.',
-  'timeout-or-duplicate':	'The response is no longer valid: either is too old or has been used previously.'
-}
+const CAPTCHA_ERROR_MESSAGES: Record<string, string> = {
+  'missing-input-secret': 'Captcha verification is temporarily unavailable. Please try again later.',
+  'invalid-input-secret': 'Captcha verification is temporarily unavailable. Please try again later.',
+  'missing-input-response': 'Please complete the captcha before submitting.',
+  'invalid-input-response': 'Captcha verification failed. Please complete the captcha and try again.',
+  'bad-request': 'Captcha verification failed. Please try again.',
+  'timeout-or-duplicate': 'This captcha has expired or was already used. Please complete a new captcha.',
+};
 
-const CHAIN_ID = 30; //We are solving RNS from mainnet, so we need to use mainnet chain id to validate addresses
+const networkLabel = (isMainnetRns: boolean) =>
+  isMainnetRns ? 'Rootstock mainnet' : 'Rootstock testnet';
 
 export const insuficientFunds = (faucetBalance: number) =>
-  faucetBalance < 100000000000000000 ? 'Faucet has not enough funds.' : '';
+  faucetBalance < 100000000000000000
+    ? 'The faucet is temporarily out of test RBTC. Please try again later or ask for help in our Discord.'
+    : '';
 
 export const captchaRejected = (response: CaptchaSolutionResponse): string =>
-  response.success ? '' : EROR_CODE[response['error-codes'][0]] || 'Captcha Error';
+  response.success
+    ? ''
+    : CAPTCHA_ERROR_MESSAGES[response['error-codes'][0]] ??
+      'Captcha verification failed. Please try again.';
 
-export const alreadyDispensed = (address: string, ip:string, faucetHistory: FaucetHistory, promoCode?: string): string => {
-  const key = Object.keys(faucetHistory).find((key) => faucetHistory[key].ip === ip || faucetHistory[key].address === address);
-  let currentUser = key ? faucetHistory[key!] : null; 
+export const alreadyDispensed = (
+  address: string,
+  ip: string,
+  faucetHistory: FaucetHistory,
+  promoCode?: string
+): string => {
+  const key = Object.keys(faucetHistory).find(
+    (key) => faucetHistory[key].ip === ip || faucetHistory[key].address === address
+  );
+  let currentUser = key ? faucetHistory[key!] : null;
   const isFilterByIP = promoCode ? false : serverEnv.FILTER_BY_IP;
   const TIMER_LIMIT = serverEnv.TIMER_LIMIT;
   const currentTime = new Date();
@@ -37,16 +51,40 @@ export const alreadyDispensed = (address: string, ip:string, faucetHistory: Fauc
     currentUser = null;
   }
 
-  const usedAddress = faucetHistory.hasOwnProperty(address)
-  if (currentUser?.ip === ip && isFilterByIP) return 'IP already used today, try again tomorrow.'
-  if (usedAddress) return 'Address already used today, try again tomorrow.'
+  const usedAddress = faucetHistory.hasOwnProperty(address);
+  if (currentUser?.ip === ip && isFilterByIP) {
+    return 'Only one faucet request per IP address is allowed every 24 hours. Please try again tomorrow.';
+  }
+  if (usedAddress) {
+    return 'This address has already received test RBTC in the last 24 hours. Please try again tomorrow.';
+  }
   faucetHistory[address] = {
     address,
     ip,
     time: new Date(),
-    promoCode
+    promoCode,
   };
-  saveFaucetHistory(faucetHistory)
-  return ''
-}
-export const invalidAddress = (dispenseAddress: string, isMainnetRns: boolean): string => !isValidAddress(dispenseAddress, isMainnetRns ? 30 : 31) ? 'Invalid address, provide a valid one.' : '';
+  saveFaucetHistory(faucetHistory);
+  return '';
+};
+
+export const invalidAddress = (
+  resolvedAddress: string,
+  inputAddress: string,
+  isMainnetRns: boolean
+): string => {
+  if (resolvedAddress === INVALID_RNS) {
+    return `We could not resolve "${inputAddress}" on ${networkLabel(isMainnetRns)}. Check that the name is registered and spelled correctly.`;
+  }
+
+  const chainId = isMainnetRns ? 30 : 31;
+  if (isValidAddress(resolvedAddress, chainId)) {
+    return '';
+  }
+
+  if (inputAddress.includes('.rsk')) {
+    return `The address resolved from "${inputAddress}" is not valid for ${networkLabel(isMainnetRns)}.`;
+  }
+
+  return `Enter a valid ${networkLabel(isMainnetRns)} address (0x followed by 40 hexadecimal characters) or a registered .rsk name.`;
+};

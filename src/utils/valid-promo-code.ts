@@ -28,7 +28,7 @@ export async function isCodeActive(code: string): Promise<Response> {
   if (!codeData) {
     return {
       validCode: false,
-      msg: "Code not found",
+      msg: 'This promo code was not recognized.',
     };
   }
 
@@ -45,7 +45,7 @@ export async function isCodeActive(code: string): Promise<Response> {
   if (today < activationDate) {
     return {
       validCode: false,
-      msg: "Code is not active yet",
+      msg: 'This promo code is not active yet.',
     };
   }
 
@@ -53,7 +53,7 @@ export async function isCodeActive(code: string): Promise<Response> {
 
   return {
     validCode: validDate,
-    msg: validDate ? "Code is active" : "Code has expired",
+    msg: validDate ? 'Promo code is valid.' : 'This promo code has expired.',
   };
 }
 

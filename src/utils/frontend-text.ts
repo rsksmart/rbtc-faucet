@@ -2,32 +2,38 @@ import Web3 from 'web3';
 
 class FrontendText {
   dispense(dispenseAddress: string, txHash: string): string {
-    const message = 'Successfully sent some RBTCs to ' + dispenseAddress;
+    const message = 'Successfully sent test RBTC to ' + dispenseAddress;
 
     const withTransactionHash =
       message +
       '<br/> <a href="https://explorer.testnet.rsk.co/tx/' +
       txHash +
-      '" target="_blank">Transaction hash</a>';
+      '" target="_blank">View transaction on the explorer</a>';
 
     return withTransactionHash;
   }
+
   invalidTransaction(errorMessages: string[]): string {
-    return errorMessages.reduce((a, b) => '<br/>' + a + '<br/>' + b);
+    return errorMessages.join('<br/>');
   }
+
   async failedTransaction(txHash: string, web3: Web3): Promise<string> {
     const receipt = await web3.eth.getTransactionReceipt(txHash);
     if (receipt == null) {
-      return 'The transaction wasn\'t propagated due to internal problems. <br/> Please try again in a while';
-    } else if (receipt.status === BigInt(0)) {
       return (
-        'The transaction was reverted by the RVM. <br/> <a href="https://explorer.testnet.rsk.co/tx/' +
-        txHash +
-        '" target="_blank">Transaction hash</a>'
+        'Your transaction could not be broadcast to the network. ' +
+        'No funds were sent. Please wait a moment and try again.'
       );
-    } else {
-      return 'This is unexpected. <br/> Please try again in a while';
     }
+    if (receipt.status === BigInt(0)) {
+      return (
+        'Your transaction was mined but reverted, so no test RBTC was transferred. ' +
+        '<br/> <a href="https://explorer.testnet.rsk.co/tx/' +
+        txHash +
+        '" target="_blank">View transaction on the explorer</a>'
+      );
+    }
+    return 'Something unexpected happened while confirming your transaction. Please try again.';
   }
 }
 
