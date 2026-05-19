@@ -1,0 +1,15 @@
+{{- if and .Values.targetGroupBinding .Values.targetGroupBinding.enabled -}}
+apiVersion: elbv2.k8s.aws/v1beta1
+kind: TargetGroupBinding
+metadata:
+  name: {{ include "rbtc-faucet.fullname" . }}
+  namespace: {{ .Values.namespace }}
+  labels:
+    {{- include "rbtc-faucet.labels" . | nindent 4 }}
+spec:
+  serviceRef:
+    name: {{ include "rbtc-faucet.fullname" . }}
+    port: {{ .Values.service.port }}
+  targetGroupARN: {{ .Values.targetGroupBinding.targetGroupArn | quote }}
+  targetType: {{ .Values.targetGroupBinding.targetType | default "instance" }}
+{{- end }}
