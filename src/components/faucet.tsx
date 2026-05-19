@@ -1,4 +1,4 @@
-import React, { ChangeEvent, RefObject, useCallback, useEffect, useState } from 'react';
+import React, { ChangeEvent, RefObject, useMemo, useState } from 'react';
 import ReCAPTCHA from "react-google-recaptcha";
 import { debounce } from '../utils/debounce';
 import Spinner from './control/Spinner';
@@ -17,7 +17,14 @@ export interface FaucetProps {
   setIsMainnetRns: (state: boolean) => void;
 }
 
-const Faucet = (props: FaucetProps) => {
+const Faucet = ({
+  dispenseAddress,
+  captchaValue,
+  onAddressChange,
+  onDispenseClick,
+  isMainnetRns,
+  setIsMainnetRns,
+}: FaucetProps) => {
   const [error, setError] = useState({
     address: false,
     captchaValue: false,
@@ -26,31 +33,34 @@ const Faucet = (props: FaucetProps) => {
   const [inputCode, setInputCode] = useState<string>('');
   const [validCode, setValidCode] = useState<boolean>();
   const [msgError, setMsgError] = useState<string>();
-  const [isRNS, setIsRNS] = useState<boolean>(false);
+  const isRNS = dispenseAddress.includes('.rsk');
+
   const handleForm = () => {
     // validate form
     setError({ address: false, captchaValue: false });
-    const addressError = !props.dispenseAddress;
-    const captchaError = !props.captchaValue.current!.getValue();
+    const addressError = !dispenseAddress;
+    const captchaError = !captchaValue.current!.getValue();
     if (addressError || captchaError || (inputCode && !validCode)) {
       setTimeout(() => { 
         setError({ address: addressError, captchaValue: captchaError });
       }, 100);
       return;
     }
-    props.onDispenseClick(inputCode);
+    onDispenseClick(inputCode);
     setError({ address: false, captchaValue: false });
   }
 
+  const debouncedGetCode = useMemo(
+    () =>
+      debounce(async (code: string) => {
+        const data = await isCodeActive(code);
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const debouncedGetCode = useCallback(debounce(async (code: string) => {
-    const data = await isCodeActive(code);
-
-    setLoading(false);
-    setValidCode(data.validCode);
-    setMsgError(data.msg);
-  }, 1000), []);
+        setLoading(false);
+        setValidCode(data.validCode);
+        setMsgError(data.msg);
+      }, 1000),
+    []
+  );
   
   const handleInputCode = async (e: React.FormEvent<HTMLInputElement>) => {
     const code = e.currentTarget.value;
@@ -60,14 +70,6 @@ const Faucet = (props: FaucetProps) => {
     debouncedGetCode(code);
   }
 
-  useEffect(() => {
-    if(props.dispenseAddress.includes('.rsk')) {
-      setIsRNS(true);
-    } else {
-      setIsRNS(false);
-    }
-  }, [props.dispenseAddress]);
-
   return (
     <div className='content-form'>
       <div className='faucet-form'>
@@ -76,8 +78,8 @@ const Faucet = (props: FaucetProps) => {
             className={`faucet-control rounded-rsk ${error.address ? 'error' : '' }`}
             type="text"
             placeholder="Find address or RNS domain to receive tokens ... "
-            value={props.dispenseAddress}
-            onChange={props.onAddressChange}
+            value={dispenseAddress}
+            onChange={onAddressChange}
           />
           <div className='content-code'>
             <div className='content-input'>
@@ -118,7 +120,7 @@ const Faucet = (props: FaucetProps) => {
         {isRNS && 
           <div 
             className="toggle-container mt-4 flex items-center justify-between p-2 bg-gray-800 rounded-lg"
-            onClick={() => props.setIsMainnetRns(!props.isMainnetRns)}
+            onClick={() => setIsMainnetRns(!isMainnetRns)}
           >
           <label htmlFor="toggle-feature" className="text-sm font-medium text-white">
             {'RNS From Mainnet'}
@@ -127,9 +129,9 @@ const Faucet = (props: FaucetProps) => {
             <input
               id="toggle-feature"
               type="checkbox"
-              checked={props.isMainnetRns}
+              checked={isMainnetRns}
               className="sr-only peer"
-              onChange={() => props.setIsMainnetRns(!props.isMainnetRns)}
+              onChange={() => setIsMainnetRns(!isMainnetRns)}
             />
             <div className="w-11 h-6 bg-gray-400 rounded-full peer-checked:bg-blue-600 peer-focus:ring-2 peer-focus:ring-blue-500 dark:peer-focus:ring-blue-800 transition duration-300"></div>
             <div className="peer-checked:translate-x-5 absolute top-[2px] left-[2px] w-5 h-5 bg-white rounded-full transition-transform duration-300"></div>
@@ -138,7 +140,7 @@ const Faucet = (props: FaucetProps) => {
         <div className='captcha-content'>
           { publicEnv.SITE_KEY_CAPTCHA ?
             <ReCAPTCHA
-              ref={props.captchaValue}
+              ref={captchaValue}
               sitekey={publicEnv.SITE_KEY_CAPTCHA}
               theme='dark'
               className={`re-captcha ${error.captchaValue ? 'error' : '' }`}
