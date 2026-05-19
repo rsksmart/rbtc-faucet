@@ -6,7 +6,7 @@ class FrontendText {
 
     const withTransactionHash =
       message +
-      '<br/> <a href="https://explorer.testnet.rsk.co/tx/' +
+      '<br/> <a href="https://explorer.testnet.rootstock.io/tx/' +
       txHash +
       '" target="_blank">View transaction on the explorer</a>';
 
@@ -28,7 +28,7 @@ class FrontendText {
     if (receipt.status === BigInt(0)) {
       return (
         'Your transaction was mined but reverted, so no test RBTC was transferred. ' +
-        '<br/> <a href="https://explorer.testnet.rsk.co/tx/' +
+        '<br/> <a href="https://explorer.testnet.rootstock.io/tx/' +
         txHash +
         '" target="_blank">View transaction on the explorer</a>'
       );
