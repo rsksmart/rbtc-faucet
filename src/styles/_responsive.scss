@@ -1,4 +1,6 @@
-@include desktop {
+@use "mixin";
+
+@include mixin.desktop {
   .navigation {
     height: 50px;
     .logo-rootstock {
@@ -38,7 +40,7 @@
   }
 }
 
-@include laptop {
+@include mixin.laptop {
   .content-form {
     .faucet-form {
       margin-right: 90px;
@@ -53,7 +55,7 @@
   }
 }
 
-@include tablet {
+@include mixin.tablet {
   .title-faucet {
     font-size: 35px;
   }
@@ -103,7 +105,7 @@
     }
   }
 }
-@include phone {
+@include mixin.phone {
   .btn-large {
     width: 120px !important;
     &::before {

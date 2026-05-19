@@ -1,25 +1,27 @@
+@use "variable";
+
 
 // Media Queries
 @mixin phone {
-    @media only screen and (max-width: #{$phone}) {
+    @media only screen and (max-width: #{variable.$phone}) {
         @content;
     }
 }
 
 @mixin laptop {
-    @media only screen and (max-width: #{$laptop}){
+    @media only screen and (max-width: #{variable.$laptop}){
         @content;
     }
 }
 
 @mixin tablet {
-    @media only screen and (max-width: #{$tablet}){
+    @media only screen and (max-width: #{variable.$tablet}){
         @content;
     }
 }
 
 @mixin desktop {
-    @media only screen and (max-width: #{$desktop}){
+    @media only screen and (max-width: #{variable.$desktop}){
         @content;
     }
 }

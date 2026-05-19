@@ -1,3 +1,6 @@
+@use "sass:color";
+@use "variable";
+
 
 .container {
   .content-body {
@@ -9,12 +12,12 @@
     width: 50%;
     max-width: 700px;
     text-align: justify;
-    color: $title1;
+    color: variable.$title1;
   }
 }
 .content-form {
   .title-form {
-    color: $white1;
+    color: variable.$white1;
     font-size: 18px;
     font-style: normal;
     font-weight: 500;
@@ -35,7 +38,7 @@
       top: 15px;
     }
     .error-code {
-      color: $error;
+      color: variable.$error;
       font-size: 14px;
       margin-left: 4px;
     }
@@ -52,21 +55,21 @@
     min-height: 320px;
     padding: 30px 24px;
     border-radius: 12px;
-    background: $bg1-color;
+    background: variable.$bg1-color;
 
     input {
       width: 100%;
       color: white;
-      background-color: $bg1-color;
+      background-color: variable.$bg1-color;
       height: 50px;
       border-radius: 8px;
-      border: 1px solid $bg2-color;
+      border: 1px solid variable.$bg2-color;
       padding-left: 12px;
       outline: none;
       transition: transform 0.3s;
       font-size: 14px;
       &.error {
-        border: 1px solid $error !important;
+        border: 1px solid variable.$error !important;
         animation: errorAnimation .6s ease;
       }
     }
@@ -82,7 +85,7 @@
       }
     }
     input:focus-visible.error {
-     border: 1px solid $error !important;
+     border: 1px solid variable.$error !important;
     }
 
     .btn-reload {
@@ -98,7 +101,7 @@
     .re-captcha {
       margin-bottom: 15px;
       &.error {
-        border: 1px solid $error !important;
+        border: 1px solid variable.$error !important;
         animation: errorAnimation .6s ease;
       }
     }
@@ -109,7 +112,7 @@
   position: relative;
   width: 450px;
   .rsk-card {
-    background-color: $bg1-color;
+    background-color: variable.$bg1-color;
     width: 400px;
     height: 200px;
     border-radius: 12px;
@@ -123,19 +126,19 @@
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      border-right: 1px solid $white2;
+      border-right: 1px solid variable.$white2;
     }
     .card-title {
       font-size: 30px;
       font-style: normal;
       font-weight: 500;
       line-height: 100%;
-      color: $white1;
+      color: variable.$white1;
     }
     .card-description {
       width: 220px;
       margin-top: 8px;
-      color: $white2;
+      color: variable.$white2;
     }
     .card-icon {
       flex: 1px;
@@ -198,8 +201,8 @@ footer {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background-color: $bg2-color;
-  border: 1px solid $bg1-color;
+  background-color: variable.$bg2-color;
+  border: 1px solid variable.$bg1-color;
   border-radius: 8px;
   padding: 8px 12px;
   margin-top: 10px;
@@ -207,11 +210,11 @@ footer {
   transition: background-color 0.3s ease;
 
   &:hover {
-    background-color: darken($bg2-color, 5%);
+    background-color: color.adjust(variable.$bg2-color, $lightness: -5%);
   }
 
   label {
-    color: $white1;
+    color: variable.$white1;
     font-size: 14px;
     font-weight: 500;
   }
@@ -232,7 +235,7 @@ footer {
     + div {
       width: 44px;
       height: 22px;
-      background-color: lighten($bg1-color, 5%);
+      background-color: color.adjust(variable.$bg1-color, $lightness: 5%);
       border-radius: 11px;
       position: relative;
       cursor: pointer;
@@ -245,7 +248,7 @@ footer {
         left: 1px;
         width: 20px;
         height: 20px;
-        background: $white1;
+        background: variable.$white1;
         border-radius: 50%;
         transition: transform 0.3s ease;
       }

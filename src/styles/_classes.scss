@@ -1,3 +1,5 @@
+@use "variable";
+
 @font-face {
   font-family: 'Rootstock Sans Body';
   src: url('../app/font/Rootstock-Sans-Body.woff') format('woff');
@@ -11,7 +13,7 @@
 }
 
 body {
-  background-color: $bg-color;
+  background-color: variable.$bg-color;
   font-family: 'Rootstock Sans Body', sans-serif;
 }
 
@@ -34,16 +36,16 @@ body {
   font-weight: 700;
   line-height: 100%; /* 46px */
   .rootstock {
-    background-color: $title1;
+    background-color: variable.$title1;
     padding: 5px;
   }
   .rbtc {
-    background-color: $title3;
+    background-color: variable.$title3;
     padding: 5px;
 
   }
   .faucet {
-    background-color: $title2;
+    background-color: variable.$title2;
     padding: 5px;
   }
 }
@@ -129,7 +131,7 @@ a {
 }
 
 .btn-outline {
-  background-color: $bg1-color !important;
+  background-color: variable.$bg1-color !important;
   &:hover{
     background-color: rgb(191, 191, 191) !important;
     color: black !important;
@@ -141,14 +143,14 @@ a {
   }
   .swal2-loader {
     border-color: transparent;
-    border-left: .25em solid $title1;
-    border-right: .25em solid $title1;
+    border-left: .25em solid variable.$title1;
+    border-right: .25em solid variable.$title1;
     width: 2.5em;
     height: 2.5em;
   }
 }
 .swal2-content, .swal2-title {
-  color: $white2 !important;
+  color: variable.$white2 !important;
 }
 .swal2-actions {
   .swal2-styled {
@@ -176,7 +178,7 @@ a {
   width: 50px;
   height: 50px;
   border-radius: 50%;
-  border-left-color: $title1;
+  border-left-color: variable.$title1;
   animation: spin 1s ease-in-out infinite;
 }
 
