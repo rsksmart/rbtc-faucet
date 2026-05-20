@@ -2,13 +2,7 @@ name: Build and Deploy to k8s (Production)
 
 on:
   release:
-    types: [created, edited, published]
-  push:
-    branches:
-      - testnet
-      - features/testnet-deploy
-      - features/prod-deploy
-      - main
+    types: [published]
   workflow_dispatch:
     inputs:
       environment:

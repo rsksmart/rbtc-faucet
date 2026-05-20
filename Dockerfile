@@ -24,7 +24,7 @@ ENV NEXT_PUBLIC_TAG_MANAGER_ID=$NEXT_PUBLIC_TAG_MANAGER_ID
 
 COPY package.json package-lock.json ./
 COPY .env.example ./.env
-RUN npm ci
+RUN npm ci --ignore-scripts
 COPY . .
 RUN npm run build
 

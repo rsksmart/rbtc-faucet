@@ -1,9 +1,9 @@
 name: Build and Deploy to k8s (Development)
 
 on:
-  pull_request:
+  push:
     branches:
-      - release/*
+      - release/**
   workflow_dispatch:
     inputs:
       environment:
