@@ -87,21 +87,28 @@
     }
   }
   footer {
+    display: flex;
     flex-direction: column;
+    .copyright,
+    .links,
+    .icons {
+      justify-self: unset;
+    }
     .links {
       margin: 25px 0;
       display: flex;
       flex-direction: column;
-      align-items: flex-start;
+      align-items: center;
       a {
         display: block;
-        margin: 10px 0;
+        margin: 2px 0;
       }
     }
     .icons {
       margin-top: 20px;
       display: flex;
       justify-content: space-between;
+      align-self: stretch;
     }
   }
 }
