@@ -111,6 +111,17 @@
 .content-carousel {
   position: relative;
   width: 450px;
+
+  .swiper,
+  .carousel-swiper {
+    width: 100%;
+  }
+
+  .swiper-slide {
+    display: flex;
+    justify-content: center;
+  }
+
   .rsk-card {
     background-color: variable.$bg1-color;
     width: 400px;

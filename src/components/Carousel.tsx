@@ -45,9 +45,12 @@ const Carousel = () => {
   return (
     <div className="content-carousel">
       <Swiper
-        modules={[Autoplay, Pagination]} // Carga los módulos aquí
+        className="carousel-swiper"
+        modules={[Autoplay, Pagination]}
         spaceBetween={30}
         slidesPerView={1}
+        centeredSlides
+        centerInsufficientSlides
         autoplay={{ delay: 5000, disableOnInteraction: false }}
         pagination={{ clickable: true }}
       >
