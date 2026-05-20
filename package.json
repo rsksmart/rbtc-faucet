@@ -10,28 +10,28 @@
     "lint": "eslint ."
   },
   "dependencies": {
-    "@rsksmart/rns-resolver.js": "^1.1.0",
-    "@rsksmart/rsk-utils": "^2.0.5",
-    "axios": "^1.16.1",
-    "cron": "^4.4.0",
-    "next": "^16.2.6",
-    "pino": "^10.3.1",
-    "react": "^19.2.6",
-    "react-dom": "^19.2.6",
-    "react-google-recaptcha": "^3.1.0",
-    "react-gtm-module": "^2.0.11",
-    "sass": "^1.99.0",
-    "sweetalert2": "^11.26.24",
-    "swiper": "^12.1.4",
-    "web3": "^4.16.0"
+    "@rsksmart/rns-resolver.js": "1.1.0",
+    "@rsksmart/rsk-utils": "2.0.5",
+    "axios": "1.16.1",
+    "cron": "4.4.0",
+    "next": "16.2.6",
+    "pino": "10.3.1",
+    "react": "19.2.6",
+    "react-dom": "19.2.6",
+    "react-google-recaptcha": "3.1.0",
+    "react-gtm-module": "2.0.11",
+    "sass": "1.99.0",
+    "sweetalert2": "11.26.24",
+    "swiper": "12.1.4",
+    "web3": "4.16.0"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "^4.3.0",
+    "@tailwindcss/postcss": "4.3.0",
     "@types/react": "19.2.6",
-    "@types/react-google-recaptcha": "^2.1.9",
-    "@types/react-gtm-module": "^2.0.4",
-    "eslint": "^9.39.4",
-    "eslint-config-next": "^16.2.6",
-    "tailwindcss": "^4.3.0"
+    "@types/react-google-recaptcha": "2.1.9",
+    "@types/react-gtm-module": "2.0.4",
+    "eslint": "9.39.4",
+    "eslint-config-next": "16.2.6",
+    "tailwindcss": "4.3.0"
   }
 }
