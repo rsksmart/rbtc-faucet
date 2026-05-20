@@ -10,7 +10,7 @@ A Next.js application that dispenses test RBTC tokens on the Rootstock Testnet. 
 
 ### Prerequisites
 
-- Node.js 18+ 
+- Node.js 25
 - npm or yarn
 
 ### Environment Configuration
