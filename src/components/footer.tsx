@@ -1,4 +1,5 @@
 import React from 'react'
+import { version } from '../../package.json'
 import GithubIcon from '@/components/icons/GithubIcon';
 import XIcon from '@/components/icons/XIcon';
 import DiscordIcon from '@/components/icons/DiscordIcon';
@@ -11,7 +12,7 @@ function Footer() {
         <div>
           Built by <span className='title'>RootstockLabs</span>
         </div>
-        <p>Copyright © { year } RootstockLabs. All rights reserved.</p>
+        <p>Copyright © { year } RootstockLabs. All rights reserved. v{ version }</p>
       </div>
       <div className='links'>
         <a href="https://rootstock.io/" target='_blank'>About RootstockLabs</a>
