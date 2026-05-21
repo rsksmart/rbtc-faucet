@@ -60,4 +60,8 @@ export function logFaucetError(
   logger.error({ event, err, ...fields }, event);
 }
 
+export function logStartup(fields: Record<string, unknown> = {}): void {
+  logger.info({ event: 'startup', ...fields }, 'startup');
+}
+
 export default logger;
