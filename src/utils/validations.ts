@@ -1,4 +1,5 @@
 import { isValidAddress } from '@rsksmart/rsk-utils';
+import Web3 from 'web3';
 import { CaptchaSolutionResponse, FaucetHistory } from '../types/types';
 import { saveFaucetHistory } from '@/app/lib/faucetHistory';
 import { getServerEnv } from '@/constants';
@@ -22,6 +23,23 @@ export const insuficientFunds = (faucetBalance: number) =>
   faucetBalance < 100000000000000000
     ? 'The faucet is temporarily out of test RBTC. Please try again later or ask for help in our Discord.'
     : '';
+
+export const receiverBalanceExceeded = (
+  recipientBalanceWei: bigint,
+  promoCode?: string
+): string => {
+  const isFilterByBalance = promoCode ? false : serverEnv.FILTER_BY_BALANCE;
+  if (!isFilterByBalance) {
+    return '';
+  }
+  const maxBalanceWei = BigInt(
+    Web3.utils.toWei(serverEnv.MAX_RECEIVER_BALANCE.toString(), 'ether')
+  );
+  if (recipientBalanceWei > maxBalanceWei) {
+    return `This address already holds more than ${serverEnv.MAX_RECEIVER_BALANCE} test RBTC and cannot receive more from the faucet.`;
+  }
+  return '';
+};
 
 export const captchaRejected = (response: CaptchaSolutionResponse): string =>
   response.success

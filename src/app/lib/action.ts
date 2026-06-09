@@ -8,7 +8,7 @@ import CaptchaSolver from '@/utils/captcha-solver';
 import ValidationStatus from '@/model/validation-status';
 import { CronJob } from 'cron';
 import FrontendText from '@/utils/frontend-text';
-import { alreadyDispensed, captchaRejected, insuficientFunds, invalidAddress } from '@/utils/validations';
+import { alreadyDispensed, captchaRejected, insuficientFunds, invalidAddress, receiverBalanceExceeded } from '@/utils/validations';
 import TxParametersGenerator from '@/utils/tx-parameters-generator';
 import { loadFaucetHistory, saveFaucetHistory } from '@/app/lib/faucetHistory';
 import { isValidChecksumAddress } from '@rsksmart/rsk-utils';
@@ -83,6 +83,11 @@ export async function dispense(data: IData) {
     const captchaSolutionResponse: CaptchaSolutionResponse = await captchaSolver.solve(captchaSolutionRequest);
     const captchaVerified = captchaSolutionResponse.success;
 
+    const recipientBalanceWei =
+      serverEnv.FILTER_BY_BALANCE && !promoCode
+        ? BigInt(await web3.eth.getBalance(dispenseAddress))
+        : BigInt(0);
+
     //Validations
     //each validation will return an error message, if it success it'll return an empty string (empty error message)
     const validationStatus: ValidationStatus = runValidations(
@@ -90,6 +95,7 @@ export async function dispense(data: IData) {
       dispenseAddress,
       address,
       faucetBalance,
+      recipientBalanceWei,
       ip,
       promoCode,
       faucetHistory,
@@ -226,6 +232,7 @@ const runValidations = (
   dispenseAddress: string,
   inputAddress: string,
   faucetBalance: number,
+  recipientBalanceWei: bigint,
   ip: string,
   promoCode: string | undefined,
   faucetHistory: FaucetHistory,
@@ -235,6 +242,7 @@ const runValidations = (
     () => captchaRejected(captchaSolutionResponse),
     () => alreadyDispensed(dispenseAddress, ip, faucetHistory, promoCode),
     () => invalidAddress(dispenseAddress, inputAddress, isMainnetRns),
+    () => receiverBalanceExceeded(recipientBalanceWei, promoCode),
     () => insuficientFunds(faucetBalance)
   ];
   const errorMessages: string[] = validations.map(validate => validate()).filter(e => e != '' && e != '-');
