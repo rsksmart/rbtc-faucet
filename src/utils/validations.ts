@@ -1,10 +1,35 @@
 import { isValidAddress } from '@rsksmart/rsk-utils';
+import Web3 from 'web3';
 import { CaptchaSolutionResponse, FaucetHistory } from '../types/types';
 import { saveFaucetHistory } from '@/app/lib/faucetHistory';
 import { getServerEnv } from '@/constants';
 import { INVALID_RNS } from './address-util';
 
 const serverEnv = getServerEnv();
+
+export const RECEIVER_BALANCE_EXCEEDED_CODE = 'receiver_balance_exceeded';
+
+const GENERIC_REQUEST_REJECTED_MESSAGE =
+  'Your request could not be completed. Please try again later or ask for help in our Discord.';
+
+export type ValidationError = {
+  userMessage: string;
+  logCode: string;
+};
+
+export type ValidationOutcome = '' | string | ValidationError;
+
+export const parseValidationOutcome = (
+  outcome: ValidationOutcome
+): ValidationError | null => {
+  if (!outcome || outcome === '-') {
+    return null;
+  }
+  if (typeof outcome === 'object') {
+    return outcome;
+  }
+  return { userMessage: outcome, logCode: outcome };
+};
 
 const CAPTCHA_ERROR_MESSAGES: Record<string, string> = {
   'missing-input-secret': 'Captcha verification is temporarily unavailable. Please try again later.',
@@ -22,6 +47,26 @@ export const insuficientFunds = (faucetBalance: number) =>
   faucetBalance < 100000000000000000
     ? 'The faucet is temporarily out of test RBTC. Please try again later or ask for help in our Discord.'
     : '';
+
+export const receiverBalanceExceeded = (
+  recipientBalanceWei: bigint,
+  promoCode?: string
+): ValidationOutcome => {
+  const isFilterByBalance = promoCode ? false : serverEnv.FILTER_BY_BALANCE;
+  if (!isFilterByBalance) {
+    return '';
+  }
+  const maxBalanceWei = BigInt(
+    Web3.utils.toWei(serverEnv.MAX_RECEIVER_BALANCE.toString(), 'ether')
+  );
+  if (recipientBalanceWei > maxBalanceWei) {
+    return {
+      userMessage: GENERIC_REQUEST_REJECTED_MESSAGE,
+      logCode: RECEIVER_BALANCE_EXCEEDED_CODE,
+    };
+  }
+  return '';
+};
 
 export const captchaRejected = (response: CaptchaSolutionResponse): string =>
   response.success
