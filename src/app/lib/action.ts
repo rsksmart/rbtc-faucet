@@ -8,7 +8,16 @@ import CaptchaSolver from '@/utils/captcha-solver';
 import ValidationStatus from '@/model/validation-status';
 import { CronJob } from 'cron';
 import FrontendText from '@/utils/frontend-text';
-import { alreadyDispensed, captchaRejected, insuficientFunds, invalidAddress, receiverBalanceExceeded } from '@/utils/validations';
+import {
+  alreadyDispensed,
+  captchaRejected,
+  insuficientFunds,
+  invalidAddress,
+  parseValidationOutcome,
+  receiverBalanceExceeded,
+  ValidationError,
+  ValidationOutcome,
+} from '@/utils/validations';
 import TxParametersGenerator from '@/utils/tx-parameters-generator';
 import { loadFaucetHistory, saveFaucetHistory } from '@/app/lib/faucetHistory';
 import { isValidChecksumAddress } from '@rsksmart/rsk-utils';
@@ -107,12 +116,12 @@ export async function dispense(data: IData) {
         status: 'validation_failed',
         to: dispenseAddress,
         captchaVerified,
-        errorMessages: validationStatus.errorMessages,
+        errorMessages: validationStatus.logCodes,
       });
 
       const data: DispenseResponse = {
         title: 'Error',
-        text: frontendText.invalidTransaction(validationStatus.errorMessages),
+        text: frontendText.invalidTransaction(validationStatus.userMessages),
         type: 'error',
       };
       filterAddresses(dispenseAddress, ip, promoCode);
@@ -238,16 +247,18 @@ const runValidations = (
   faucetHistory: FaucetHistory,
   isMainnetRns: boolean
 ): ValidationStatus => {
-  const validations: (() => string)[] = [
+  const validations: (() => ValidationOutcome)[] = [
     () => captchaRejected(captchaSolutionResponse),
     () => alreadyDispensed(dispenseAddress, ip, faucetHistory, promoCode),
     () => invalidAddress(dispenseAddress, inputAddress, isMainnetRns),
     () => receiverBalanceExceeded(recipientBalanceWei, promoCode),
     () => insuficientFunds(faucetBalance)
   ];
-  const errorMessages: string[] = validations.map(validate => validate()).filter(e => e != '' && e != '-');
+  const errors = validations
+    .map((validate) => parseValidationOutcome(validate()))
+    .filter((error): error is ValidationError => error !== null);
 
-  return new ValidationStatus(errorMessages);
+  return new ValidationStatus(errors);
 }
 
 async function filterAddresses(dispenseAddress: string, ip:string, promoCode: string | undefined) {

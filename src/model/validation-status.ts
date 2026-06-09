@@ -1,13 +1,16 @@
+import { ValidationError } from '@/utils/validations';
 
 class ValidationStatus {
-  errorMessages: string[];
+  userMessages: string[];
+  logCodes: string[];
 
-  constructor(errorMessages: string[]) {
-    this.errorMessages = errorMessages;
+  constructor(errors: ValidationError[]) {
+    this.userMessages = errors.map((error) => error.userMessage);
+    this.logCodes = errors.map((error) => error.logCode);
   }
 
   valid() {
-    return this.errorMessages.length == 0;
+    return this.userMessages.length === 0;
   }
 }
 
