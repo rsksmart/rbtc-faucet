@@ -28,6 +28,8 @@ export function getStartupContext() {
     rskNodeHost: rpcHost(process.env.RSK_NODE),
     faucetAddress: process.env.FAUCET_ADDRESS,
     filterByIp: process.env.FILTER_BY_IP === 'true',
+    filterByBalance: process.env.FILTER_BY_BALANCE === 'true',
+    maxReceiverBalance: Number(process.env.MAX_RECEIVER_BALANCE ?? '0.1') || undefined,
     timerLimitMs: Number(process.env.TIMER_LIMIT) || undefined,
     valueToDispense: Number(process.env.VALUE_TO_DISPENSE) || undefined,
     promoValueToDispense: Number(process.env.PROMO_VALUE_TO_DISPENSE) || undefined,

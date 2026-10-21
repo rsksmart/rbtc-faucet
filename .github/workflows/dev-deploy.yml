@@ -122,6 +122,8 @@ jobs:
         VALUE_TO_DISPENSE: ${{ secrets.VALUE_TO_DISPENSE }}
         PROMO_VALUE_TO_DISPENSE: ${{ secrets.PROMO_VALUE_TO_DISPENSE }}
         FILTER_BY_IP: ${{ secrets.FILTER_BY_IP }}
+        FILTER_BY_BALANCE: ${{ secrets.FILTER_BY_BALANCE }}
+        MAX_RECEIVER_BALANCE: ${{ secrets.MAX_RECEIVER_BALANCE }}
         TIMER_LIMIT: ${{ secrets.TIMER_LIMIT }}
         PROMO_CODE: ${{ secrets.PROMO_CODE }}
       run: |
@@ -131,7 +133,8 @@ jobs:
           'RSK_NODE', 'GOOGLE_CAPTCHA_URL', 'NEXT_PUBLIC_SITE_KEY_CAPTCHA',
           'SECRET_VERIFY_CAPTCHA', 'NEXT_PUBLIC_TAG_MANAGER_ID', 'FAUCET_ADDRESS',
           'FAUCET_PRIVATE_KEY', 'GAS_PRICE', 'GAS_LIMIT', 'VALUE_TO_DISPENSE',
-          'PROMO_VALUE_TO_DISPENSE', 'FILTER_BY_IP', 'TIMER_LIMIT', 'PROMO_CODE'
+          'PROMO_VALUE_TO_DISPENSE', 'FILTER_BY_IP', 'FILTER_BY_BALANCE',
+          'MAX_RECEIVER_BALANCE', 'TIMER_LIMIT', 'PROMO_CODE'
         ]
         missing = [k for k in keys if not os.environ.get(k)]
         if missing:

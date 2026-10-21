@@ -23,6 +23,8 @@ export function getServerEnv() {
     VALUE_TO_DISPENSE: Number(process.env.VALUE_TO_DISPENSE),
     PROMO_VALUE_TO_DISPENSE: Number(process.env.PROMO_VALUE_TO_DISPENSE),
     FILTER_BY_IP: process.env.FILTER_BY_IP === 'true',
+    FILTER_BY_BALANCE: process.env.FILTER_BY_BALANCE === 'true',
+    MAX_RECEIVER_BALANCE: Number(process.env.MAX_RECEIVER_BALANCE ?? '0.1'),
     TIMER_LIMIT: Number(process.env.TIMER_LIMIT),
     PROMO_CODE: promoCode,
   };

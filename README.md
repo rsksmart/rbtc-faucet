@@ -47,11 +47,41 @@ NEXT_PUBLIC_TAG_MANAGER_ID=GTM-XXXXXXX
 
 # Security & Rate Limiting
 FILTER_BY_IP=true
+FILTER_BY_BALANCE=false
+MAX_RECEIVER_BALANCE=0.1
 TIMER_LIMIT=180000
 
 # Promo Codes (JSON array format)
 PROMO_CODE=[{"code":"TEST1","activationDate":"2025-01-01","expirationDate":"2025-12-31","maxDispensableRBTC":1}]
 ```
+
+### Dispense Limits
+
+The faucet enforces several independent checks before sending test RBTC. Each can be toggled or configured via environment variables.
+
+| Limit | Env variable(s) | Default | Behavior |
+|---|---|---|---|
+| Per IP | `FILTER_BY_IP` | `false` | Rejects if the same IP already requested within `TIMER_LIMIT` |
+| Per address | `TIMER_LIMIT` | `180000` ms (3 min) | Rejects if the recipient address already received tokens within the timer window |
+| Recipient balance | `FILTER_BY_BALANCE`, `MAX_RECEIVER_BALANCE` | disabled, `0.1` RBTC | When enabled, rejects if the recipient already holds more than `MAX_RECEIVER_BALANCE` tRBTC |
+| Faucet balance | — | — | Rejects if the faucet wallet has less than 0.1 tRBTC |
+| Captcha | — | — | Rejects if reCAPTCHA verification fails |
+
+`TIMER_LIMIT` applies to the per-address check. The faucet history is also reset daily at midnight (Pacific time).
+
+### Promo Code Bypasses
+
+When a user submits a valid promo code, some limits are relaxed:
+
+| Limit | Bypassed with promo code? |
+|---|---|
+| Per IP (`FILTER_BY_IP`) | Yes |
+| Recipient balance (`FILTER_BY_BALANCE`) | Yes |
+| Per address (`TIMER_LIMIT`) | No — the same address still cannot receive again within the timer window |
+| Captcha | No |
+| Faucet balance | No |
+
+Promo codes have their own rules: the code must exist in `PROMO_CODE`, be within its activation/expiration dates, and not exceed its `maxDispensableRBTC` budget. Promo dispenses use `PROMO_VALUE_TO_DISPENSE` instead of `VALUE_TO_DISPENSE`.
 
 ### Required Setup Steps
 
